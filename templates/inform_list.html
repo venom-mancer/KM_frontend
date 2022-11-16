@@ -1,0 +1,94 @@
+{% extends '_layout.html' %}
+{% load static %}
+
+{% block jsBlock %}
+    <!-- Datatables -->
+    <script src="{% static 'assets/vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/jszip/dist/jszip.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/pdfmake.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/vfs_fonts.js' %}"></script>
+    {% for item in all_informs %}
+        <script>
+            document.getElementById("{{ item.from_date }}{{ forloop.counter }}").innerHTML = normalizeDate("{{ item.from_date }}");
+            document.getElementById("{{ item.to_date }}{{ forloop.counter }}").innerHTML = normalizeDate("{{ item.to_date }}");
+        </script>
+    {% endfor %}
+{% endblock %}
+
+{% block cssBlock %}
+    <!-- Datatables -->
+
+    <link href="{% static 'assets/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}"
+          rel="stylesheet">
+{% endblock %}
+
+
+{% block pageContent %}
+
+    <div class="">
+        <div class="x_panel">
+            <div class="x_title bg-primary">
+                <h2 class="pull-right"> لیست اطلاع رسانی ها</h2>
+                <ul class="nav navbar-left panel_toolbox">
+                    <li>
+                        <a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <div class="row">
+                    <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap"
+                           cellspacing="0" width="100%">
+                        <thead>
+                        <tr>
+                            <th>ردیف</th>
+                            <th>ثبت کننده</th>
+                            <th>تاریخ اطلاع </th>
+                            <th>تاریخ انقضا</th>
+                            <th>عملیات</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in all_informs %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ item.Creater_UserID.first_name }} {{ item.Creater_UserID.last_name }}</td>
+                                <td id="{{ item.from_date }}{{ forloop.counter }}"></td>
+                                <td >{{ item.to_date }}</td>
+                                <td> <a href='/edit_inform/{{ item.id }}' class="btn btn-warning" > ویرایش اطلاع رسانی </a>
+                                    <a href='/delete_inform/{{ item.id }}' class="btn btn-danger" > حذف اطلاع رسانی </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+ 
+{% endblock %}

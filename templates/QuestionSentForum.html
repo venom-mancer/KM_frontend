@@ -1,0 +1,426 @@
+{% extends '_layout.html' %}
+{% load static %}
+{% load comon_tags %}
+
+
+{% block jsBlock %}
+    <!-- Datatables -->
+    <script src="{% static 'assets/vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/jszip/dist/jszip.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/pdfmake.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/vfs_fonts.js' %}"></script>
+    {% for answer_object in answer_objects %}
+        <script>
+            document.getElementById("{{ answer_object.CreateDate }}{{ forloop.counter }}").innerHTML = normalizeDate("{{ answer_object.CreateDate }}");
+        </script>
+    {% endfor %}
+    <script>
+        document.getElementById("date_question").innerHTML = normalizeDate("{{ question.create_date }}");
+    </script>
+
+<script src="{% static 'assets/vendors/tinymce/tinymce.min.js' %}"></script>
+<!-- tinyMce -->
+<script type="text/javascript">
+    tinymce.init({
+        selector: 'textarea',
+        editor_selector: "id_KnowledgeTextSummary",
+        height: 300,
+        language: "fa_IR",
+        plugins: [
+            'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+            'searchreplace wordcount visualblocks visualchars code fullscreen',
+            'insertdatetime media nonbreaking save table directionality',
+            'emoticons template paste textpattern imagetools image'
+        ],
+        image_advtab: true,
+        toolbar1: 'bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | styleselect formatselect fontselect fontsizeselect ',
+        toolbar2: 'cut copy paste pastetext pasteword | search replace bullist numlist | outdent indent blockquote | undo redo | link unlink anchor image cleanup help code | insertdate inserttime preview | forecolor backcolor',
+        toolbar3: 'tablecontrols hr removeformat visualaid | sub sup | charmap emotions iespell media advhr | print | ltr rtl | fullscreen | insertlayer moveforward movebackward absolute | styleprops spellchecker | cite abbr acronym del ins attribs | visualchars nonbreaking template blockquote pagebreak | insertfile insertimage emoticons',
+        // enable title field in the Image dialog
+        image_title: true,
+        // enable automatic uploads of images represented by blob or data URIs
+        automatic_uploads: true,
+        // add custom filepicker only to Image dialog
+        file_picker_types: 'image',
+        file_picker_callback: function (cb, value, meta) {
+            let input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/*');
+            input.onchange = function () {
+                let file = this.files[0];
+                let reader = new FileReader();
+                reader.onload = function () {
+                    let id = 'blobid' + (new Date()).getTime();
+                    let blobCache = tinymce.activeEditor.editorUpload.blobCache;
+                    let base64 = reader.result.split(',')[1];
+                    let blobInfo = blobCache.create(id, file, base64);
+                    blobCache.add(blobInfo);
+                    // call the callback and populate the Title field with the file name
+                    cb(blobInfo.blobUri(), { title: file.name });
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click();
+        }
+    });
+</script>
+{% endblock %}
+
+
+{% block cssBlock %}
+    <!-- Datatables -->
+
+    <link href="{% static 'assets/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}"
+          rel="stylesheet">
+
+    <style>
+        /* body {
+            background-color: #D32F2F;
+            font-family: 'Calibri', sans-serif !important
+        } */
+
+        .limit_text{
+            white-space: nowrap;
+            overflow: hidden;
+            width: 380px;
+            height: 30px;
+            text-overflow: ellipsis; 
+        }
+
+
+        .style_class {
+            margin: 1px -35%
+        }
+        
+        
+        .mb-100 {
+            margin-bottom: 50px
+        }
+        
+        .card {
+            position: relative;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            min-width: 0;
+            word-wrap: break-word;
+            background-color: #fff;
+            background-clip: border-box;
+            border: 0px solid transparent;
+            border-radius: 0px
+        }
+        
+        .card-body {
+            -webkit-box-flex: 1;
+            -ms-flex: 1 1 auto;
+            flex: 1 1 auto;
+            padding: 1.25rem
+        }
+        
+        .card .card-title {
+            position: relative;
+            font-weight: 600;
+            margin-bottom: 10px
+        }
+        
+        .comment-widgets {
+            position: relative;
+            margin-bottom: 10px
+        }
+        
+        .comment-widgets .comment-row {
+            border-bottom: 1px solid transparent;
+            padding: 14px;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            margin: 10px 0
+        }
+        
+        .p-2 {
+            padding: 0.5rem !important
+        }
+        
+        .comment-text {
+            padding-left: 15px
+        }
+        
+        .w-100 {
+            width: 100% !important
+        }
+        
+        .m-b-15 {
+            margin-bottom: 15px
+        }
+        
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.76563rem;
+            line-height: 1.5;
+            border-radius: 1px
+        }
+        
+        .btn-cyan {
+            color: #fff;
+            background-color: #27a9e3;
+            border-color: #27a9e3
+        }
+        
+        .btn-cyan:hover {
+            color: #fff;
+            background-color: #1a93ca;
+            border-color: #198bbe
+        }
+        
+        .comment-widgets .comment-row:hover {
+            background: rgba(0, 0, 0, 0.05)
+        }
+    </style>
+{% endblock %}
+
+
+{% block pageContent %}
+
+    <div class="">
+        <div class="x_panel">
+            <div class="x_title bg-primary">
+
+                <h2 class="pull-right">تالار گفتگو</h2>
+                <ul class="nav navbar-left panel_toolbox">
+                    <li>
+                        <a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                        <div class="row d-flex justify-content-center mt-100 mb-100">
+                            <div class="col-lg-12">
+                                <div class="card">
+                                    <div class="comment-widgets">
+                                        <!-- Comment Row -->
+
+                                        <div class="d-flex flex-row comment-row m-t-0">
+                                            <div class="p-2">
+                                                
+                                                {% if question.show_name %}
+                                                <a href="{% url 'userProfile' id=question.CreatorUserID.member %}" target="_blank">
+                                                    {% if question.CreatorUserID.profile_picture %}
+                                                    <img src={{question.CreatorUserID.profile_picture.url}} alt="user" width="50" class="rounded-circle">
+                                                    {% else %}
+                                                    <img src="/static/assets/images/user.png" alt="user" width="50" class="rounded-circle">
+                                                    {% endif %}
+                                                </a>
+                                                {% else %}
+                                                    <img src="/static/assets/images/user.png" alt="user" width="50" class="rounded-circle">                                                    
+                                                {% endif %}
+                                                <center style="text-align: -webkit-auto;text-align: center;">
+                                                    <span><i class="fa fa-arrow-up"  id="questionUpVote" onclick="like_question('{{question.id}}','1');" style="font-size: 30px;margin: 7px 0px;{{ question.id | up_vote_question_request_color:request.user }}" aria-hidden="true"></i></span>
+                                                    <p id="voteNumber" style="font-size: 25px;margin: 6px;">{{ question.id | vote_question_request_counter }}</p>
+                                                    <span><i class="fa fa-arrow-down" id="questionDownVote" onclick="like_question('{{question.id}}','2');" style="font-size: 30px;margin: 4px 0px;{{ question.id | down_vote_question_request_color:request.user }}" aria-hidden="true"></i></span>                                                      
+                                                </center>
+                                                       
+                                            </div>
+                                            <div class="comment-text w-100">
+                                                <h5 style="padding: 11px 2px;font-weight: bold;">
+                                                    {% if question.show_name %}
+                                            
+                                                        {% if question.CreatorUserID.first_name and question.CreatorUserID.last_name %}
+                                                            {{ question.CreatorUserID.first_name }} {{ question.CreatorUserID.last_name }}
+                                                        {% else %}
+                                                            {{question.CreatorUserID.username}}
+                                                        {% endif %} 
+                                                        
+                                                    {% else %}
+                                                        بی نام
+                                                    {% endif %}
+                                                </h5>
+                                                <h6 style="text-align: center;font-weight: bold;font-size: 13px;" class="font-medium">{{ question.KnowledgeTitle }}</h6> 
+                                                <span class="m-b-15 d-block style_class">{{ question.Requestcontents|safe }} </span>
+                                                <div class="comment-footer">
+                                                    <span  class="text-muted float-right">{{ question.create_hour }}</span>
+                                                    <span style="margin: 3px 6px;" id="date_question" class="text-muted float-right">{{ question.CreateDate }}</span>
+                                                    <span> <i title="تعداد استفاده شده از این دانش" id="used_Question_request{{forloop.counter}}"  onclick="used_Question_func('{{question.id}}',this.id)" style="font-size: 24px;padding: 1px 10px;{{ question.id | used_Question_request_color:request.user }}" class="fa fa-check" aria-hidden="true">{{question.id | used_Question_request_counter}}</i></span>
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {% for answer_object in answer_objects %}
+                                        <div class="d-flex flex-row comment-row">
+                                            <div class="p-2">
+                                                <a href="{% url 'userProfile' id=answer_object.CreatorUserID.member %}" target="_blank">
+                                                    {% if answer_object.CreatorUserID.profile_picture %}
+                                                    <img src="{{ answer_object.CreatorUserID.profile_picture.url }}" alt="user" width="50" class="rounded-circle">
+                                                    {% else %}
+                                                    <img src="/static/assets/images/user.png" alt="user" width="50" class="rounded-circle">
+                                                    {% endif %}
+                                                </a>
+
+                                                <center style="text-align: -webkit-auto;text-align: center;">
+                                                    <span><i class="fa fa-arrow-up" id="questionUpVote{{ forloop.counter }}" onclick="like_question_answer('{{answer_object.id}}','1','{{ forloop.counter }}');" style="font-size: 30px;margin: 7px 0px;{{ answer_object.id | up_vote_answer_question_request_color:request.user }}" aria-hidden="true"></i></span>
+                                                    <p id='voteNumber{{ forloop.counter }}' style="font-size: 25px;margin: 6px;">{{ answer_object.id | vote_answer_question_request_counter }}</p>
+                                                    <span><i class="fa fa-arrow-down"  id="questionDownVote{{ forloop.counter }}" onclick="like_question_answer('{{answer_object.id}}','2','{{ forloop.counter }}');" style="font-size: 30px;margin: 4px 0px;{{ answer_object.id | down_vote_answer_question_request_color:request.user }}" aria-hidden="true"></i></span>                                                      
+                                                </center>
+                                            </div>
+                                            <div class="comment-text active w-100">
+                                                <h5 style="padding: 11px 2px;font-weight: bold;">{{ answer_object.CreatorUserID.first_name }} {{ answer_object.CreatorUserID.last_name }}</h5>
+                                                <span class="m-b-15 d-block style_class">{{ answer_object.text|safe }} </span>
+                                                <div class="comment-footer">
+                                                    <span  class="text-muted float-right">{{ answer_object.create_hour }}</span>
+                                                    <span style="margin: 3px 6px;" id="{{ answer_object.CreateDate }}{{ forloop.counter }}" class="text-muted float-right">{{ answer_object.CreateDate }}</span>
+                                                    
+                                                    
+                                                </div>
+                                            </div>
+                                        </div> 
+                                    {% endfor %}                               
+
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+
+                        <form action="" method="post" role="form" enctype="multipart/form-data" style="margin-top: -11px;">
+                            {% csrf_token %}
+                            <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                                <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right"> پاسخ شما</label>
+                                <div class="clearfix"></div>
+                                {{ form.text }}
+                            </div>
+                            <div class="col-md-3 col-sm-12 col-xs-12 form-group pull-right">
+                                <button type="submit" class="btn btn-primary">ثبت پاسخ</button>
+                            </div>
+                        </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="application/javascript">
+        function like_question(code,type) {
+
+            $.ajax({
+                type: 'POST',
+                url: '/likeQuestionRequest',
+                data: {
+                    postid: code,
+                    voteType :type,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                    action: 'post'
+                },
+                success: function (json) {
+                    // document.getElementById("like_count" + code).innerHTML = json['result']
+                    // if (json['color'] == 'red') {
+                    //     $('#btn' + code).addClass('btn-danger')
+                    // }
+                    // else {
+                    //     $('#btn' + code).removeClass('btn-danger')
+                    // }
+
+                    document.getElementById('voteNumber').innerHTML = json['result']
+                    console.log(json['ajax_vote_type'])
+                    document.getElementById('questionUpVote').style.color='';
+                    document.getElementById('questionDownVote').style.color='';
+
+                    if(json['ajax_vote_type'] == 1){
+                        document.getElementById('questionUpVote').style.color='orange';
+                    }
+                    else if(json['ajax_vote_type'] == 2){
+                        document.getElementById('questionDownVote').style.color='orange';
+                    }
+                },
+                error: function (xhr, errmsg, err) {
+
+                }
+            });
+        }
+    </script>
+    <script type="application/javascript">
+        function like_question_answer(code,type,loop_number) {
+    
+            $.ajax({
+                type: 'POST',
+                url: '/likes_of_question_answers',
+                data: {
+                    postid: code,
+                    voteType :type,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                    action: 'post'
+                },
+                success: function (json) {
+    
+                    document.getElementById('voteNumber'+loop_number).innerHTML = json['result']
+                    console.log(json['ajax_vote_type'])
+                    document.getElementById('questionUpVote'+loop_number).style.color='';
+                    document.getElementById('questionDownVote'+loop_number).style.color='';
+                    
+                    if(json['ajax_vote_type'] == 1){
+                        document.getElementById('questionUpVote'+loop_number).style.color='orange';
+                    }
+                    else if(json['ajax_vote_type'] == 2){
+                        document.getElementById('questionDownVote'+loop_number).style.color='orange';
+                    }
+                },
+                error: function (xhr, errmsg, err) {
+    
+                }
+            });
+        }
+    </script>
+    <script type="application/javascript">
+        function used_Question_func(code,element_id) {
+    
+            $.ajax({
+                type: 'POST',
+                url: '/used_Question_Request/',
+                data: {
+                    postid: code,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                    action: 'post'
+                },
+                success: function (json) {
+    
+                    document.getElementById(element_id).innerHTML = json['result']
+                    
+                    if( json['color'] == 'green'){
+                        document.getElementById(element_id).style.color='green';
+    
+                    }
+                    else{
+                        document.getElementById(element_id).style.color='';
+                    }
+    
+                    
+                },
+                error: function (xhr, errmsg, err) {
+    
+                }
+            });
+        }
+    </script>
+
+{% endblock %}

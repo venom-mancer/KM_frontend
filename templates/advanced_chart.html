@@ -1,0 +1,607 @@
+{% extends '_layout.html' %}
+{% load static %}
+{% block jsBlock %}
+    <script>
+        $.fn.extend({
+            treed: function (o) {
+
+                var openedClass = 'glyphicon-minus-sign';
+                var closedClass = 'glyphicon-plus-sign';
+
+                if (typeof o != 'undefined') {
+                    if (typeof o.openedClass != 'undefined') {
+                        openedClass = o.openedClass;
+                    }
+                    if (typeof o.closedClass != 'undefined') {
+                        closedClass = o.closedClass;
+                    }
+                }
+                ;
+
+                //initialize each of the top levels
+                var tree = $(this);
+                tree.addClass("tree");
+                tree.find('li').has("ul").each(function () {
+                    var branch = $(this); //li with children ul
+                    branch.prepend("<i class='indicator glyphicon " + closedClass + "'></i>");
+                    branch.addClass('branch');
+                    branch.on('click', function (e) {
+                        if (this == e.target) {
+                            var icon = $(this).children('i:first');
+                            icon.toggleClass(openedClass + " " + closedClass);
+                            $(this).children().children().toggle();
+                        }
+                    })
+                    branch.children().children().toggle();
+                });
+                //fire event from the dynamically added icon
+                tree.find('.branch .indicator').each(function () {
+                    $(this).on('click', function () {
+                        $(this).closest('li').click();
+                    });
+                });
+                //fire event to open branch if the li contains an anchor instead of text
+                tree.find('.branch>a').each(function () {
+                    $(this).on('click', function (e) {
+                        $(this).closest('li').click();
+                        e.preventDefault();
+                    });
+                });
+                //fire event to open branch if the li contains a button instead of text
+                tree.find('.branch>button').each(function () {
+                    $(this).on('click', function (e) {
+                        $(this).closest('li').click();
+                        e.preventDefault();
+                    });
+                });
+            }
+        });
+
+        //Initialization of treeviews
+
+        $('#tree1').treed();
+
+        function setChartId(id, name, type) {
+            console.log(type)
+            switch (type) {
+                case '1':
+                   console.log(1)
+                    break;
+                case '2':
+                    console.log(2)
+                    break;
+                case '3':
+                    addTeam(id,name)
+                    break;
+            }
+
+        }
+    </script>
+    <!-- /Datatables -->
+    <!-- selectsearch -->
+    <script src="{% static 'assets/selectsearch/select2.min.js' %}"></script>
+
+    <script>
+        $('input[type=file]').addClass('form-control');
+        $('input[type=number]').addClass('form-control');
+        $('input[type=text]').addClass('form-control');
+        $('input[type=email]').addClass('form-control');
+        $('select').addClass('form-control');
+        $(document).ready(function () { $('select').select2();});
+    </script>
+    <script>
+        $('input[type=text]').addClass('form-control');
+        $('input[type=file]').addClass('form-control');
+        $('input[type=number]').addClass('form-control');
+    </script>
+
+
+<script>
+    $('#id_connection_with_other_processes').change(function() {
+    if (this.value == 1) {
+        $('#tree_table_connection').addClass('hidden');
+        $('#titleGroup').removeClass('input-group');
+    }
+    else {
+        $('#org_struc').modal('show');
+        $('#tree_table_connection').removeClass('hidden');
+        $('#titleGroup').addClass('input-group');
+    }
+});
+
+$(document).ready(function () {
+    if ( $('#id_connection_with_other_processes option:selected').val() == 2 || $('#id_connection_with_other_processes option:selected').val() == 3 ){
+        $('#tree_table_connection').removeClass('hidden');
+        $('#titleGroup').addClass('input-group');
+    }
+
+})
+</script>
+
+
+
+{% endblock %}
+
+{% block cssBlock %}
+<style>
+    .hide{
+      display:none;
+    }
+    </style>
+    <style>
+        .tree,
+        .tree ul {
+            margin: 0;
+            padding: 0;
+            list-style: none
+        }
+
+        .tree ul {
+            margin-left: 1em;
+            position: relative
+        }
+
+        .tree ul ul {
+            margin-left: .5em
+        }
+
+        .tree ul:before {
+            content: "";
+            display: block;
+            width: 0;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            border-left: 1px solid
+        }
+
+        .tree li {
+            margin: 0;
+            padding: 0 1em;
+            line-height: 2em;
+            color: #369;
+            font-weight: 700;
+            position: relative
+        }
+
+        .tree ul li:before {
+            content: "";
+            display: block;
+            width: 10px;
+            height: 0;
+            border-top: 1px solid;
+            margin-top: -1px;
+            position: absolute;
+            top: 1em;
+            left: 0
+        }
+
+        .tree ul li:last-child:before {
+            background: #fff;
+            height: auto;
+            top: 1em;
+            bottom: 0
+        }
+
+        .indicator {
+            margin-right: 5px;
+        }
+
+        .tree li a {
+            text-decoration: none;
+            color: #369;
+        }
+
+        .tree li button,
+        .tree li button:active,
+        .tree li button:focus {
+            text-decoration: none;
+            color: #369;
+            border: none;
+            background: transparent;
+            margin: 0px 0px 0px 0px;
+            padding: 0px 0px 0px 0px;
+            outline: 0;
+        }
+
+        .limit_text{
+            white-space: nowrap;
+            overflow: hidden;
+            width: 300px;
+            height: 30px;
+            text-overflow: ellipsis; 
+        }
+        .modal-dialog{
+    width: 1000px;
+}
+
+    </style>
+    <link href="{% static 'assets/vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'assets/vendors/pretty-checkbox.min.css' %}" rel="stylesheet" />
+    <!-- <link href="dist/pretty-checkbox.min.css" rel="stylesheet" /> -->
+    <style>
+        @import '~pretty-checkbox/src/pretty-checkbox.scss';
+    </style>
+
+    
+    
+    <style>
+        span.select2.select2-container.select2-container--default {
+            width: 100% !important;
+        }
+    </style>
+{% endblock %}
+
+{% block pageContent %}
+
+    <div class="">
+        <div class="x_panel">
+            <div class="x_title bg-primary">
+                <h2 class="pull-right">چارت پیشرفته </h2>
+                <ul class="nav navbar-left panel_toolbox">
+                    <li>
+                        <a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+
+            <div class="x_content">
+            
+                <form action="" method="POST"  role="form" enctype="multipart/form-data" style="margin-top: -11px;">
+                    {% csrf_token %}
+
+                        <br>
+                        <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                            <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">عنوان </label>
+                            <input disabled type="text" id="ChartText" name="ChartText" value="{{ chartText }}" class="form-control">
+                        </div>
+                
+                        <!-- farayand TYPE -->
+                        <div class="col-md-6 col-sm-12 col-xs-12 form-group">
+                            <label class="control-label col-md-12 col-sm-12 col-xs-12"> نوع فرایند</label>
+                            <div class="clearfix"></div>
+                            {{ form_advance_info.process_type }}
+                        </div>
+
+                        <div class="col-md-6 col-sm-12 col-xs-12 form-group">
+                            <label class="control-label col-md-12 col-sm-12 col-xs-12"> سطح فرایند</label>
+                            <div class="clearfix"></div>
+                            {{ form_advance_info.process_level }}
+                        </div>    
+                        
+                        <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                            <label class="control-label col-md-12 col-sm-12 col-xs-12"> ارتباط با سایر فرایند ها :</label>
+                            <div class="" id="titleGroup">
+                                {{ form_advance_info.connection_with_other_processes }}
+                                <span id="tree_table_connection" class="input-group-btn hidden">
+                                    <a type="button"  class="btn btn-primary" data-toggle="modal" data-target="#org_struc">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                </a>
+                            </span>
+                            </div>
+                        </div>
+                        <br>
+
+                        <div class="modal fade" id="org_struc" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="staticBackdropLabel">فرایند ساختار سازمانی</h5>
+                        
+                                </div>
+                                <div class="modal-body">
+                                        <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                            <table class="table table-striped table-bordered dt-responsive nowrap"
+                                                cellspacing="0" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>نام</th>
+                                                        <th>حذف</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tblTeam">
+                                                    {% for item in this_chart_chart_objects %}
+                                                    <tr id="{{item.id}}">
+                                                        <td>
+                                                            <p class='limit_text' >{{item.chart.ChartText}}</p>
+                                                            <input name='chartMember' value='{{item.chart.Chart}}'
+                                                                class='hidden'>
+                                                        </td>
+                                                        <td>
+                                                            <span class='glyphicon glyphicon-trash row-remover btn btn-danger '></span>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                        
+                                        <script>
+                                            let tableIndex = 0;
+                                            function addTeam( value,innerText ) {
+                        
+                                                let val = value;
+                                                console.log(val)
+                                                let text = innerText;
+                                                console.log(text)
+                                                var x = document.getElementById("tblTeam").rows.namedItem(val);
+                                                console.log(x);
+                                                if (x == null) {
+                                                    var table = document.getElementById("tblTeam");
+                                                    var row = table.insertRow(tableIndex);
+                                                    row.id = val;
+                                                    var cell1 = row.insertCell(0);
+                                                    var cell2 = row.insertCell(1);
+                                                    cell1.innerHTML = "<p class='limit_text' >" + text + "</p>" + "<input name='chartMember' value='" + val + "' class='hidden'>";
+                                                    cell2.innerHTML = "<span class='glyphicon glyphicon-trash row-remover btn btn-danger '></span>";
+                                                    tableIndex++;
+                                                }
+                                            }
+                        
+                        
+                                            $("body").on('click', '.row-remover', function() {
+                                            $(this).closest('tr').remove();
+                                            tableIndex--;
+                                            });
+                        
+                                        </script>
+                        
+                                        <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right" dir="ltr">
+                                            <ul id="tree1">
+                                                {{ html_chart|safe }}
+                                            </ul>
+                                        </div>
+                        
+                                        <div class="clearfix"></div>
+                                </div>
+                                <div class="modal-footer">
+                         
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+
+                        <br>
+
+                        <div style="margin-top: 10px;" class="col-md-12 col-sm-12 col-xs-12 form-group">
+                            <label for=""> نحوه شروع فرایند :</label>
+                            <div class="clearfix"></div>
+
+                                
+                            <div style="margin-top: 10px;">
+
+                                {% if obj_advance_info != 0 and obj_advance_info.request_of_service_recipient %}
+                                    <div class="pretty p-default p-round p-smooth">
+                                        <input value="1" name="request_of_service_recipient" checked type="checkbox" />
+                                        <div class="state p-primary">
+                                            <label style="padding-left: 21px;" >تقاضای گیرنده خدمت</label>
+                                        </div>
+                                    </div>
+                                {% else %}
+
+                                    <div class="pretty p-default p-round p-smooth">
+                                        <input value="1" name="request_of_service_recipient"  type="checkbox" />
+                                        <div class="state p-primary">
+                                            <label style="padding-left: 21px;" >تقاضای گیرنده خدمت</label>
+                                        </div>
+                                    </div>
+
+                                {% endif %}
+
+
+                                {% if obj_advance_info != 0 and obj_advance_info.arrival_of_specific_time %}
+                                    <div class="pretty p-default p-round p-smooth">
+                                        <input value="1" name="arrival_of_specific_time" checked type="checkbox" />
+                                        <div class="state p-primary">
+                                            <label style="padding-left: 21px;" >فرا رسیدن زمانی مشخص</label>
+                                        </div>
+                                    </div>
+                                {% else %}
+
+                                <div class="pretty p-default p-round p-smooth">
+                                    <input value="1" name="arrival_of_specific_time" type="checkbox" />
+                                    <div class="state p-primary">
+                                        <label style="padding-left: 21px;" >فرا رسیدن زمانی مشخص</label>
+                                    </div>
+                                </div>
+
+                                {% endif %}
+
+
+                                {% if obj_advance_info != 0 and obj_advance_info.specific_event_occurrence %}
+                                    <div class="pretty p-default p-round p-smooth">
+                                        <input value="1" name="specific_event_occurrence" checked type="checkbox" />
+                                        <div class="state p-primary">
+                                            <label style="padding-left: 21px;" >رخداد رویدادی مشخص</label>
+                                        </div>
+                                    </div>
+                                {% else %}
+
+                                <div class="pretty p-default p-round p-smooth">
+                                    <input value="1" name="specific_event_occurrence" type="checkbox" />
+                                    <div class="state p-primary">
+                                        <label style="padding-left: 21px;" >رخداد رویدادی مشخص</label>
+                                    </div>
+                                </div>
+
+                                {% endif %}
+
+
+                                {% if obj_advance_info != 0 and obj_advance_info.device_detection %}
+                                    <div class="pretty p-default p-round p-smooth">
+                                        <input value="1" name="device_detection" checked type="checkbox" />
+                                        <div class="state p-primary">
+                                            <label style="padding-left: 21px;" >تشخیص دستگاه</label>
+                                        </div>
+                                    </div>
+                                {% else %}
+
+                                <div class="pretty p-default p-round p-smooth">
+                                    <input value="1" name="device_detection" type="checkbox" />
+                                    <div class="state p-primary">
+                                        <label style="padding-left: 21px;" >تشخیص دستگاه</label>
+                                    </div>
+                                </div>
+
+                                {% endif %}
+                            </div>
+                            
+                        </div>
+
+
+                        <div style="margin-top: 7px;" class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                            <label for=""> مستندات   :</label>
+                        </div>
+                        <a type="button" class="btn btn-light" style="border: solid black 1px;" data-toggle="modal" data-target="#trials">
+                            <img src="/static/assets/images/document-file-svgrepo-com.svg" style="width:50px;height:50px;" alt="">
+                            افزودن مستند
+                        </a>
+                          
+                          <!-- Modal zamime -->
+                          <div class="modal fade" id="trials" tabindex="-1" role="dialog" aria-labelledby="trialsTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="passed_trials_title"> افزودن مستندات :   </h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                  </button>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                                        <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                            <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right pb-5">عنوان مستند :
+                                                 </label>
+                                            <input id="docTitle" type="text">
+                                            <button onclick="add23Team();" class="btn btn-primary" style="margin:15px 3px" type="button">افزودن <i class="fa fa-plus" aria-hidden="true"></i></button>
+                                        </div>
+                        
+                                        <br>
+                                        <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right ">
+                                            <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                                <table class="table table-striped table-bordered dt-responsive nowrap"
+                                                    cellspacing="0" width="100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>عنوان فایل</th>
+                                                            <th>اسم فایل</th>
+                                                            <th>حذف</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tblFile">
+                        
+                                                        {% for item in chart_document_objcts %}
+                                                        <tr>
+                                                            <td>
+                                                            <p class='limit_text' > {{ item.title }}</p>   
+                                                            <input  value="{{ item.title }}" class='hidden'>
+                                                            </td>
+                                                            <td>
+                                                                
+                                                                    <a href="/media/{{ item.file }}" target="_blank"><p class='limit_text'>{{ item.file.name }}</p></a>                                                                
+                                                            </td>
+                                                            <td>
+                                                                <span onclick='ajaxFunc("{{ item.id }}");' class='glyphicon glyphicon-trash row-remover2 btn btn-danger'></span>
+                                                            </td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        <script>
+                            var tableIndex2 = 0;
+                            function add23Team() {
+        
+                                let val2 = $('#docTitle').val();
+                                console.log(val2)
+                                let text2 = $('#docTitle').val();
+                                var x2 = document.getElementById("tblFile").rows.namedItem(val2);
+                                console.log(x2);
+                                if (x2 == null && text2.trim() !='') {
+                                    var table2 = document.getElementById("tblFile");
+                                    var row2 = table2.insertRow(tableIndex2);
+                                    row2.id = val2;
+                                    var cell11 = row2.insertCell(0);
+                                    var cell22 = row2.insertCell(1);
+                                    var cell33 = row2.insertCell(2);
+                                    cell11.innerHTML ="<p class='limit_text' >" + text2 + "</p>"  + "<input name='docTitle' value='" + val2.trim() + "' class='hidden'>";
+                                    cell22.innerHTML="<input name='Allfiles' required type='file' class=''>"
+                                    cell33.innerHTML = "<span class='glyphicon glyphicon-trash row-remover2 btn btn-danger '></span>";
+                                    tableIndex2++;
+                                }
+                                $('#docTitle').val('')
+                            }
+                            $("body").on('click', '.row-remover2', function() {
+                                $(this).closest('tr').remove();
+                                tableIndex2--;
+                            });
+                        </script>
+                    <div class="clearfix"></div>
+                    <br>
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right ">
+                    <input type="submit" value="ثبت" class="btn btn-primary">
+                    </div>
+                    <input type="text" id="Parent_Id" name="Parent_Id" value="{{ ParentId }}" class="hidden">
+
+
+                </form>
+
+
+            </div>
+        </div>
+        <script type="application/javascript">
+            function ajaxFunc(idObjFile) {
+                // e.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: '/removeDocs',
+                    data: {
+                        fileid: idObjFile,
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                        action: 'post'
+                    },
+                    success: function (json) {
+                        // if (json['result'] == "success" ){
+                        //     alert('success')
+                        // }
+                    },
+                    error: function (xhr, errmsg, err) {
+                        // alert('faild')
+                    }
+                });
+            }
+        </script>
+        <script>
+            $('#searchText').bind('keyup', function() {
+               
+               var searchString = $(this).val();
+            
+               $("#tree1 ul li").each(function(index, value) {
+                   
+                   currentName = $(value).text()
+                   if( currentName.toUpperCase().indexOf(searchString.toUpperCase()) > -1) {
+                      $(value).show();
+                   } else {
+                    
+                       $(value).hide();
+                   }
+                   
+               });
+               
+            });
+                        </script>
+    </div>
+{% endblock %}

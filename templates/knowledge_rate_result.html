@@ -1,0 +1,100 @@
+{% extends '_layout.html' %}
+
+
+{% block jsBlock %}
+    <script>
+        function printDiv(divName) {
+            let printContents = document.getElementById(divName).innerHTML;
+            let originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+        }
+    </script>
+    
+{% endblock %}
+
+
+{% block cssBlock %}
+    <style>
+        p {
+            margin: 25px 10px;
+            color : black;
+            font-size: 14px;
+        }
+
+        ul {
+            margin-top: 20px;
+        }
+
+        .style_class {
+            margin: 1px -35%
+        }
+        .style_class2 {
+            margin: 1px -26%
+        }
+        .size_Style{
+            font-size: 14px;
+        }
+        .colorfull{
+            color : black;
+            font-size: 14px;
+        }
+        hr{
+            width: 95%;
+            border-top: 1px solid rgb(184, 184, 184);
+        }
+    </style>
+{% endblock %}
+
+
+{% block pageContent %}
+
+    <div class="">
+        <div class="x_panel">
+            <div class="x_title bg-primary">
+
+                <h2 class="pull-right">نتیجه تجربه</h2>
+                <ul class="nav navbar-left panel_toolbox">
+                    <li>
+                        <a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+
+            </div>
+            
+            <div class="x_content">
+                <center>
+                    {% if total_score >= 50 %}
+                    <div style="width: 40%; border-radius: 7px;" class="alert alert-success">
+                        
+                        <p style="margin: 5px;">امتیاز شما : {{total_score}}</p>
+
+                        {% if all_experts_total_score != 0 %}
+                        <p style="margin: 5px;">امتیاز کل : {{all_experts_total_score}}</p>
+                        {% endif %}
+
+
+                        <p>{{register_staus}}</p>
+                    </div>
+                    {% else %}
+                    <div style="width: 40%; border-radius: 7px;" class="alert alert-danger">
+                        
+                        <p style="margin: 5px;">امتیاز شما : {{total_score}}</p>
+                        {% if all_experts_total_score != 0 %}
+                        <p style="margin: 5px;">امتیاز میانگین کل : {{all_experts_total_score}}</p>
+                        {% endif %}
+                        <p>{{register_staus}}</p>
+                    </div>
+                    {% endif %}
+                </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

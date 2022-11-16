@@ -1,0 +1,236 @@
+{% extends '_layout.html' %}
+
+{% load static %}
+{% block jsBlock %}
+<script src="{% static 'assets/vendors/select2/dist/js/select2.min.js' %}"></script>
+
+<script src="{% static 'assets/vendors/MdBootstrapPersianDateTimePicker/js/calendar.js' %}"
+    type="text/javascript"></script>
+<script
+    src="{% static 'assets/vendors/MdBootstrapPersianDateTimePicker/js/jquery.Bootstrap-PersianDateTimePicker.js' %}"
+    type="text/javascript"></script>
+<script src="{% static 'assets/Scripts/persian-datepicker.js' %}"></script>
+<script src="{% static 'assets/cloack/moment.js' %}"></script>
+<script src="{% static 'assets/cloack/datetimepicker.js' %}"></script>
+
+<script>
+    </script>
+     <script>
+        $('input[type=file]').addClass('form-control');
+        $('input[type=number]').addClass('form-control');
+        $('input[type=text]').addClass('form-control');
+        $('input[type=email]').addClass('form-control');
+        $('select').addClass('form-control');
+        $("#id_meeting_start_date").addClass('hidden');
+        $(document).ready(function () { $('select').select2();});
+        function hideErroruser(){
+            $('#erroruser').addClass('hidden');
+        }
+        setTimeout(hideErroruser, 6000)
+    </script>
+
+    <script>
+        function hideout(){
+            var radios = document.getElementsByName('KnowledgeIsGroup');
+            for (var i = 0, length = radios.length; i < length; i++) {
+            if (radios[i].checked) {
+                if (radios[i].value == 1){
+                    $('#specdiv').addClass('hidden');
+                }
+                else{
+                    $('#specdiv').removeClass('hidden');
+                }
+            }
+            }
+        }
+    </script>
+    <script>
+        $(function() {
+          $('#datetimepicker1').datetimepicker({
+                    format: 'HH:mm'
+          });
+        
+        });
+        $('#fromDate1').val(normalizeDate($('#id_meeting_start_date').val()));
+
+    </script>
+    <script>
+    function datepicker1Change() {
+        document.getElementById("id_meeting_start_date").value = fixNumbers($('#fromDate1').val().replace("/", "").replace("/", ""));
+    }</script>
+        <script>
+            $(function () {
+                $('#datepicker0').datepicker();
+                $('#datepicker1').datepicker();
+            });
+        </script>
+
+    {% endblock %}
+
+    {% block cssBlock %}
+    <link href="{% static 'assets/vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'assets/cloack/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">
+    <link href="{% static 'custom.css' %}" rel="stylesheet"/>
+    <style>
+        span.select2.select2-container.select2-container--default {
+            width: 100% !important;
+        }
+    </style>
+
+    {% endblock %}
+
+    {% block pageContent %}
+    <div class="">
+        <div class="tab-pane" role="tabpanel" id="complete">
+            <div class="x_panel">
+                <div class="x_title bg-primary">
+                    <h2 class="pull-right"> اطلاع رسانی جلسه</h2>
+                    <ul class="nav navbar-left panel_toolbox">
+                        <li>
+                            <a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+
+                <form action="" method="post" role="form" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                <div class="x_content">
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label class="control-label col-md-6 col-sm-12 col-xs-12 pull-right">عنوان جلسه </label>
+                        <div class="clearfix"></div>
+                        {{ Informs_meetingForm.meeting_title }}
+                    </div>
+
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label class="control-label col-md-6 col-sm-12 col-xs-12 pull-right">مکان جلسه :</label>
+                        <div class="clearfix"></div>
+                        {{ Informs_meetingForm.meeting_location_place }}
+                    </div>
+
+                    <div class="col-md-2 col-sm-12 col-xs-12 form-group pull-right">
+                                    <label for=""> ساعت شروع جلسه:</label>
+                                    <div class='input-group date' id='datetimepicker1'>
+                                        {{ Informs_meetingForm.meeting_start_time }}
+                                        <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                    </div>
+                    
+                    <div class="col-md-4 col-sm-12 col-xs-12 form-group pull-right">
+                                    <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">تاریخ جلسه : </label>
+                                    <input type="text" class="form-control" id="fromDate1"
+                                    data-mddatetimepicker="true" data-trigger="click"
+                                    data-targetselector="#fromDate1" data-groupid="group1" data-fromdate="true"
+                                    data-enabletimepicker="false" data-placement="right"
+                                    onchange="datepicker1Change()">
+                                    {{ Informs_meetingForm.meeting_start_date }}
+                    </div>
+
+                    <div id="specdiv" class="col-md-12 col-sm-12 col-xs-12 form-group pull-right l">
+                        <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                            <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">
+                                گیرندگان </label>
+                            <div class="input-group" id="whoGroup" data-toggle="tooltip"
+                                title=" فرد و یا افراد تصمیم گیرنده و یا موثر چه کسانی هستند.">
+                                <select name="members" id="id_members">
+                                    {% for item in members %}
+                                    <option value="{{item.member}}">{{item.first_name}} {{item.last_name}}</option>
+                                    {% endfor %}
+                                </select>
+                                <span class="input-group-btn">
+                                    <button type="button"
+                                        onclick="alert('مثال:پیگیری شخصی بر اساس اولویت بندی وظایف');"
+                                        class="btn btn-success"><i class="fa fa-question"
+                                            aria-hidden="true"></i></button>
+                                    <button type="button" onclick="add2Team()" class="btn btn-primary"><i
+                                            class="fa fa-plus"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                        <script>
+                            let tableIndex = 1;
+                            function add2Team() {
+    
+                                let val = $('#id_members').val();
+                                let text = $("#id_members option:selected").text();
+                                var x = document.getElementById("tblTeam").rows.namedItem(val);
+                                console.log(x);
+                                if (x == null) {
+                                    var table = document.getElementById("tblTeam");
+                                    var row = table.insertRow(tableIndex);
+                                    row.id = val;
+                                    var cell1 = row.insertCell(0);
+                                    var cell2 = row.insertCell(1);
+                                    cell1.innerHTML = text + "<input name='member' value='" + val + "' class='hidden'>";
+                                    cell2.innerHTML = "<span class='glyphicon glyphicon-trash row-remover btn btn-danger '></span>";         
+                                    tableIndex++;
+                                }
+                            }
+                            $("body").on('click', '.row-remover', function() {
+                                $(this).closest('tr').remove();
+                                tableIndex--;
+                            });
+                        </script>
+                        <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                            <table class="table table-striped table-bordered dt-responsive nowrap"
+                                cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>نام</th>
+                                        <th>حذف</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tblTeam">
+                                    <tr id="{{request.user.member}}">
+                                        <td>
+                                            {{request.user.first_name}} {{request.user.last_name}}
+                                            <input name='member' value='{{request.user.member}}' class='hidden'>
+                                        </td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div> 
+                    
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right" onchange="hideout();">
+                        <label for="CreatorUserID"
+                            class="control-label col-md-5 col-sm-3 col-xs-12 pull-right" style="padding: 16px 0px;">ارسال برای همه :</label>
+                            <div class="toggle-radio">
+                                <input type="radio" name="KnowledgeIsGroup" id="yes2" value="1">
+                                <input type="radio" name="KnowledgeIsGroup" id="no2"checked value="2">
+                                <div class="switch" style="margin:-19px -14px;">
+                                  <label for="yes2">بله</label>
+                                  <label for="no2">خیر</label>
+                                  <span></span>
+                                </div>
+                              </div>
+                    </div>
+                    
+                <input type="text" name="CreatorUserID" class="hidden" id="CreatorUserID"
+                value="{{ request.user.member }}">
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+
+                <div class="col-md-3 col-sm-12 col-xs-12 form-group pull-right">
+                    <button type="submit" class="btn btn-warning">ارسال پیامک</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    </div>
+    </form>
+    </div>
+    </section>
+    </div>
+    </div>
+
+    {% endblock pageContent %}

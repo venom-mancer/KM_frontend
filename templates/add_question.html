@@ -1,0 +1,264 @@
+{% extends '_layout.html' %}
+{% load static %}
+
+{% block jsBlock %}
+    <!-- Datatables -->
+    <script src="{% static 'assets/vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/jszip/dist/jszip.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/pdfmake.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/vfs_fonts.js' %}"></script>
+    <script src="{% static 'assets/vendors/tinymce/tinymce.min.js' %}"></script>
+    <script>
+        $('input[name!=correct_answer]').prop('required',true);
+        $('textarea').prop('required',false);
+        $('input[type=text]').addClass('form-control');
+        $('input[type=file]').addClass('form-control');
+        $('input[type=number]').addClass('form-control');
+    </script>
+    <script>
+        document.getElementById('id_quesion_file').required = false;
+        document.getElementById('quesion_file-clear_id').required = false;
+    </script>
+    <!-- tinyMce -->
+    <script type="text/javascript">
+        tinymce.init({
+            selector: 'textarea',
+            editor_selector: "id_KnowledgeTextSummary",
+            height: 300,
+            language: "fa_IR",
+            plugins: [
+                'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+                'searchreplace wordcount visualblocks visualchars code fullscreen',
+                'insertdatetime media nonbreaking save table directionality',
+                'emoticons template paste textpattern imagetools image'
+            ],
+            image_advtab: true,
+            toolbar1: 'bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | styleselect formatselect fontselect fontsizeselect ',
+            toolbar2: 'cut copy paste pastetext pasteword | search replace bullist numlist | outdent indent blockquote | undo redo | link unlink anchor image cleanup help code | insertdate inserttime preview | forecolor backcolor',
+            toolbar3: 'tablecontrols hr removeformat visualaid | sub sup | charmap emotions iespell media advhr | print | ltr rtl | fullscreen | insertlayer moveforward movebackward absolute | styleprops spellchecker | cite abbr acronym del ins attribs | visualchars nonbreaking template blockquote pagebreak | insertfile insertimage emoticons',
+            // enable title field in the Image dialog
+            image_title: true,
+            // enable automatic uploads of images represented by blob or data URIs
+            automatic_uploads: true,
+            // add custom filepicker only to Image dialog
+            file_picker_types: 'image',
+            file_picker_callback: function (cb, value, meta) {
+                let input = document.createElement('input');
+                input.setAttribute('type', 'file');
+                input.setAttribute('accept', 'image/*');
+                input.onchange = function () {
+                    let file = this.files[0];
+                    let reader = new FileReader();
+                    reader.onload = function () {
+                        let id = 'blobid' + (new Date()).getTime();
+                        let blobCache = tinymce.activeEditor.editorUpload.blobCache;
+                        let base64 = reader.result.split(',')[1];
+                        let blobInfo = blobCache.create(id, file, base64);
+                        blobCache.add(blobInfo);
+                        // call the callback and populate the Title field with the file name
+                        cb(blobInfo.blobUri(), { title: file.name });
+                    };
+                    reader.readAsDataURL(file);
+                };
+                input.click();
+            }
+        });
+    </script>
+{% endblock %}
+
+{% block cssBlock %}
+    <!-- Datatables -->
+
+    <link href="{% static 'assets/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}"
+          rel="stylesheet">
+          <style>
+            span.select2.select2-container.select2-container--default {
+                width: 100% !important;
+            }
+            .style_class {
+                margin: 1px -31%
+            }
+            .button_location {
+                margin: 27px 1px;
+            }
+        </style>
+{% endblock %}
+
+
+{% block pageContent %}
+
+    <div class="">
+        <div class="x_panel">
+            <div class="x_title bg-primary">
+                <h2 class="pull-right"> تعریف سوال </h2>
+                <ul class="nav navbar-left panel_toolbox">
+                    <li>
+                        <a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+
+                <form action="" method="post" role="form" enctype="multipart/form-data" style="margin-top: -11px;">
+                    {% csrf_token %}
+
+                <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                    <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">
+                        سوال : </label>
+                    <div class="clearfix"></div>
+                    {{ TblQuestionForm.question }}
+                </div>
+
+                <div class="col-md-4 col-sm-12 col-xs-12 form-group pull-right">
+                    <label class="control-label col-md-4 col-sm-12 col-xs-12 pull-right">
+                        فایل ضمیمه : </label>
+                    <div class="clearfix"></div>
+                    {{ TblQuestionForm.quesion_file }}
+                </div>
+
+                <div class="col-md-9 col-sm-12 col-xs-12 form-group pull-right">
+                    <label class="control-label col-md-1 col-sm-12 col-xs-12 pull-right">بارم</label>
+                    <div class="clearfix"></div>
+                    {{ TblQuestionForm.grade }}
+                </div>
+                
+                {% if editSign %}                    
+                    {% for option in options %}
+                        <div class="fieldwrapper col-md-9 col-sm-12 col-xs-12 form-group pull-right">
+                            <label class="control-label col-md-1 col-sm-12 col-xs-12 pull-right">گزینه{{ option.option_number }}</label>
+                                {% if option.is_answer %}
+                                    <input type="checkbox" checked name="correct_answer" value="{{ option.option_number }}" >
+                                {% else %}
+                                    <input type="checkbox" name="correct_answer" value="{{ option.option_number }}">
+                                {% endif %}
+                                <input type="text" value="{{ option.option_text }}" name="option" class="form-control">                         
+                        </div>
+                    {% endfor %}
+                {% else %} 
+                    <div class="fieldwrapper col-md-9 col-sm-12 col-xs-12 form-group pull-right">
+                        <label class="control-label col-md-1 col-sm-12 col-xs-12 pull-right">گزینه1:</label>
+                        <input type="checkbox" name="correct_answer" value="1" id="html">
+                        <input type="text" name="option" class="form-control">
+                    </div>
+                    
+                    <div class="fieldwrapper col-md-9 col-sm-12 col-xs-12 form-group pull-right">
+                        <label class="control-label col-md-1 col-sm-12 col-xs-12 pull-right">گزینه2:</label>
+                        <input type="checkbox" name="correct_answer" value="2" id="html" >
+                        <input type="text" name="option" class="form-control">
+                    </div>   
+                {% endif %}
+
+                <div class="col-md-11 col-sm-12 col-xs-12 form-group pull-right">                                        
+                    <div id="buildyourform">
+
+                    </div>                                                                      
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                    <button class="btn btn-primary" value="Add a field" class="add" id="add" style="margin: 0px;" type="button">افزودن <i class="fa fa-plus" aria-hidden="true"></i></button>
+                    <span type="button" onclick="" class="glyphicon glyphicon-trash row-remover5 btn btn-danger button_location" style="margin: 0px;"  value="حذف"></span>
+                </div>
+
+                <div class="clearfix"></div>
+
+                        <button id="btn1" class="btn btn-success">
+                            ثبت 
+                        </button>
+                </form>
+                {% if TblQuestionForm.errors.question %}
+                <center id="errQuestion">
+                    <div style="width: 30%; border-radius: 7px;" class="alert alert-danger">
+                        <p style="margin: 5px;">ارور فیلد سوال: {{ TblQuestionForm.errors.question }}</p>
+                    </div>
+                </center>
+                {% endif %}
+            </div>
+        </div>
+        <script type="text/JavaScript">
+
+            var count=document.getElementsByName("option").length;
+            var count_option=count+1;
+            $(document).ready(function() {
+                $("#add").click(function() {
+                 
+                    if (count <8) {       
+                    var lastField = $("#buildyourform div:last");
+                    var intId = (lastField && lastField.length && lastField.data("idx") + 1) || 1;
+                    var fieldWrapper = $("<div class=\"fieldwrapper\" id=\"field" + intId + "\"/>");
+                    fieldWrapper.data("idx", intId);
+                    var fName = $("<div class=\"col-md-10 col-sm-12 col-xs-12 form-group pull-right\"><label class=\"control-label col-md-1 col-sm-12 col-xs-12 pull-right\">گزینه"+ count_option +":</label><input type=\"checkbox\" id=\"html\" value="+ count_option +" name=\"correct_answer\"><input type=\"text\" required name=\"option\" maxlength=\"200\" id=\"id_KnowledgePlace\" class=\"form-control\"></div>");
+                    var fType = $();
+                    // var removeButton = $("<span type=\"button\" class=\"glyphicon glyphicon-trash row-remover2 btn btn-danger button_location\" value=\"حذف\" /></span>");
+                    count++;
+                    count_option++;
+                    }
+
+                    fieldWrapper.append(fName);
+                    fieldWrapper.append(fType);
+                    $("#buildyourform").append(fieldWrapper);
+                });
+                $("#preview").click(function() {
+                    $("#yourform").remove();
+                    var fieldSet = $("<fieldset id=\"yourform\"><legend>Your Form</legend></fieldset>");
+                    $("#buildyourform div").each(function() {
+                        var id = "input" + $(this).attr("id").replace("field","");
+                        var label = $("<label for=\"" + id + "\">" + $(this).find("input.form-control").first().val() + "</label>");
+                        var input;
+                        switch ($(this).find("select.fieldtype").first().val()) {
+                            case "checkbox":
+                                input = $("<input type=\"checkbox\" id=\"" + id + "\" name=\"" + id + "\" />");
+                                break;
+                            case "textbox":
+                                input = $("<input type=\"text\" id=\"" + id + "\" name=\"" + id + "\" />");
+                                break;
+                            case "textarea":
+                                input = $("<textarea id=\"" + id + "\" name=\"" + id + "\" ></textarea>");
+                                break;    
+                        }
+                        fieldSet.append(label);
+                        fieldSet.append(input);
+                    });
+                    $("body").append(fieldSet);
+                });
+            });
+             </script>
+             <script>
+                    $("body").on('click', '.row-remover5', function() {
+                        if(count > 2){
+                            $('div.fieldwrapper:last').remove();
+                            count--;
+                            count_option--;
+                        }
+                        else{
+                            alert("هر سوال باید حداقل 2 گزینه داشته باشد!")
+                        }
+                    });
+             </script>
+
+             <script>
+            setTimeout(function(){
+            $("#errQuestion").remove()
+            }, 5000);
+             </script>
+    </div>
+{% endblock %}

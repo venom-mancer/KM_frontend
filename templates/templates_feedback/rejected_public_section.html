@@ -1,0 +1,109 @@
+{% extends 'templates_feedback/_layout_feedback.html' %}
+{% load static %}
+
+
+{% block jsBlock %}
+    <script src="{% static 'assets/Scripts/persian-datepicker.js'%}"></script>
+    <script src="{% static 'assets/vendors/MdBootstrapPersianDateTimePicker/js/calendar.js' %}"
+    type="text/javascript"></script>
+
+    <script src="{% static 'assets/vendors/tinymce/tinymce.min.js' %}"></script>
+    <!-- tinyMce -->
+    <script type="text/javascript">
+        tinymce.init({
+            selector: 'textarea',
+            editor_selector: "id_KnowledgeTextSummary",
+            height: 300,
+            language: "fa_IR",
+            plugins: [
+                'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+                'searchreplace wordcount visualblocks visualchars code fullscreen',
+                'insertdatetime media nonbreaking save table directionality',
+                'emoticons template paste textpattern imagetools image'
+            ],
+            image_advtab: true,
+            toolbar1: 'bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | styleselect formatselect fontselect fontsizeselect ',
+            toolbar2: 'cut copy paste pastetext pasteword | search replace bullist numlist | outdent indent blockquote | undo redo | link unlink anchor image cleanup help code | insertdate inserttime preview | forecolor backcolor',
+            toolbar3: 'tablecontrols hr removeformat visualaid | sub sup | charmap emotions iespell media advhr | print | ltr rtl | fullscreen | insertlayer moveforward movebackward absolute | styleprops spellchecker | cite abbr acronym del ins attribs | visualchars nonbreaking template blockquote pagebreak | insertfile insertimage emoticons',
+            // enable title field in the Image dialog
+            image_title: true,
+            // enable automatic uploads of images represented by blob or data URIs
+            automatic_uploads: true,
+            // add custom filepicker only to Image dialog
+            file_picker_types: 'image',
+            file_picker_callback: function (cb, value, meta) {
+                let input = document.createElement('input');
+                input.setAttribute('type', 'file');
+                input.setAttribute('accept', 'image/*');
+                input.onchange = function () {
+                    let file = this.files[0];
+                    let reader = new FileReader();
+                    reader.onload = function () {
+                        let id = 'blobid' + (new Date()).getTime();
+                        let blobCache = tinymce.activeEditor.editorUpload.blobCache;
+                        let base64 = reader.result.split(',')[1];
+                        let blobInfo = blobCache.create(id, file, base64);
+                        blobCache.add(blobInfo);
+                        // call the callback and populate the Title field with the file name
+                        cb(blobInfo.blobUri(), { title: file.name });
+                    };
+                    reader.readAsDataURL(file);
+                };
+                input.click();
+            }
+        });
+    </script>
+<script>
+        $('input[type=file]').addClass('form-control');
+        $('input[type=number]').addClass('form-control');
+        $('input[type=text]').addClass('form-control');
+        $('input[type=email]').addClass('form-control');
+</script>
+{% endblock %}
+
+
+{% block cssBlock %}
+
+{% endblock %}
+
+
+{% block pageContent %}
+        <div class="">
+            <div class="x_panel">
+                <div class="x_title bg-primary">
+                    <h2 class="pull-right">دلیل ارجاع تجربه</h2>
+                    <ul class="nav navbar-left panel_toolbox">
+                        <li>
+                            <a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <form action="" method="post" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">عنوان رد پیشنهاد : </label>
+                                <div class="clearfix"></div>
+                                {{ form.title }}
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                                <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">اظهار نظر :</label>
+                                <div class="clearfix"></div>
+                                {{ form.reason }}
+                            </div>
+                            <div class="col-md-3 col-sm-12 col-xs-12 form-group pull-right">
+                                <button class="btn btn-primary" type="submit">
+                                    ثبت 
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+{% endblock %}

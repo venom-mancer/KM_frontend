@@ -1,0 +1,101 @@
+{% extends '_layout.html' %}
+{% load static %}
+
+
+{% block jsBlock %}
+    <script src="{% static 'assets/Scripts/persian-datepicker.js'%}"></script>
+    <script src="{% static 'assets/vendors/MdBootstrapPersianDateTimePicker/js/calendar.js' %}"
+    type="text/javascript"></script>
+    <script
+        src="{% static 'assets/vendors/MdBootstrapPersianDateTimePicker/js/jquery.Bootstrap-PersianDateTimePicker.js' %}"
+        type="text/javascript">
+    </script>
+
+    <script>
+        $(function () {
+            $('#datepicker0').datepicker();
+            $('#datepicker1').datepicker();
+        });
+    </script>
+{% endblock %}
+
+
+{% block cssBlock %}
+
+{% endblock %}
+
+
+{% block pageContent %}
+        <div class="">
+            <div class="x_panel">
+                <div class="x_title bg-primary">
+                    <h2 class="pull-right">درخت تصمیم</h2>
+                    <ul class="nav navbar-left panel_toolbox">
+                        <li>
+                            <a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <form>
+                        <div class="row">
+
+                            <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">از تاریخ</label>
+                                <input type="text" class="form-control" id="fromDate1"
+                                data-mddatetimepicker="true" data-trigger="click"
+                                data-targetselector="#fromDate1" data-groupid="group1" data-fromdate="true"
+                                data-enabletimepicker="false" data-placement="right"
+                                onchange="datepicker1Change()">
+                            </div>
+                            
+                            <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">تا تاریخ</label>
+                                <input type="text" class="form-control" id="fromDate2"
+                                data-mddatetimepicker="true" data-trigger="click"
+                                data-targetselector="#fromDate2" data-groupid="group1" data-fromdate="true"
+                                data-enabletimepicker="false" data-placement="right"
+                                onchange="datepicker1Change()">
+                            </div>
+
+                            <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">شرح
+                                    تجربه</label>
+                                <select name="" id="" class="form-control">
+
+                                </select>
+                            </div>
+                            <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">روش حل</label>
+                                <select name="" id="" class="form-control">
+
+                                </select>
+                            </div>
+                            <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">علت</label>
+                                <select name="" id="" class="form-control">
+
+                                </select>
+                            </div>
+                            <div class="clear"></div>
+                            <div class="col-md-3 col-sm-12 col-xs-12 form-group pull-right">
+                                <a class="btn btn-primary" onclick="viewImg()" href="#">نمایش</a>
+                            </div>
+                            <script>
+                                function viewImg() {
+                                    document.getElementById("report").classList.remove("hidden");
+                                }
+                            </script>
+                        </div>
+                    </form>
+                    <img src="{% static 'assets/images/sailchart.png' %}" id="report" class="hidden"
+                         style="width: 100%;"
+                         alt="knowlege Tree">
+                </div>
+            </div>
+        </div>
+{% endblock %}

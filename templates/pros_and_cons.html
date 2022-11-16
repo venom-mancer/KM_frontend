@@ -1,0 +1,339 @@
+{% extends '_layout.html' %}
+
+{% load static %}
+{% block jsBlock %}
+<script src="{% static 'assets/vendors/select2/dist/js/select2.min.js' %}"></script>
+
+<script>
+    $('#fromDate2').val(normalizeDate($('#id_KnowledgetoDate').val()));
+    $('#exampleModal').on('shown.bs.modal', function () {
+    $('#text').focus();
+    })
+    </script>
+     <script>
+        $('input[type=file]').addClass('form-control');
+        $('input[type=number]').addClass('form-control');
+        $('input[type=text]').addClass('form-control');
+        $('input[type=email]').addClass('form-control');
+        function whoValidation(){
+            var taskArray = new Array();
+            $("input[name=percentageJoin]").each(function() {
+            taskArray.push($(this).val());
+            });
+            const taskArray2 = taskArray.map((i) => Number(i));
+            const sum_arr2=taskArray2.reduce((partial_sum, a) => partial_sum + a, 0);
+            console.log(taskArray2)
+            console.log(sum_arr2)
+            alert(sum_arr2)
+        }
+    </script>
+    <script>
+
+        $('#fromDate1').val(normalizeDate($('#id_KnowledgeFromDate').val()));
+
+        $('input[type=text]').addClass('form-control');
+        $('select').addClass('form-control');
+        $(document).ready(function () { $('select').select2(); });
+        $('input[type=file]').addClass('form-control');
+        $('input[type=number]').addClass('form-control');
+        $('#id_KnowledgeFromDate').addClass('hidden');
+        $('#id_KnowledgetoDate').addClass('hidden');
+        {% comment %} $("#id_KnowledgeKeywords").addClass('hidden'); {% endcomment %}
+        $("#KnowledgeKeywordsViewer").addClass('hidden');
+        {% comment %} $("#id_KnowledgeKeywords").prop( "disabled", true );
+        function EnableFunc(){
+            $("#id_KnowledgeKeywords").prop( "disabled", false );
+        } {% endcomment %}
+        $("#hideKnowledgeProcess").addClass('hidden');
+        document.getElementById('KnowledgeKeywordsViewer').value = document.getElementById('id_KnowledgeKeywords').value
+
+        function datepicker1Change() {
+            document.getElementById("id_KnowledgeFromDate").value = fixNumbers($('#fromDate1').val().replace("/", "").replace("/", ""));
+        }
+
+        function datepicker2Change() {
+            document.getElementById("id_KnowledgetoDate").value = fixNumbers($('#fromDate2').val().replace("/", "").replace("/", ""));
+        }
+
+    </script>
+
+    <script>
+        function changeRegisterStatus(link){
+            $('#registerDeterminer').val(2)
+            var taskArray = new Array();
+            var counter=0;
+            $("input[name=percentageJoin]").each(function() {
+                if ($(this).val() >=1 && $(this).val() <=99 ){
+                    taskArray.push($(this).val());
+                }
+            counter++;
+            });
+            const taskArray2 = taskArray.map((i) => Number(i));
+            const sum_arr2=taskArray2.reduce((partial_sum, a) => partial_sum + a, 0);
+
+            console.log(taskArray2)
+            console.log(sum_arr2)
+            console.log(counter)
+            if ( counter > 1 ){
+                if ( counter == taskArray2.length && sum_arr2 == 100 ){
+                $('form#SubmitFormKnowledge').submit();
+                clickAndDisable(link)
+                }
+                else{
+                    alert('درصد مشارکت افراد برابر 100 نیست و یا فیلد آن ها خالی می باشد');
+                }
+            }
+            else{
+                $('form#SubmitFormKnowledge').submit();
+                clickAndDisable(link)
+            }
+        }
+    </script>
+
+    <script src="{% static 'assets/vendors/tinymce/tinymce.min.js' %}"></script>
+    <!-- tinyMce -->
+    <script type="text/javascript">
+        tinymce.init({
+            selector: 'textarea',
+            editor_selector: "id_KnowledgeTextSummary",
+            height: 300,
+            language: "fa_IR",
+            plugins: [
+                'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+                'searchreplace wordcount visualblocks visualchars code fullscreen',
+                'insertdatetime media nonbreaking save table directionality',
+                'emoticons template paste textpattern imagetools image'
+            ],
+            image_advtab: true,
+            toolbar1: 'bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | styleselect formatselect fontselect fontsizeselect ',
+            toolbar2: 'cut copy paste pastetext pasteword | search replace bullist numlist | outdent indent blockquote | undo redo | link unlink anchor image cleanup help code | insertdate inserttime preview | forecolor backcolor',
+            toolbar3: 'tablecontrols hr removeformat visualaid | sub sup | charmap emotions iespell media advhr | print | ltr rtl | fullscreen | insertlayer moveforward movebackward absolute | styleprops spellchecker | cite abbr acronym del ins attribs | visualchars nonbreaking template blockquote pagebreak | insertfile insertimage emoticons',
+            // enable title field in the Image dialog
+            image_title: true,
+            // enable automatic uploads of images represented by blob or data URIs
+            automatic_uploads: true,
+            // add custom filepicker only to Image dialog
+            file_picker_types: 'image',
+            file_picker_callback: function (cb, value, meta) {
+                let input = document.createElement('input');
+                input.setAttribute('type', 'file');
+                input.setAttribute('accept', 'image/*');
+                input.onchange = function () {
+                    let file = this.files[0];
+                    let reader = new FileReader();
+                    reader.onload = function () {
+                        let id = 'blobid' + (new Date()).getTime();
+                        let blobCache = tinymce.activeEditor.editorUpload.blobCache;
+                        let base64 = reader.result.split(',')[1];
+                        let blobInfo = blobCache.create(id, file, base64);
+                        blobCache.add(blobInfo);
+                        // call the callback and populate the Title field with the file name
+                        cb(blobInfo.blobUri(), { title: file.name });
+                    };
+                    reader.readAsDataURL(file);
+                };
+                input.click();
+            }
+        });
+    </script>
+
+    {% endblock %}
+
+    {% block cssBlock %}
+    <link href="{% static 'assets/vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" />
+    <style>
+        span.select2.select2-container.select2-container--default {
+            width: 100% !important;
+        }
+        .style_class {
+            margin: 1px -31%
+        }
+    </style>
+
+    {% endblock %}
+
+    {% block pageContent %}
+    <div class="">
+
+        <div class="row">
+            <section>
+                <div class="wizard">
+
+                    {% if errors %}
+                    <div class="alert alert-danger">
+                        <p>{{ errors }}</p>
+                    </div>
+                    {% endif %}
+                    <form action="" method="post" id="SubmitFormKnowledge" role="form" enctype="multipart/form-data" style="margin-top: -11px;">
+                        <div class="tab-content">
+
+                            {% csrf_token %}
+                            <input type="number" class="hidden" value="1" name="registerDeterminer" id="registerDeterminer">
+
+                            <div class="tab-pane active" role="tabpanel" id="step1">
+                                <div class="x_panel">
+                                    <div class="x_title bg-info">
+
+                                        <h2 class="pull-right">انتقادات و پیشنهادات</h2>
+
+                                        <i class="fa fa-question-circle black-bg" aria-hidden="true" style="font-size: 30px; color: white;right: 10px;margin-right:15px;" data-title="{{ skill_experience }}"></i>
+                                        <ul class="nav navbar-left panel_toolbox">
+                                            <li>
+                                                <a class="close-link"><i class="fa fa-close"></i></a>
+                                            </li>
+                                            <li>
+                                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                            </li>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>
+
+                                        {% if knowledgeType == 5 %}
+
+                                        <div class="x_content">
+                                            <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                                <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">عنوان
+                                                    </label>
+                                                <div class="input-group" id="titleGroup" data-toggle="tooltip"
+                                                    title="چنانچه عالقه مند به ثبت تجربه خود هستید درابتدا آن را با کلمه و یا عبارتی چکیده و نامبهم ، برگرفته از همان تجربه نام دهید.">
+                                                    {{ KnowledgeForm.KnowledgeTitle }}
+                                                    <span id="titleBTN" class="input-group-btn">
+                                                        <button type="button"
+                                                            onclick="alert('مثال:خدمات رسانی به مناطق محروم و کم برخوردار با حداقل بودجه');"
+                                                            class="btn btn-success"><i class="fa fa-question"
+                                                                aria-hidden="true"></i></button>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {% else %}
+                                            <div class="x_content">
+                                                <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                                    {% if knowledgeType == 4 %}
+                                                    <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">عنوان مهارت: </label>
+                                                    {% elif knowledgeType == 6 %}
+                                                    <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">عنوان : </label>
+                                {% else %}
+                                <label class="control-label col-md-6 col-sm-12 col-xs-12 pull-right">کد موضوع :
+                                    </label>
+                                {% endif %}
+                                {{ KnowledgeForm.KnowledgePlace }}  
+
+                                </div>
+
+                                        {% endif %}
+
+                                        {% if knowledgeType < 5 %}
+                                        <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                            <label class="control-label col-md-6 col-sm-12 col-xs-12 pull-right"> موضوع :</label>
+                                            {{ KnowledgeForm.KnowledgePlace }}
+                                        </div>
+                                        {% endif %}
+
+                                        {% if knowledgeType == 1 %}
+                                        <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right ">
+                                            <label for="fromDate1"
+                                                class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">تاریخ :              </label>
+                                            <input type="text" class="form-control" id="fromDate1"
+                                                data-mddatetimepicker="true" data-trigger="click"
+                                                data-targetselector="#fromDate1" data-groupid="group1" data-fromdate="true"
+                                                data-enabletimepicker="false" data-placement="right"
+                                                onchange="datepicker1Change()">
+                                            {{ KnowledgeForm.KnowledgeFromDate }}
+                                        </div>
+                                        {% else %}
+                                        <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right hidden">
+                                            <label for="fromDate1"
+                                                class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">تاریخ
+                                                 </label>
+                                            <input type="text" class="form-control" id="fromDate1"
+                                                data-mddatetimepicker="true" data-trigger="click"
+                                                data-targetselector="#fromDate1" data-groupid="group1" data-fromdate="true"
+                                                data-enabletimepicker="false" data-placement="right"
+                                                onchange="datepicker1Change()">
+                                            {{ KnowledgeForm.KnowledgeFromDate }}
+                                        </div>
+
+                                        {% endif %}                                       
+
+                                        {% if knowledgeType < 5 %}
+                                        <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                            <label for="keyword" class="control-label col-md-6 col-sm-12 col-xs-12 pull-right"> چه اشخاصی : 
+                                                </label>
+                                            <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+
+                                                <div class="input-group" id="whoGroup">
+                                                    <input type="text" id="keyword" class="form-control" />
+                                                    <span class="input-group-btn">
+                                                        <button type="button" onclick="addKeyword()" class="btn btn-primary"><i
+                                                                class="fa fa-plus"></i></button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <script>
+                                                function addKeyword() {
+                                                    let keyword = document.getElementById('keyword').value.trim();
+                                                    console.log('keyword', keyword);
+                                                    if (keyword.length > 0) {
+                                                        let keywords = document.getElementById('id_KnowledgeKeywords').value.trim();
+                                                        if (keywords.length > 0) {
+                                                            document.getElementById('id_KnowledgeKeywords').value = keywords + ', ' + keyword;
+                                                        } else {
+                                                            document.getElementById('id_KnowledgeKeywords').value = keyword;
+                                                        }
+                                                        document.getElementById('KnowledgeKeywordsViewer').value = document.getElementById('id_KnowledgeKeywords').value
+                                                        document.getElementById('keyword').value = '';
+                                                    }
+                                                }
+                                            </script>
+                                            
+                                        </div>
+                                        
+                                        <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                                            <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">
+                                                توضیحات : </label>
+                                            <div class="clearfix"></div>
+                                            {{ KnowledgeForm.KnowledgeTextSummary }}
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    
+                                                <button id="btn1" onclick="changeRegisterStatus(this);" class="btn btn-success" type="button">
+                                                    ثبت 
+                                                </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="tab-pane" role="tabpanel" id="step2">
+                                <div class="x_panel">
+                                    <div class="x_title bg-secondary">
+                                        <h2 class="pull-right">تجربه</h2>
+                                        <ul class="nav navbar-left panel_toolbox">
+                                            <li>
+                                                <a class="close-link"><i class="fa fa-close"></i></a>
+                                            </li>
+                                            <li>
+                                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                            </li>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>
+
+                                    <div class="x_content">
+                                {% endif %}
+
+                                
+                            </div>
+
+                        </div>
+                </div>            
+
+    <div class="clearfix"></div>
+    </div>
+    </form>
+    </div>
+    </section>
+    </div>
+    </div>
+
+    {% endblock pageContent %}

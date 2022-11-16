@@ -1,0 +1,629 @@
+{% extends '_layout.html' %}
+{% load static %}
+
+{% block jsBlock %}
+    <!-- Datatables -->
+    <script src="{% static 'assets/vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/jszip/dist/jszip.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/pdfmake.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/vfs_fonts.js' %}"></script>
+
+{% endblock %}
+
+{% block cssBlock %}
+    <!-- Datatables -->
+
+    <link href="{% static 'assets/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}"
+          rel="stylesheet">
+
+      <style>
+.direction{
+    direction: ltr;
+}
+.card-bordered {
+    border: 1px solid #ebebeb
+}
+
+.card {
+    border: 0;
+    border-radius: 0px;
+    margin-bottom: 30px;
+    -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.03);
+    -webkit-transition: .5s;
+    transition: .5s
+}
+
+.padding {
+    padding: 3rem !important
+}
+
+
+.card-header:first-child {
+    border-radius: calc(.25rem - 1px) calc(.25rem - 1px) 0 0
+}
+
+.card-header {
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: transparent;
+    border-bottom: 1px solid rgba(77, 82, 89, 0.07)
+}
+
+.card-header .card-title {
+    padding: 0;
+    border: none
+}
+
+h4.card-title {
+    font-size: 17px
+}
+
+.card-header>*:last-child {
+    margin-right: 0
+}
+
+.card-header>* {
+    margin-left: 8px;
+    margin-right: 8px
+}
+
+.btn-secondary {
+    color: #4d5259 !important;
+    background-color: #e4e7ea;
+    border-color: #e4e7ea;
+    color: #fff
+}
+
+.btn-xs {
+    font-size: 11px;
+    padding: 2px 8px;
+    line-height: 18px
+}
+
+.btn-xs:hover {
+    color: #fff !important
+}
+
+.card-title {
+    font-family: Roboto, sans-serif;
+    font-weight: 300;
+    line-height: 1.5;
+    margin-bottom: 0;
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(77, 82, 89, 0.07)
+}
+
+.ps-container {
+    position: relative
+}
+
+.ps-container {
+    -ms-touch-action: auto;
+    touch-action: auto;
+    overflow: hidden !important;
+    -ms-overflow-style: none
+}
+
+.media-chat {
+    padding-right: 64px;
+    margin-bottom: 0
+}
+
+.media {
+    padding: 16px 12px;
+    -webkit-transition: background-color .2s linear;
+    transition: background-color .2s linear
+}
+
+.media .avatar {
+    flex-shrink: 0
+}
+
+.avatar {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    text-align: center;
+    border-radius: 100%;
+    background-color: #f5f6f7;
+    color: #8b95a5;
+    text-transform: uppercase
+}
+
+.media-chat .media-body {
+    -webkit-box-flex: initial;
+    flex: initial;
+}
+
+.media-body {
+    min-width: 0
+}
+.card-container .round {
+	border: 1px solid #03BFCB;
+	border-radius: 50%;
+	padding: 7px;
+}
+
+.media-chat .media-body p {
+    position: relative;
+    padding: 6px 8px;
+    margin: 4px 0;
+    background-color: #f5f6f7;
+    border-radius: 3px;
+    font-weight: 100;
+    color: #9b9b9b
+}
+
+.media>* {
+    margin: 0 8px
+}
+
+.media-chat .media-body p.meta {
+    background-color: transparent !important;
+    padding: 0;
+    opacity: .8
+}
+
+.media-meta-day {
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    align-items: center;
+    margin-bottom: 0;
+    color: #8b95a5;
+    opacity: .8;
+    font-weight: 400
+}
+
+.media {
+    padding: 16px 12px;
+    -webkit-transition: background-color .2s linear;
+    transition: background-color .2s linear
+}
+
+.media-meta-day::before {
+    margin-right: 16px
+}
+
+.media-meta-day::before,
+.media-meta-day::after {
+    content: '';
+    -webkit-box-flex: 1;
+    flex: 1 1;
+    border-top: 1px solid #ebebeb
+}
+
+.media-meta-day::after {
+    content: '';
+    -webkit-box-flex: 1;
+    flex: 1 1;
+    border-top: 1px solid #ebebeb
+}
+
+.media-meta-day::after {
+    margin-left: 16px
+}
+
+.media-chat.media-chat-reverse {
+    padding-right: 12px;
+    padding-left: 64px;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: reverse;
+    flex-direction: row-reverse
+}
+
+.media-chat {
+    padding-right: 64px;
+    margin-bottom: 0
+}
+
+.media {
+    padding: 16px 12px;
+    -webkit-transition: background-color .2s linear;
+    transition: background-color .2s linear
+}
+
+.media-chat.media-chat-reverse .media-body p {
+    float: right;
+    clear: right;
+    background-color: #48b0f7;
+    color: #fff
+}
+
+.media-chat .media-body p {
+    position: relative;
+    padding: 6px 8px;
+    margin: 4px 0;
+    background-color: #f5f6f7;
+    border-radius: 3px;
+    float: left;
+    clear: left;
+}
+
+.border-light {
+    border-color: #f1f2f3 !important
+}
+
+.bt-1 {
+    border-top: 1px solid #ebebeb !important
+}
+
+.publisher {
+    position: relative;
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    padding: 12px 20px;
+}
+
+.publisher>*:first-child {
+    margin-left: 0
+}
+
+.publisher>* {
+    margin: 0 8px
+}
+
+.publisher-input {
+    -webkit-box-flex: 1;
+    flex-grow: 1;
+    border: none;
+    outline: none !important;
+    background-color: transparent
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+    font-family: Roboto, sans-serif;
+    font-weight: 300
+}
+
+.publisher-btn {
+    background-color: transparent;
+    border: none;
+    color: #8b95a5;
+    font-size: 16px;
+    cursor: pointer;
+    overflow: -moz-hidden-unscrollable;
+    -webkit-transition: .2s linear;
+    transition: .2s linear
+}
+
+.file-group {
+    position: relative;
+    overflow: hidden
+}
+
+.publisher-btn {
+    background-color: transparent;
+    border: none;
+    color: #cac7c7;
+    font-size: 16px;
+    cursor: pointer;
+    overflow: -moz-hidden-unscrollable;
+    -webkit-transition: .2s linear;
+    transition: .2s linear
+}
+
+.file-group input[type="file"] {
+    position: absolute;
+    opacity: 0;
+    z-index: -1;
+    width: 20px
+}
+
+.text-info {
+    color: #48b0f7 !important
+}
+
+        
+    </style>
+{% endblock %}
+
+
+{% block pageContent %}
+
+    <div class="">
+        <div class="x_panel">
+            <div class="x_title bg-primary">
+                <h2 class="pull-right">پروفایل</h2>
+                <ul class="nav navbar-left panel_toolbox">
+                    <li>
+                        <a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+
+            <div class="x_content">
+                <div class="row">
+
+
+                    <div class="page-content page-container" id="page-content">
+    <div class="padding">
+        <div class="row container d-flex justify-content-center">
+            <div style="width: 75%;margin: 0px 140px;box-shadow: 0px 4px 8px 0px;" class="col-md-6">
+                <div class="card card-bordered">
+                    <div class="card-header">
+                        <h4 class="card-title"><strong>{{user.get_full_name}}</strong></h4> 
+                        
+                        <a style="background: none;border: 1px solid #1a242491;;border-radius: 50%;padding: 7px;" class="btn btn-xs btn-secondary" href="/userProfile/{{user}}" data-abc="true">
+                            {% if user.profile_picture %}
+                                <img class="round" src={{user.profile_picture.url}} style="height: 50px;width: 58px;border-radius: 50%;" alt="">
+                            {% else %}
+                                <img class="round" src="/static/assets/images/user.png" style=" height: 50px;width: 58px;border-radius: 50%;" alt="">
+                            {% endif %}
+                        </a>
+                    </div>
+
+                        
+                    <div class="ps-container ps-theme-default ps-active-y" id="chat-content" style="overflow-y: scroll !important; height:550px !important;">
+
+
+                        {% for message in messages %}
+
+                        
+                        {% if message.sender == request.user %}
+
+                            <div class="media media-chat media-chat-reverse">
+                                <div class="media-body">
+                                    <p>{{ message.text |safe }}</p>
+                                    <p class="meta" style="color: black;"><time datetime="2018">{{ message.create_hour }}</time></p>
+                                </div>
+                            </div>
+
+                        {% else %}
+                            <div class="media media-chat direction">
+                                <div class="media-body">
+                                    <p>{{ message.text |safe}}</p>
+                                    <p class="meta" style="color: black;"><time datetime="2018">{{ message.create_hour }}</time></p>
+                                </div>
+                            </div>
+                        {% endif %}
+                
+                        {% endfor %}
+
+                        <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 0px;">
+                            <div class="ps-scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div>
+                        </div>
+                        <div class="ps-scrollbar-y-rail" style="top: 0px; height: 0px; right: 2px;">
+                            <div class="ps-scrollbar-y" tabindex="0" style="top: 0px; height: 2px;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="publisher bt-1 border-light">
+                        <a onclick="sendMessage()" class="publisher-btn text-info" data-abc="true"><i class="fa fa-paper-plane" style="font-size: 20px;"></i></a>
+                         <textarea onkeypress="geeks(event)" style="border:solid #80848a 1px;resize: none;"  id="messageText" rows="2" max-rows="6" cols="10"  class="publisher-input" type="text" ></textarea>
+                        <!-- <i class="fa fa-paperclip file-browser" style="font-size: 24px;color: black;"></i>  -->
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <input id="id_count_recieve_messages" class="hidden" value="{{ count_recieve_messages }}" type="text">
+
+
+    <script type="application/javascript">
+
+        // this takes the current url path
+        var pathname = window.location.pathname;
+
+
+        // if the user is no chating with himself then 
+
+        if( {{ request.user.member }} != pathname.slice(9,) ) {
+            
+            setInterval(recieveMessage,3000)
+     
+            function recieveMessage() {
+                    $.ajax({
+                    type: 'POST',
+                    url: '/message_recieve_updater/',
+                    data: {
+                        chosenUserId: pathname.slice(9,),
+                        count_recieve_messages:$('#id_count_recieve_messages').val(),
+
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                        action: 'post'
+                    },
+                    success: function (json) {
+            
+                        if (json['result'] == '1'){
+                            
+                            console.log('if')
+
+                            var firstDiv = $("<div class=\"media media-chat direction\"></div>")
+                            var secondDiv = $("<div class=\"media-body\"> <p>"+ json['text']+ "</p>  <p class=\"meta\" style=\"color: black;\"><time datetime=\"2018\">"+ json['time'] +"</time></p> </div>")
+                            firstDiv.append(secondDiv);
+
+                            $("#chat-content").append(firstDiv);
+                        }
+
+
+                        console.log('text',json['text'])
+                        console.log('time',json['time'])
+
+                        console.log('len_recieve_message',json['len_recieve_message'])
+
+                        $('#id_count_recieve_messages').val(json['len_recieve_message']);
+
+                        
+
+                    },
+                    error: function (xhr, errmsg, err) {
+
+                    }
+                });
+
+            }
+        }
+
+
+
+        
+    </script>
+
+
+    <script type="application/javascript">
+
+        // this takes the current url path
+        var pathname = window.location.pathname;
+
+        function sendMessage() {
+            let textmessage= $('#messageText').val().trim();
+
+            if (textmessage != ''){
+
+            $.ajax({
+                type: 'POST',
+                url: '/send_message/',
+                data: {
+                    chosenUserId: pathname.slice(9,),
+                    text: $('#messageText').val().trim(),
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                    action: 'post'
+                },
+                success: function (json) {
+                    var dt = new Date();
+                    if (dt.getMinutes() < 10){
+                        min ='0'+dt.getMinutes();
+                    }
+                    else{
+                        min =dt.getMinutes();
+                    }
+
+                    if (dt.getHours() < 10){
+                        hour ='0'+dt.getHours();
+                    }
+                    else{
+                        hour =dt.getHours();
+                    }
+
+                    var time = hour + ":" + min;
+
+                    messageText=$('#messageText').val().trim();
+                    
+                    
+                    var firstDiv = $("<div class=\"media media-chat media-chat-reverse\"></div>")
+                    var secondDiv = $("<div class=\"media-body\"> <p>"+ messageText+ "</p>  <p class=\"meta\" style=\"color: black;\"><time datetime=\"2018\">"+ time +"</time></p> </div>")
+                    firstDiv.append(secondDiv);
+
+                    $("#chat-content").append(firstDiv);
+                    
+                    $('#messageText').val('');
+                    var element = document.getElementById('chat-content');
+                    element.scrollTop = element.scrollHeight;
+                    
+
+                },
+                error: function (xhr, errmsg, err) {
+
+                }
+            });
+
+            }
+
+
+        }
+    </script>
+<script>
+    $(function() {
+	$('textarea[max-rows]').each(function () {
+		var textarea = $(this);
+
+		var minRows = Number(textarea.attr('rows'));
+		var maxRows = Number(textarea.attr('max-rows'));
+
+		// clone the textarea and hide it offscreen
+		// TODO: copy all the styles
+		var textareaClone = $('<textarea/>', {
+			rows: minRows,
+			maxRows: maxRows,
+			class: textarea.attr('class')
+		}).css({
+			position: 'absolute',
+			left: $(document).width() * 1
+		}).insertAfter(textarea);
+
+		var textareaCloneNode = textareaClone.get(0);
+
+		textarea.on('input', function () {
+			// copy the input from the real textarea
+			textareaClone.val(textarea.val());
+
+			// set as small as possible to get the real scroll height
+			textareaClone.attr('rows', 1);
+
+			// save the real scroll height
+			var scrollHeight = textareaCloneNode.scrollHeight;
+
+			// increase the number of rows until the content fits
+			for (var rows = minRows; rows < maxRows; rows++) {
+				textareaClone.attr('rows', rows);
+
+				if (textareaClone.height() > scrollHeight) {
+					break;
+				}
+			}
+
+			// copy the rows value back to the real textarea
+			textarea.attr('rows', textareaClone.attr('rows'));
+		}).trigger('input');
+	});
+});
+</script>
+<script>
+    function geeks(event) {
+        // 13 is the keycode for "enter"
+        if (event.keyCode == 13 && event.shiftKey) {
+            sendMessage()
+        }
+    }
+</script>
+
+{% block tinymceBlock %}
+{% endblock %}
+
+{% endblock %}

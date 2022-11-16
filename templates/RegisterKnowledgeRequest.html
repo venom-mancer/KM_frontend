@@ -1,0 +1,439 @@
+{% extends '_layout.html' %}
+{% load static %}
+{% block jsBlock %}
+<script src="{% static 'assets/vendors/select2/dist/js/select2.min.js' %}"></script>
+
+<script src="{% static 'assets/vendors/MdBootstrapPersianDateTimePicker/js/calendar.js' %}"
+    type="text/javascript"></script>
+<script
+    src="{% static 'assets/vendors/MdBootstrapPersianDateTimePicker/js/jquery.Bootstrap-PersianDateTimePicker.js' %}"
+    type="text/javascript"></script>
+<script src="{% static 'assets/Scripts/persian-datepicker.js' %}"></script>
+
+<script>
+    </script>
+     <script>
+        $('input[type=file]').addClass('form-control');
+        $('input[type=number]').addClass('form-control');
+        $('input[type=text]').addClass('form-control');
+        $('input[type=email]').addClass('form-control');
+        $('select').addClass('form-control');
+        $("#KnowledgeKeywordsViewer").addClass('hidden');
+        $(document).ready(function () { $('select').select2();});
+        function hideErroruser(){
+            $('#erroruser').addClass('hidden');
+        }
+        setTimeout(hideErroruser, 6000)
+    </script>
+    <script>
+
+        $('#fromDate1').val(normalizeDate($('#id_KnowledgeExpireDate').val()));
+
+        $('input[type=text]').addClass('form-control');
+
+        $('input[type=file]').addClass('form-control');
+        $('input[type=number]').addClass('form-control');
+        $("#id_KnowledgeExpireDate").addClass('hidden');
+
+        function datepicker1Change() {
+            document.getElementById("id_KnowledgeExpireDate").value = fixNumbers($('#fromDate1').val().replace("/", "").replace("/", ""));
+        }
+
+    </script>
+
+    <script src="{% static 'assets/vendors/tinymce/tinymce.min.js' %}"></script>
+    <!-- tinyMce -->
+    <script type="text/javascript">
+        tinymce.init({
+            selector: 'textarea',
+            editor_selector: "id_KnowledgeTextSummary",
+            height: 300,
+            language: "fa_IR",
+            plugins: [
+                'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+                'searchreplace wordcount visualblocks visualchars code fullscreen',
+                'insertdatetime media nonbreaking save table directionality',
+                'emoticons template paste textpattern imagetools image'
+            ],
+            image_advtab: true,
+            toolbar1: 'bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | styleselect formatselect fontselect fontsizeselect ',
+            toolbar2: 'cut copy paste pastetext pasteword | search replace bullist numlist | outdent indent blockquote | undo redo | link unlink anchor image cleanup help code | insertdate inserttime preview | forecolor backcolor',
+            toolbar3: 'tablecontrols hr removeformat visualaid | sub sup | charmap emotions iespell media advhr | print | ltr rtl | fullscreen | insertlayer moveforward movebackward absolute | styleprops spellchecker | cite abbr acronym del ins attribs | visualchars nonbreaking template blockquote pagebreak | insertfile insertimage emoticons',
+            // enable title field in the Image dialog
+            image_title: true,
+            // enable automatic uploads of images represented by blob or data URIs
+            automatic_uploads: true,
+            // add custom filepicker only to Image dialog
+            file_picker_types: 'image',
+            file_picker_callback: function (cb, value, meta) {
+                let input = document.createElement('input');
+                input.setAttribute('type', 'file');
+                input.setAttribute('accept', 'image/*');
+                input.onchange = function () {
+                    let file = this.files[0];
+                    let reader = new FileReader();
+                    reader.onload = function () {
+                        let id = 'blobid' + (new Date()).getTime();
+                        let blobCache = tinymce.activeEditor.editorUpload.blobCache;
+                        let base64 = reader.result.split(',')[1];
+                        let blobInfo = blobCache.create(id, file, base64);
+                        blobCache.add(blobInfo);
+                        // call the callback and populate the Title field with the file name
+                        cb(blobInfo.blobUri(), { title: file.name });
+                    };
+                    reader.readAsDataURL(file);
+                };
+                input.click();
+            }
+        });
+    </script>
+        <script>
+            function hideout(){
+                var radios = document.getElementsByName('send_to_all');
+                for (var i = 0, length = radios.length; i < length; i++) {
+                if (radios[i].checked) {
+                    if (radios[i].value == "True"){
+                        $('#Groupsdiv').addClass('hidden');
+                    }
+                    else{
+                        $('#Groupsdiv').removeClass('hidden');
+                    }
+                }
+                }
+            }
+        </script>
+        
+
+    <script>
+        $.fn.extend({
+            treed: function (o) {
+
+                let openedClass = 'glyphicon-minus-sign';
+                let closedClass = 'glyphicon-plus-sign';
+
+                if (typeof o != 'undefined') {
+                    if (typeof o.openedClass != 'undefined') {
+                        openedClass = o.openedClass;
+                    }
+                    if (typeof o.closedClass != 'undefined') {
+                        closedClass = o.closedClass;
+                    }
+                }
+
+                //initialize each of the top levels
+                let tree = $(this);
+                tree.addClass("tree");
+                tree.find('li').has("ul").each(function () {
+                    let branch = $(this); //li with children ul
+                    branch.prepend("<i class='indicator glyphicon " + closedClass + "'></i>");
+                    branch.addClass('branch');
+                    branch.on('click', function (e) {
+                        if (this == e.target) {
+                            let icon = $(this).children('i:first');
+                            icon.toggleClass(openedClass + " " + closedClass);
+                            $(this).children().children().toggle();
+                        }
+                    })
+                    branch.children().children().toggle();
+                });
+                //fire event from the dynamically added icon
+                tree.find('.branch .indicator').each(function () {
+                    $(this).on('click', function () {
+                        $(this).closest('li').click();
+                    });
+                });
+                //fire event to open branch if the li contains an anchor instead of text
+                tree.find('.branch>a').each(function () {
+                    $(this).on('click', function (e) {
+                        $(this).closest('li').click();
+                        e.preventDefault();
+                    });
+                });
+                //fire event to open branch if the li contains a button instead of text
+                tree.find('.branch>button').each(function () {
+                    $(this).on('click', function (e) {
+                        $(this).closest('li').click();
+                        e.preventDefault();
+                    });
+                });
+            }
+        });
+
+        //Initialization of treeviews
+
+        $('#tree1').treed();
+
+        function setChartId(id, name, type) {
+            if (type == 3) {
+                document.getElementById('id_KnowledgeProcess').value = id;
+                document.getElementById('KnowledgeProcessText').value = name;
+            } else {
+                alert('لطفا یک فرآیند انتخاب کنید');
+            }
+            console.log(type)
+        }
+    </script>
+
+    {% endblock %}
+
+    {% block cssBlock %}
+    <link href="{% static 'assets/vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'custom.css' %}" rel="stylesheet"/>
+    <style>
+        span.select2.select2-container.select2-container--default {
+            width: 100% !important;
+        }
+    </style>
+
+    {% endblock %}
+
+    {% block pageContent %}
+    <div class="">
+        <div class="tab-pane" role="tabpanel" id="complete">
+            <div class="x_panel">
+                <div class="x_title bg-primary">
+                    <ul class="nav navbar-left panel_toolbox">
+                        <li>
+                            <a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+
+                <form action="" method="post" role="form" enctype="multipart/form-data" style="margin-top: -11px;">
+                    {% csrf_token %}
+                    <br>
+                <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                    <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">عنوان
+                        </label>
+                    <div class="input-group" id="titleGroup" data-toggle="tooltip"
+                        title="چنانچه عالقه مند به ثبت تجربه خود هستید درابتدا آن را با کلمه و یا عبارتی چکیده و نامبهم ، برگرفته از همان تجربه نام دهید.">
+                        {{ KnowledgeRequest_form.KnowledgeTitle }}
+                        <span id="titleBTN" class="input-group-btn">
+                            <button type="button"
+                                onclick="alert('مثال:خدمات رسانی به مناطق محروم و کم برخوردار با حداقل بودجه');"
+                                class="btn btn-success"><i class="fa fa-question"
+                                    aria-hidden="true"></i></button>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right ">
+                    <label for="fromDate1"
+                        class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">تاریخ انقضا</label>
+                    <input type="text" class="form-control" id="fromDate1"
+                        data-mddatetimepicker="true" data-trigger="click"
+                        data-targetselector="#fromDate1" data-groupid="group1" data-fromdate="true"
+                        data-enabletimepicker="false" data-placement="right"
+                        onchange="datepicker1Change()">
+                    <div class="hidden">
+                        {{ KnowledgeRequest_form.KnowledgeExpireDate }}
+                    </div>
+                    
+                </div>
+
+                <div class="clearfix"></div>
+                <div class="col-md-4 col-sm-12 col-xs-12 form-group pull-right">
+                    <p class="control-label col-md-4 col-sm-12 col-xs-12 pull-right">موضوع 1  :</p>
+                    
+                    <select class="form-control" id="topic1-subject">
+                        <option >انتخاب کنید</option>
+                        {% for item in get_topic1 %}
+                        <option value="{{item.id}}"> {{item.mozo1}}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+          
+                <div class="col-md-4 col-sm-12 col-xs-12 form-group pull-right">
+                    <p class="control-label col-md-4 col-sm-12 col-xs-12 pull-right">موضوع 2  :</p>
+                    <select id="topic2-subject">
+                    </select>
+                </div>
+                <div class="col-md-4 col-sm-12 col-xs-12 form-group pull-right">
+                    <p class="control-label col-md-4 col-sm-12 col-xs-12 pull-right">موضوع 3  :</p>
+                    <select id="topic3-subject" name="mozo3">
+
+                    </select>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                    <label for="keyword" class="control-label col-md-12 col-sm-12 col-xs-12 pull-right"> واژگان کلیدی
+                        </label>
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+
+                        <div class="input-group" id="whoGroup">
+                            <input type="text" id="keyword" class="form-control" />
+                            <span class="input-group-btn">
+                                <button type="button" onclick="addKeyword()" class="btn btn-primary"><i
+                                        class="fa fa-plus"></i></button>
+                            </span>
+                        </div>
+                    </div>
+                    <script>
+                        function addKeyword() {
+                            let keyword = document.getElementById('keyword').value.trim();
+                            console.log('keyword', keyword);
+                            if (keyword.length > 0) {
+                                let keywords = document.getElementById('id_knowledge_keywords').value.trim();
+                                if (keywords.length > 0) {
+                                    document.getElementById('id_knowledge_keywords').value = keywords + ', ' + keyword;
+                                } else {
+                                    document.getElementById('id_knowledge_keywords').value = keyword;
+                                }
+                                document.getElementById('KnowledgeKeywordsViewer').value = document.getElementById('id_knowledge_keywords').value
+                                document.getElementById('keyword').value = '';
+                            }
+                        }
+                    </script>
+                    <input class="form-control" value="" id="KnowledgeKeywordsViewer" disabled>
+                    <div class='input-group' style="padding: 15px;">
+                        {{ KnowledgeRequest_form.knowledge_keywords }}
+                        <span class="input-group-btn">
+                            <button onclick="EnableFunc();" type='button' class='btn btn-dark'>
+                                <i class='fa fa-pencil' aria-hidden='true' ></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="x_content">
+                    <div id="Groupsdiv" class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label for="KnowledgeProcessText"
+                            class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">حوزه
+                            دانش(فرآیند دانش)</label>
+                        <ul id="tree1">
+                            {{ html_chart|safe }}
+                        </ul>
+                        <input type="text" id="KnowledgeProcessText" name="KnowledgeProcessText"
+                            class="form-control" value="{{ KnowledgeProcess }}" disabled>
+                        <div class="hidden">
+                            {{ KnowledgeRequest_form.KnowledgeProcess }}
+                        </div>    
+                        
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right" onchange="hideout();">
+                        <label for="CreatorUserID"
+                            class="control-label col-md-5 col-sm-3 col-xs-12 pull-right" style="padding: 16px 0px;">ارسال برای همه :</label>
+                            <div class="toggle-radio">
+                                <input type="radio" name="send_to_all" id="yes2" value=True>
+                                <input type="radio" name="send_to_all" id="no2"checked value=False>
+                                <div class="switch" style="margin:-19px -14px;">
+                                  <label for="yes2">بله</label>
+                                  <label for="no2">خیر</label>
+                                  <span></span>
+                                </div>
+                              </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label for="CreatorUserID"
+                            class="control-label col-md-5 col-sm-3 col-xs-12 pull-right" style="padding: 16px 0px;">ارسال بی نام :</label>
+                            <div class="toggle-radio">
+                                <input type="radio" name="show_name" id="yes" value=False>
+                                <input type="radio" name="show_name" id="no"checked value=True>
+                                <div class="switch" style="margin:-19px -14px;">
+                                  <label for="yes">بله</label>
+                                  <label for="no">خیر</label>
+                                  <span></span>
+                                </div>
+                              </div>
+                    </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">محتویات درخواست</label>
+                        <div class="clearfix"></div>
+                        {{ KnowledgeRequest_form.Requestcontents }}
+                    </div>
+                    
+                <input type="text" name="CreatorUserID" class="hidden" id="CreatorUserID"
+                value="{{ request.user.member }}">
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+                {% if error_member_register == 1 %}
+                <center>
+                    <div id="erroruser" class="alert alert-danger" style="width: 40%;">حداقل یک کاربر را برای ارسال دانش انتخاب کنید</div>
+                </center>
+                {% endif %}
+                <div class="col-md-3 col-sm-12 col-xs-12 form-group pull-right">
+                    <button type="submit" class="btn btn-primary">ذخیره</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    </div>
+    </form>
+    </div>
+    </section>
+    </div>
+    </div>
+
+    <script>
+        $("#topic1-subject").change(function () {
+            const subjectId = $(this).val();  // get the selected subject ID from the HTML dropdown list 
+            $.ajax({                       // initialize an AJAX request
+                type: "POST",
+                url: '{% url "topic2_view" %}',
+                data: {
+                    'subject_id': subjectId,       // add the country id to the POST parameters
+                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+                },
+                success: function (data) {   // `data` is from `topic1_view` view 
+                    var topic2 = document.getElementById('topic2-subject').innerHTML = "";
+                    var topic3 = document.getElementById('topic3-subject').innerHTML = "";
+                    console.log('data',data)
+                    let arr_from_json = JSON.parse(data);
+                    for (let i = 0; i < arr_from_json.length; i++) {
+                    $('#topic2-subject').append("<option value=" + arr_from_json[i].id + ">" + arr_from_json[i].text + "</option>");
+                }
+
+                    //// this cause mozo 3 npt to be null
+                    const subjectId = arr_from_json[0].id // get the selected subject ID from the HTML dropdown list 
+                    $.ajax({                       // initialize an AJAX request
+                        type: "POST",
+                        url: '{% url "topic3_view" %}',
+                        data: {
+                            'subject_id': subjectId,       // add the country id to the POST parameters
+                            'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+                        },
+                        success: function (data) {   // `data` is from `topic1_view` view 
+                            document.getElementById('topic3-subject').innerHTML = "";
+                            console.log('data',data)
+                            let arr_from_json = JSON.parse(data);
+                            for (let i = 0; i < arr_from_json.length; i++) {
+                            $('#topic3-subject').append("<option value=" + arr_from_json[i].id + ">" + arr_from_json[i].text + "</option>");
+                        }
+
+                        }
+                    });
+                    /////
+            
+                }
+            });
+        });
+    </script>
+            <script>
+                $("#topic2-subject").change(function () {
+                    const subjectId = $(this).val();  // get the selected subject ID from the HTML dropdown list 
+                    $.ajax({                       // initialize an AJAX request
+                        type: "POST",
+                        url: '{% url "topic3_view" %}',
+                        data: {
+                            'subject_id': subjectId,       // add the country id to the POST parameters
+                            'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+                        },
+                        success: function (data) {   // `data` is from `topic1_view` view 
+                            document.getElementById('topic3-subject').innerHTML = "";
+                            console.log('data',data)
+                            let arr_from_json = JSON.parse(data);
+                            for (let i = 0; i < arr_from_json.length; i++) {
+                            $('#topic3-subject').append("<option value=" + arr_from_json[i].id + ">" + arr_from_json[i].text + "</option>");
+                        }
+
+                        }
+                    });
+                });
+            </script>
+
+    {% endblock pageContent %}

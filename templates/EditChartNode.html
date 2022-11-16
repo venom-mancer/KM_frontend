@@ -1,0 +1,56 @@
+{% extends '_layout.html' %}
+{% load static %}
+{% block jsBlock %}
+    <script>
+        $('#id_ChartType').val('{{ chartType }}');
+    </script>
+{% endblock %}
+
+{% block cssBlock %}
+
+{% endblock %}
+
+{% block pageContent %}
+    <div class="">
+        <div class="x_panel">
+            <div class="x_title bg-primary">
+                <h2 class="pull-right">مدیریت چارت سازمانی</h2>
+                <ul class="nav navbar-left panel_toolbox">
+                    <li>
+                        <a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+
+            <div class="x_content">
+                <form action="/UpdateChartNode" method="post">
+                    {% csrf_token %}
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">عنوان </label>
+                        <input type="text" id="ChartText" name="ChartText" value="{{ chartText }}" class="form-control">
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">عنوان </label>
+                        <select class="form-control" id="id_ChartType" name="ChartType">
+                            {% if perentType == 1 %}
+                                <option value="1">چارت</option>
+                            {% endif %}
+                            {% if perentType <= 2 %}
+                                <option value="2">حوزه دانش</option>
+                            {% endif %}
+                            <option value="3">فرآیند</option>
+                        </select>
+                    </div>
+                    <div class="clearfix"></div>
+                    <input type="submit" value="ثبت" class="btn btn-primary">
+                    <input type="text" id="chart" name="chart" value="{{ chart }}" class="hidden">
+                </form>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

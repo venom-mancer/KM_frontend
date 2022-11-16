@@ -1,0 +1,259 @@
+{% extends '_layout.html' %}
+{% load static %}
+{% block jsBlock %}
+    <script>
+        $.fn.extend({
+            treed: function (o) {
+
+                var openedClass = 'glyphicon-minus-sign';
+                var closedClass = 'glyphicon-plus-sign';
+
+                if (typeof o != 'undefined') {
+                    if (typeof o.openedClass != 'undefined') {
+                        openedClass = o.openedClass;
+                    }
+                    if (typeof o.closedClass != 'undefined') {
+                        closedClass = o.closedClass;
+                    }
+                }
+                ;
+
+                //initialize each of the top levels
+                var tree = $(this);
+                tree.addClass("tree");
+                tree.find('li').has("ul").each(function () {
+                    var branch = $(this); //li with children ul
+                    branch.prepend("<i class='indicator glyphicon " + closedClass + "'></i>");
+                    branch.addClass('branch');
+                    branch.on('click', function (e) {
+                        if (this == e.target) {
+                            var icon = $(this).children('i:first');
+                            icon.toggleClass(openedClass + " " + closedClass);
+                            $(this).children().children().toggle();
+                        }
+                    })
+                    branch.children().children().toggle();
+                });
+                //fire event from the dynamically added icon
+                tree.find('.branch .indicator').each(function () {
+                    $(this).on('click', function () {
+                        $(this).closest('li').click();
+                    });
+                });
+                //fire event to open branch if the li contains an anchor instead of text
+                tree.find('.branch>a').each(function () {
+                    $(this).on('click', function (e) {
+                        $(this).closest('li').click();
+                        e.preventDefault();
+                    });
+                });
+                //fire event to open branch if the li contains a button instead of text
+                tree.find('.branch>button').each(function () {
+                    $(this).on('click', function (e) {
+                        $(this).closest('li').click();
+                        e.preventDefault();
+                    });
+                });
+            }
+        });
+
+
+        //Initialization of treeviews
+
+        $('#myUL').treed();
+
+        function setChartId(id, name, type) {
+            document.getElementById('Parent_Id').value = id;
+            document.getElementById('chartName').value = name;
+            document.getElementById('DeleteLink').href = '/DeleteChartNode/' + id;
+            document.getElementById('EditLink').href = '/EditChartNode/' + id;
+            document.getElementById('advance_link').href = '/advanced_chart/' + id;
+            console.log(type)
+            switch (type) {
+                case '1':
+                    document.getElementById('ChartType').innerHTML = '<option value="1">چارت</option><option value="2">حوزه دانش</option>';
+                    $("#advance_link").addClass('hidden');
+                    break;
+                case '2':
+                    document.getElementById('ChartType').innerHTML = '<option value="3">فرآیند</option>';
+                    $("#advance_link").addClass('hidden');
+                    break;
+                case '3':
+                    document.getElementById('ChartType').innerHTML = '<option value="3">فرآیند </option>';
+                    $("#advance_link").removeClass('hidden');
+                    break;
+            }
+
+        }
+    </script>
+    <!-- /Datatables -->
+    <!-- selectsearch -->
+    <script src="{% static 'assets/selectsearch/select2.min.js' %}"></script>
+
+{% endblock %}
+
+{% block cssBlock %}
+<style>
+    .hide{
+      display:none;
+    }
+
+    </style>
+    <style>
+        
+        .tree,
+        .tree ul {
+            margin: 0;
+            padding: 0;
+            list-style: none
+        }
+
+        .tree ul {
+            margin-left: 1em;
+            position: relative
+        }
+
+        .tree ul ul {
+            margin-left: .5em
+        }
+
+        .tree ul:before {
+            content: "";
+            display: block;
+            width: 0;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            border-left: 1px solid
+        }
+
+        .tree li {
+            margin: 0;
+            padding: 0 1em;
+            line-height: 2em;
+            color: #369;
+            font-weight: 700;
+            position: relative
+        }
+
+        .tree ul li:before {
+            content: "";
+            display: block;
+            width: 10px;
+            height: 0;
+            border-top: 1px solid;
+            margin-top: -1px;
+            position: absolute;
+            top: 1em;
+            left: 0
+        }
+
+        .tree ul li:last-child:before {
+            background: #fff;
+            height: auto;
+            top: 1em;
+            bottom: 0
+        }
+
+        .indicator {
+            margin-right: 5px;
+        }
+
+        .tree li a {
+            text-decoration: none;
+            color: #369;
+        }
+
+        .tree li button,
+        .tree li button:active,
+        .tree li button:focus {
+            text-decoration: none;
+            color: #369;
+            border: none;
+            background: transparent;
+            margin: 0px 0px 0px 0px;
+            padding: 0px 0px 0px 0px;
+            outline: 0;
+        }
+        
+    </style>
+{% endblock %}
+
+{% block pageContent %}
+
+    <div class="">
+        <div class="x_panel">
+            <div class="x_title bg-primary">
+                <h2 class="pull-right">مدیریت چارت سازمانی</h2>
+                <ul class="nav navbar-left panel_toolbox">
+                    <li>
+                        <a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <input type="text" id="searchText"  placeholder="جستجو در چارت " title="Type in a name" style="margin-bottom: 0px;width: 23%;margin: 10px 45px;padding-top: 10px;">
+
+            <div class="x_content">
+                <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right" dir="ltr">
+                    <ul id="myUL" class="SearchOnMe">
+                        {{ html_chart|safe }}
+                    </ul>
+                </div>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">گره انتخاب شده </label>
+                        <div class="input-group" id="titleGroup">
+                            <input type="text" id="chartName"  name="chartName" class="form-control">
+                            <span id="titleBTN" class="input-group-btn">
+                            <a class="btn btn-danger" id="DeleteLink" href="#"><i class="fa fa-trash"></i></a>
+                            <a class="btn btn-success" id="EditLink" href="#"><i class="fa fa-pencil"></i></a>
+                            <a title="چارت پیشرفته" class="btn btn-primary hidden" id="advance_link" href="#"><i class="fa fa-cog" aria-hidden="true"></i></a>
+                        </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">نوع </label>
+                        <select id="ChartType" name="ChartType" class="form-control">
+
+                        </select>
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">عنوان </label>
+                        <input type="text" id="ChartText" pattern="^[^A\s].*[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]{3,60}" name="ChartText" value="{{ chartText }}" class="form-control" oninvalid="this.setCustomValidity('عنوان نمینواند خالی باشد یا حاوی عدد باشد')" onchange="this.setCustomValidity('')">
+                    </div>
+                    <div class="clearfix"></div>
+                    <input type="submit" value="ثبت" class="btn btn-primary">
+
+                    <input type="text" id="Parent_Id" name="Parent_Id" value="{{ ParentId }}" class="hidden">
+                    <input type="text" id="chart" name="chart" value="{{ chart }}" class="hidden">
+                </form>
+               
+            </div>
+        </div>
+        <script>
+$('#searchText').bind('keyup', function() {
+   
+   var searchString = $(this).val();
+
+   $("#myUL ul li").each(function(index, value) {
+       
+       currentName = $(value).text()
+       if( currentName.toUpperCase().indexOf(searchString.toUpperCase()) > -1) {
+          $(value).show();
+       } else {
+        
+           $(value).hide();
+       }
+       
+   });
+   
+});
+            </script>
+    </div>
+{% endblock %}

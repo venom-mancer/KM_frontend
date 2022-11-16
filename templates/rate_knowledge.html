@@ -1,0 +1,351 @@
+{% extends '_layout.html' %}
+
+{% load static %}
+{% block jsBlock %}
+<script src="{% static 'assets/vendors/select2/dist/js/select2.min.js' %}"></script>
+
+<script src="{% static 'assets/vendors/MdBootstrapPersianDateTimePicker/js/calendar.js' %}"
+    type="text/javascript"></script>
+<script
+    src="{% static 'assets/vendors/MdBootstrapPersianDateTimePicker/js/jquery.Bootstrap-PersianDateTimePicker.js' %}"
+    type="text/javascript"></script>
+<script src="{% static 'assets/Scripts/persian-datepicker.js' %}"></script>
+
+
+     <script>
+        $('input[type=file]').addClass('form-control');
+        $('input[type=number]').addClass('form-control');
+        $('input[type=text]').addClass('form-control');
+        $('input[type=email]').addClass('form-control');
+        $('select').addClass('form-control');
+        $(document).ready(function () { $('select').select2();});
+        function hideErroruser(){
+            $('#erroruser').addClass('hidden');
+        }
+        setTimeout(hideErroruser, 6000)
+    </script>
+    <script>
+        $('input[type=text]').addClass('form-control');
+
+        $('input[type=file]').addClass('form-control');
+        $('input[type=number]').addClass('form-control');
+    </script>
+
+    <script>
+        function groups(){
+            var radios = document.getElementsByName('KnowledgeIsGroup');
+            for (var i = 0, length = radios.length; i < length; i++) {
+            if (radios[i].checked) {
+                if (radios[i].value == 1){
+                    $('#Groupsdiv').removeClass('hidden');
+                }
+                else{
+                    $('#Groupsdiv').addClass('hidden');
+                }
+            }
+            }
+        }
+    </script>
+    <script>
+        $.fn.extend({
+            treed: function (o) {
+
+                let openedClass = 'glyphicon-minus-sign';
+                let closedClass = 'glyphicon-plus-sign';
+
+                if (typeof o != 'undefined') {
+                    if (typeof o.openedClass != 'undefined') {
+                        openedClass = o.openedClass;
+                    }
+                    if (typeof o.closedClass != 'undefined') {
+                        closedClass = o.closedClass;
+                    }
+                }
+
+                //initialize each of the top levels
+                let tree = $(this);
+                tree.addClass("tree");
+                tree.find('li').has("ul").each(function () {
+                    let branch = $(this); //li with children ul
+                    branch.prepend("<i class='indicator glyphicon " + closedClass + "'></i>");
+                    branch.addClass('branch');
+                    branch.on('click', function (e) {
+                        if (this == e.target) {
+                            let icon = $(this).children('i:first');
+                            icon.toggleClass(openedClass + " " + closedClass);
+                            $(this).children().children().toggle();
+                        }
+                    })
+                    branch.children().children().toggle();
+                });
+                //fire event from the dynamically added icon
+                tree.find('.branch .indicator').each(function () {
+                    $(this).on('click', function () {
+                        $(this).closest('li').click();
+                    });
+                });
+                //fire event to open branch if the li contains an anchor instead of text
+                tree.find('.branch>a').each(function () {
+                    $(this).on('click', function (e) {
+                        $(this).closest('li').click();
+                        e.preventDefault();
+                    });
+                });
+                //fire event to open branch if the li contains a button instead of text
+                tree.find('.branch>button').each(function () {
+                    $(this).on('click', function (e) {
+                        $(this).closest('li').click();
+                        e.preventDefault();
+                    });
+                });
+            }
+        });
+
+        $('#tree1').treed();
+
+        function setChartId(id, name, type) {
+            if (type == 3) {
+                document.getElementById('id_KnowledgeProcess').value = id;
+                document.getElementById('KnowledgeProcessText').value = name;
+            } else {
+                alert('لطفا یک فرآیند انتخاب کنید');
+            }
+            console.log(type)
+        }
+    </script>
+
+    {% endblock %}
+
+    {% block cssBlock %}
+    <link href="{% static 'assets/vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'range_style.css' %}" rel="stylesheet"/>
+    <style>
+        span.select2.select2-container.select2-container--default {
+            width: 100% !important;
+        }
+        hr{
+            width: 96%;
+            border-top: 1px solid rgb(184, 184, 184);
+        }
+        .list-group-item.active{
+            background-color: #2b3c4a;
+            border-color : #2b3c4a;
+        }
+        .equalizer{
+            padding: 22px 1px;
+        }
+
+    </style>
+
+    {% endblock %}
+
+    {% block pageContent %}
+    <div class="">
+        <div class="tab-pane" role="tabpanel" id="complete">
+            <div class="x_panel">
+                <div class="x_title bg-primary">
+                    <h2 class="pull-right">نظر خبره </h2>
+                    <ul class="nav navbar-left panel_toolbox">
+                        <li>
+                            <a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+
+                <form action="" method="post" role="form" enctype="multipart/form-data" style="margin-top: -11px;">
+                    {% csrf_token %}
+                    <br>
+                    <div class="col-md-3 col-sm-12 col-xs-12 form-group pull-right">
+                        <p class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">نوع تجربه :</p>
+
+                         {{ TblExpertReviewForm.active_status}}
+                    </div>
+
+                    <div id="Groupsdiv" class="col-md-9 col-sm-12 col-xs-12 form-group pull-right">
+                        <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                            <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">شاخص کلیدی :
+                                 </label>
+                            <div class="input-group" id="whoGroup" data-toggle="tooltip">
+                                <select name="KPI" id="id_KPI">
+                                    {% for KPI in KPI_indicators %}
+                                    <option value="{{KPI.id}}">{{KPI.key_indicator}}</option>
+                                    {% endfor %}
+                                </select>
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="add2Team()" class="btn btn-primary"><i
+                                            class="fa fa-plus"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                        <script>
+                            let tableIndex = 1;
+                            function add2Team() {
+    
+                                let val = $('#id_KPI').val();
+                                let text = $("#id_KPI option:selected").text();
+                                var x = document.getElementById("tblTeam").rows.namedItem(val);
+                                console.log(x);
+                                if (x == null) {
+                                    var table = document.getElementById("tblTeam");
+                                    var row = table.insertRow(tableIndex);
+                                    row.id = val;
+                                    var cell1 = row.insertCell(0);
+                                    var cell2 = row.insertCell(1);
+                                    var cell3 = row.insertCell(2);
+                                    cell1.innerHTML = text + "<input name='kpi_pk' value='" + val + "' class='hidden'>";
+                                    cell2.innerHTML = "<span class='glyphicon glyphicon-trash row-remover btn btn-danger '></span>";
+                                    cell3.innerHTML="<input name='kpi_percentage' required   max='100' min='1' type='number'  style='width: 65%;'>"
+                                    tableIndex++;
+                                }
+                            }
+                            $("body").on('click', '.row-remover', function() {
+                                $(this).closest('tr').remove();
+                                tableIndex--;
+                            });
+                        </script>
+                        <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                            <table class="table table-striped table-bordered dt-responsive nowrap"
+                                cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>نام</th>
+                                        <th>حذف</th>
+                                        <th>درصد</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tblTeam">
+                                    <tr>
+                                    </tr>
+                                    {% for item in team %}
+                                    <tr>
+                                        <td>
+                                            <input name='kpi_pk' value='{{item.TeamMember.member}}'
+                                                class='hidden'>
+                                        </td>
+                                        <td>
+                                            <a class='btn btn-danger' href='#'
+                                                onclick='deleteFromTeam({{forloop.counter}})'>حذف</a>
+                                        </td>
+                                        <td>
+                                            <p id="demo{{forloop.counter}}"></p>
+                                            <input id="id{{forloop.counter}}" value="100" type="range">
+                                        <script>
+                                            let slider = document.getElementById("id{{forloop.counter}}");
+                                            let output = document.getElementById("demo{{forloop.counter}}");
+                                            output.innerHTML = slider.value; 
+                                            slider.oninput = function () {
+                                                output.innerHTML = this.value;
+                                            }
+                                        </script>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="col-md-4 col-sm-12 col-xs-12 form-group pull-right">
+                        <a class="list-group-item list-group-item-action active" aria-current="true">
+                          معیار ارزیابی
+                        </a>
+                        {% for indicator in indicators %}
+                        <p  class="list-group-item list-group-item-action equalizer" style="text-align: -webkit-center;" >{{ indicator.indicator }}</p>
+                        {% endfor %}
+                      </div>
+                      <div class="col-md-8 col-sm-12 col-xs-12 form-group pull-right">
+                        <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                          مقادیر ارزیابی
+                        </a>
+
+                        {% if saved_scores != 0 %}
+
+                        {% for saved_score in saved_scores %}
+                        <div class="slidecontainer list-group-item list-group-item-action">
+                            <input name="indicatorScore" type="range" dir="ltr" class="slider" value="{{ saved_score }}" min="0" max="100" step="1" >
+                            <label class="limit"></label>
+                        </div>
+                        {% endfor %}
+
+                        {% else %}
+
+                        {% for indicator in indicators %}
+                        <div class="slidecontainer list-group-item list-group-item-action">
+                            <input name="indicatorScore" type="range" dir="ltr" class="slider" value="50" min="0" max="100" step="1" >
+                            <label class="limit"></label>
+                        </div>
+                        {% endfor %}
+
+                        {% endif %}
+
+
+
+                        <script>
+                            function updateLabel() {
+                            var limit = this.parentElement.getElementsByClassName("limit")[0];
+                            limit.innerHTML = this.value;
+                            }
+
+                            var slideContainers = document.getElementsByClassName("slidecontainer");
+
+                            for (var i = 0; i < slideContainers.length; i++) {
+                            var slider = slideContainers[i].getElementsByClassName("slider")[0];
+                            updateLabel.call(slider);
+                            slider.oninput = updateLabel;
+                            }
+                        </script>
+                      </div>
+                      <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">توضیحات :
+                             </label>
+                        <div class="clearfix"></div>
+                        {{ TblExpertReviewForm.description}}
+                        </div>
+                    <button type="submit" class="btn btn-success">ثبت </button>
+
+    </form>
+    </div>
+    </section>
+    </div>
+    <script>
+$(document).ready(function () {
+  $("#type").change(function () {
+     switch($(this).val()) {
+        case 'exp':
+            $("#size").html("<option value='exp'> استقرار و تقويت سياستهاي كلان نظام در كشور</option><option value='exp'>تقويت مشاركت سياسي سازمان يافته </option><option value='exp'>تقويت همگرايي و انسجام سياسي </option>");
+            break;
+        case 'security':
+            $("#size").html("<option value='security'>سياستگذاري و ساماندهي امور اتباع و مهاجرين خارجي</option><option value='security'>ارتقاي سطح امنيت داخلي و تحکيم امنيت پايدار</option><option value='security'>گسترش و نهادينه سازي پدافند غيرعامل</option>");
+            break;
+        case 'org':
+            $("#size").html("<option value='org'>توسعه اجتماعي(حفظ و ارتقاء سلامت اجتماعي) </option><option value='org'>توسعه و ترويج مشارکت اجتماعي</option><option value='org'>رصد و پايش وضعيت اجتماعي</option>");
+            break;
+        default:
+            $("#size").html("<option value=''>--select one--</option>");
+     }
+  });
+});
+    </script>
+        <script>
+$(document).ready(function () {
+    $("#size").change(function () {
+        var val = $(this).val();
+        if (val == "val1") {
+            $("#mmr").html("<option value='val1'>item1: test 1</option><option value='val1'>item1: test 2</option>");
+        } else if (val == "val2") {
+            $("#mmr").html("<option value='val2'>item2: test 1</option><option value='val2'>item2: test 2</option>");
+        } else if (val == "val3") {
+            $("#mmr").html("<option value='val3'>item3: test 1</option><option value='val3'>item3: test 2</option>");
+        } else if (val == "") {
+            $("#mmr").html("<option value=''>--select one--</option>");
+        }
+    });
+});
+                </script>
+    </div>
+
+{% endblock pageContent %}

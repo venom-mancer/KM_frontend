@@ -1,0 +1,204 @@
+{% extends 'templates_feedback/_layout_feedback.html' %}
+{% load static %}
+{% load comon_tags %}
+
+
+{% block jsBlock %}
+    <!-- Datatables -->
+    <script src="{% static 'assets/vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/jszip/dist/jszip.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/pdfmake.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/vfs_fonts.js' %}"></script>
+    {% for date in comments %}
+    <script>
+        document.getElementById("{{ date.date }}{{ forloop.counter }}").innerHTML = normalizeDate("{{ date.date }}");
+    </script>
+{% endfor %}
+
+{% endblock %}
+
+
+{% block cssBlock %}
+    <!-- Datatables -->
+
+    <link href="{% static 'assets/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}"
+          rel="stylesheet">
+
+    <style>
+
+        .limit_text{
+            white-space: nowrap;
+            overflow: hidden;
+            width: 380px;
+            height: 30px;
+            text-overflow: ellipsis; 
+        }
+        hr{
+            width: 95%;
+            border-top: 1px solid rgb(184, 184, 184);
+        }
+
+        .style_class {
+            margin: 1px -35%
+        }
+        
+        
+        .mb-100 {
+            margin-bottom: 50px
+        }
+        
+        .card {
+            position: relative;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            min-width: 0;
+            word-wrap: break-word;
+            background-color: #fff;
+            background-clip: border-box;
+            border: 0px solid transparent;
+            border-radius: 0px
+        }
+        
+        .card-body {
+            -webkit-box-flex: 1;
+            -ms-flex: 1 1 auto;
+            flex: 1 1 auto;
+            padding: 1.25rem
+        }
+        
+        .card .card-title {
+            position: relative;
+            font-weight: 600;
+            margin-bottom: 10px
+        }
+        
+        .comment-widgets {
+            position: relative;
+            margin-bottom: 10px
+        }
+        
+        .comment-widgets .comment-row {
+            border-bottom: 1px solid transparent;
+            padding: 14px;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            margin: 10px 0
+        }
+        
+        .p-2 {
+            padding: 0.5rem !important
+        }
+        
+        .comment-text {
+            padding-left: 15px
+        }
+        
+        .w-100 {
+            width: 100% !important
+        }
+        
+        .m-b-15 {
+            margin-bottom: 15px
+        }
+        
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.76563rem;
+            line-height: 1.5;
+            border-radius: 1px
+        }
+        
+        .btn-cyan {
+            color: #fff;
+            background-color: #27a9e3;
+            border-color: #27a9e3
+        }
+        
+        .btn-cyan:hover {
+            color: #fff;
+            background-color: #1a93ca;
+            border-color: #198bbe
+        }
+        
+        .comment-widgets .comment-row:hover {
+            background: rgba(0, 0, 0, 0.05)
+        }
+    </style>
+{% endblock %}
+
+
+{% block pageContent %}
+
+    <div class="">
+        <div class="x_panel">
+            <div class="x_title bg-primary">
+
+                <h2 class="pull-right">نظر دبیرخانه </h2>
+                <ul class="nav navbar-left panel_toolbox">
+                    <li>
+                        <a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                        <div class="row d-flex justify-content-center mt-100 mb-100">
+                            {% for comment in comments %}
+                            <div class="col-lg-12">
+                                <div class="card">
+                                    <div class="comment-widgets">
+                                        <!-- Comment Row -->
+                                        <div class="d-flex flex-row comment-row m-t-0">
+                                            <div class="p-2">
+                                                <img src="/static/assets/images/user.png" alt="user" width="50" class="rounded-circle">                                                                                                                                        
+                                            </div>
+                                            <div class="comment-text w-100">
+                                                <h5 style="padding: 11px 2px;font-weight: bold;">
+                                                    دبیرخانه
+                                                </h5>
+                                                <span class="m-b-15 d-block style_class">{{ comment.explenation|safe }} </span>
+                                                <div class="comment-footer">
+                                                    <span  class="text-muted float-right">{{ comment.time }}</span>
+                                                    <span style="margin: 3px 6px;" id="{{ comment.date }}{{ forloop.counter }}" class="text-muted float-right"></span>                                                
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div> 
+                                </div>
+                            </div>
+                            <hr>
+                            {% endfor %}
+                        </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

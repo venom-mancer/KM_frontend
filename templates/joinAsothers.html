@@ -1,0 +1,149 @@
+{% extends '_layout.html' %}
+{% load static %}
+
+{% block jsBlock %}
+    <!-- Datatables -->
+    <script src="{% static 'assets/vendors/select2/dist/js/select2.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/jszip/dist/jszip.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/pdfmake.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/vfs_fonts.js' %}"></script>
+    <script>
+        $(document).ready(function () { $('select').select2(); });
+        $('select').addClass('form-control');
+    </script>
+{% endblock %}
+
+
+{% block cssBlock %}
+<style>
+
+    .icon {
+    font-size: 110px;
+    display: flex;
+    justify-content: center;
+    color: #4286f4;
+    }
+    button {
+    background-color: #4286f4;
+    color: white;
+    padding: 14px 0;
+    margin: 10px 0;
+    border: none;
+    cursor: grab;
+    width: 20%;
+    }
+    h1 {
+    text-align:center;
+    font-size:18;
+    }
+    button:hover {
+    opacity: 0.8;
+    }
+    .formcontainer {
+    text-align: center;
+    margin: 24px 50px 12px;
+    }
+    span.psw {
+    float: right;
+    padding-top: 0;
+    padding-right: 15px;
+    }
+  </style>
+    <!-- Datatables -->
+
+    <link href="{% static 'assets/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}"
+          rel="stylesheet">
+
+    <link href="{% static 'assets/vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" />
+    <style>
+        span.select2.select2-container.select2-container--default {
+            width: 100% !important;
+        }
+    </style>
+{% endblock %}
+
+
+{% block pageContent %}
+
+<h1>ورود به عنوان عضو دیگر</h1>
+<div class="icon">
+    <br>
+    <i style="color: rgb(20, 83, 219);" class="fa fa-user-circle"></i>
+</div>
+
+  <div class="page-container">
+    <div class="container-fluid tm-content-container">
+                <div class="mx-auto page-width-2">
+                    <div class="row">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-6 tm-contact-left">
+                            <form action="" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                            
+                                <div class="container">
+                                    <select name="members" id="id_members">
+                                        {% for item in members %}
+                                        <option value="{{item.member}}">{{item.first_name}} {{item.last_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <!-- Button trigger modal -->
+<button type="button" onclick="selectUser();" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+    ورود
+  </button>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">ورود به جای دیگر اعضا </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div id="modalBodyId" class="modal-body">
+          ایا از ورود به عنوان کاربر دیگر مطمین هستید؟
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">خیر</button>
+          <button type="submit" class="btn btn-success">بله</button>
+        </div>
+      </div>
+    </div>
+  </div>
+                              </form>
+                        </div>
+                    </div>
+                </div>
+    </div>
+</div>
+
+<script>
+    function selectUser(){
+       var selectText= $("#id_members option:selected").text();
+       document.getElementById("modalBodyId").innerHTML=  'ایا از ورود به عنوان '+`${selectText}` + ' مطمین هستید؟ '
+    }
+</script>
+
+{% endblock %}

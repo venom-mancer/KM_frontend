@@ -1,0 +1,222 @@
+{% extends '_layout.html' %}
+
+{% load static %}
+{% block jsBlock %}
+<script src="{% static 'assets/vendors/select2/dist/js/select2.min.js' %}"></script>
+
+
+<script>
+    $('#fromDate2').val(normalizeDate($('#id_KnowledgetoDate').val()));
+    $('#exampleModal').on('shown.bs.modal', function () {
+    $('#text').focus();
+    })
+    </script>
+     <script>
+        $('input[type=file]').addClass('form-control');
+        $('input[type=number]').addClass('form-control');
+        $('input[type=text]').addClass('form-control');
+        $('input[type=email]').addClass('form-control');
+        function whoValidation(){
+            var taskArray = new Array();
+            $("input[name=percentageJoin]").each(function() {
+            taskArray.push($(this).val());
+            });
+            const taskArray2 = taskArray.map((i) => Number(i));
+            const sum_arr2=taskArray2.reduce((partial_sum, a) => partial_sum + a, 0);
+            console.log(taskArray2)
+            console.log(sum_arr2)
+            alert(sum_arr2)
+        }
+    </script>
+    <script>
+
+        $('#fromDate1').val(normalizeDate($('#id_KnowledgeFromDate').val()));
+
+        $('input[type=text]').addClass('form-control');
+        $('select').addClass('form-control');
+        $(document).ready(function () { $('select').select2(); });
+        $('input[type=file]').addClass('form-control');
+        $('input[type=number]').addClass('form-control');
+        $('#id_KnowledgeFromDate').addClass('hidden');
+        $('#id_KnowledgetoDate').addClass('hidden');
+        $("#KnowledgeKeywordsViewer").addClass('hidden');
+        {% comment %} $("#id_KnowledgeKeywords").prop( "disabled", true );
+        function EnableFunc(){
+            $("#id_KnowledgeKeywords").prop( "disabled", false );
+        } {% endcomment %}
+        $("#hideKnowledgeProcess").addClass('hidden');
+        document.getElementById('KnowledgeKeywordsViewer').value = document.getElementById('id_KnowledgeKeywords').value
+
+        function datepicker2Change() {
+            document.getElementById("id_expire_date").value = fixNumbers($('#fromDate2').val().replace("/", "").replace("/", ""));
+        }
+
+    </script>
+    <script>
+        input_value = document.getElementById('id_expire_date').value
+        var newStr = input_value.slice(0,4) + '/' + input_value.slice(4,6) + '/' + input_value.slice(6)
+        document.getElementById('fromDate2').value = newStr;
+    </script>
+
+
+    <script src="{% static 'assets/vendors/tinymce/tinymce.min.js' %}"></script>
+    <!-- tinyMce -->
+    <script type="text/javascript">
+        tinymce.init({
+            selector: 'textarea',
+            editor_selector: "id_KnowledgeTextSummary",
+            height: 300,
+            language: "fa_IR",
+            plugins: [
+                'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+                'searchreplace wordcount visualblocks visualchars code fullscreen',
+                'insertdatetime media nonbreaking save table directionality',
+                'emoticons template paste textpattern imagetools image'
+            ],
+            image_advtab: true,
+            toolbar1: 'bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | styleselect formatselect fontselect fontsizeselect ',
+            toolbar2: 'cut copy paste pastetext pasteword | search replace bullist numlist | outdent indent blockquote | undo redo | link unlink anchor image cleanup help code | insertdate inserttime preview | forecolor backcolor',
+            toolbar3: 'tablecontrols hr removeformat visualaid | sub sup | charmap emotions iespell media advhr | print | ltr rtl | fullscreen | insertlayer moveforward movebackward absolute | styleprops spellchecker | cite abbr acronym del ins attribs | visualchars nonbreaking template blockquote pagebreak | insertfile insertimage emoticons',
+            // enable title field in the Image dialog
+            image_title: true,
+            // enable automatic uploads of images represented by blob or data URIs
+            automatic_uploads: true,
+            // add custom filepicker only to Image dialog
+            file_picker_types: 'image',
+            file_picker_callback: function (cb, value, meta) {
+                let input = document.createElement('input');
+                input.setAttribute('type', 'file');
+                input.setAttribute('accept', 'image/*');
+                input.onchange = function () {
+                    let file = this.files[0];
+                    let reader = new FileReader();
+                    reader.onload = function () {
+                        let id = 'blobid' + (new Date()).getTime();
+                        let blobCache = tinymce.activeEditor.editorUpload.blobCache;
+                        let base64 = reader.result.split(',')[1];
+                        let blobInfo = blobCache.create(id, file, base64);
+                        blobCache.add(blobInfo);
+                        // call the callback and populate the Title field with the file name
+                        cb(blobInfo.blobUri(), { title: file.name });
+                    };
+                    reader.readAsDataURL(file);
+                };
+                input.click();
+            }
+        });
+    </script>
+
+    {% endblock %}
+
+    {% block cssBlock %}
+    <link href="{% static 'assets/vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" />
+    <style>
+        span.select2.select2-container.select2-container--default {
+            width: 100% !important;
+        }
+        .style_class {
+            margin: 1px -31%
+        }
+    </style>
+
+    {% endblock %}
+
+    {% block pageContent %}
+    <div class="">
+
+        <div class="row">
+            <section>
+                <div class="wizard">
+
+                    {% if errors %}
+                    <div class="alert alert-danger">
+                        <p>{{ errors }}</p>
+                    </div>
+                    {% endif %}
+                    <form action="" method="post" id="SubmitFormKnowledge" role="form" enctype="multipart/form-data" style="margin-top: -11px;">
+                        <div class="tab-content">
+
+                            {% csrf_token %}
+                            <input type="number" class="hidden" value="1" name="registerDeterminer" id="registerDeterminer">
+
+                            <div class="tab-pane active" role="tabpanel" id="step1">
+                                <div class="x_panel">
+                                    <div class="x_title bg-info">
+
+
+                                        <h2 class="pull-right">شاخص کلیدی و عملکرد</h2>
+
+                                        <i class="fa fa-question-circle black-bg" aria-hidden="true" style="font-size: 30px; color: white;right: 10px;margin-right:15px;" data-title="{{ skill_experience }}"></i>
+                                        <ul class="nav navbar-left panel_toolbox">
+                                            <li>
+                                                <a class="close-link"><i class="fa fa-close"></i></a>
+                                            </li>
+                                            <li>
+                                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                            </li>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>
+
+                                    <div
+                                            class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                            <label for="fromDate2"
+                                                class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">
+                                                شاخص کلیدی عملکرد :</label>
+                                            <input type="text" name="key_indicator_text" value="{{ key_indicator_text }}">
+                                        </div> 
+
+                                        <div
+                                            class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                            <label for=""
+                                                class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">از
+                                                بازه : </label>
+                                            <input type="number" name="from_range" value="{{ from_range }}">
+                                        </div> 
+                                        <div
+                                            class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                            <label for=""
+                                                class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">تا
+                                                بازه : </label>
+                                            <input type="number" name="to_range" value="{{ to_range }}">
+                                        </div>
+                                        
+                                        <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                            <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right"> تاریخ انقضا :</label>
+                                            <input type="text" class="form-control" id="fromDate2"
+                                            name=""
+                                            data-mddatetimepicker="true" data-trigger="click"
+                                            data-targetselector="#fromDate2" data-groupid="group1" data-fromdate="true"
+                                            data-enabletimepicker="false" data-placement="right"
+                                            onchange="datepicker2Change()">
+                                            <input type="text" name="expire_date" id="id_expire_date" value="{{expire_date}}" style="display: none;">
+                                        </div>
+
+                                        {% for message in messages %}
+    
+                                            <div id="remove_on_click" class="alert alert-danger">
+                                                <a class="close" href="#" onclick="document.getElementById('remove_on_click').style.display = 'none'" data-dismiss="alert">×</a>
+                                                {{ message }}
+                                            </div>
+
+                                        {% endfor %}
+                                        <div class="clearfix"></div>
+                                                <button id="btn1" class="btn btn-success" type="submit">
+                                                    ثبت 
+                                                </button>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+    <div class="clearfix"></div>
+    </div>
+    </form>
+    </div>
+    </section>
+    </div>
+    </div>
+
+    
+    {% endblock pageContent %}

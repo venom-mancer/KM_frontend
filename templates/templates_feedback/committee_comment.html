@@ -1,0 +1,257 @@
+{% extends 'templates_feedback/_layout_feedback.html' %}
+
+{% load static %}
+{% block jsBlock %}
+<script src="{% static 'assets/vendors/select2/dist/js/select2.min.js' %}"></script>
+
+<script src="{% static 'assets/vendors/MdBootstrapPersianDateTimePicker/js/calendar.js' %}"
+    type="text/javascript"></script>
+<script
+    src="{% static 'assets/vendors/MdBootstrapPersianDateTimePicker/js/jquery.Bootstrap-PersianDateTimePicker.js' %}"
+    type="text/javascript"></script>
+<script src="{% static 'assets/Scripts/persian-datepicker.js' %}"></script>
+
+
+     <script>
+        $('input[type=file]').addClass('form-control');
+        $('input[type=number]').addClass('form-control');
+        $('input[type=text]').addClass('form-control');
+        $('input[type=email]').addClass('form-control');
+        $('select').addClass('form-control');
+        $(document).ready(function () { $('select').select2();});
+        function hideErroruser(){
+            $('#erroruser').addClass('hidden');
+        }
+        setTimeout(hideErroruser, 6000)
+    </script>
+    <script>
+        $('input[type=text]').addClass('form-control');
+
+        $('input[type=file]').addClass('form-control');
+        $('input[type=number]').addClass('form-control');
+    </script>
+
+    <script src="{% static 'assets/vendors/tinymce/tinymce.min.js' %}"></script>
+    <!-- tinyMce -->
+    <script type="text/javascript">
+        tinymce.init({
+            selector: 'textarea',
+            editor_selector: "id_KnowledgeTextSummary",
+            height: 300,
+            language: "fa_IR",
+            plugins: [
+                'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+                'searchreplace wordcount visualblocks visualchars code fullscreen',
+                'insertdatetime media nonbreaking save table directionality',
+                'emoticons template paste textpattern imagetools image'
+            ],
+            image_advtab: true,
+            toolbar1: 'bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | styleselect formatselect fontselect fontsizeselect ',
+            toolbar2: 'cut copy paste pastetext pasteword | search replace bullist numlist | outdent indent blockquote | undo redo | link unlink anchor image cleanup help code | insertdate inserttime preview | forecolor backcolor',
+            toolbar3: 'tablecontrols hr removeformat visualaid | sub sup | charmap emotions iespell media advhr | print | ltr rtl | fullscreen | insertlayer moveforward movebackward absolute | styleprops spellchecker | cite abbr acronym del ins attribs | visualchars nonbreaking template blockquote pagebreak | insertfile insertimage emoticons',
+            // enable title field in the Image dialog
+            image_title: true,
+            // enable automatic uploads of images represented by blob or data URIs
+            automatic_uploads: true,
+            // add custom filepicker only to Image dialog
+            file_picker_types: 'image',
+            file_picker_callback: function (cb, value, meta) {
+                let input = document.createElement('input');
+                input.setAttribute('type', 'file');
+                input.setAttribute('accept', 'image/*');
+                input.onchange = function () {
+                    let file = this.files[0];
+                    let reader = new FileReader();
+                    reader.onload = function () {
+                        let id = 'blobid' + (new Date()).getTime();
+                        let blobCache = tinymce.activeEditor.editorUpload.blobCache;
+                        let base64 = reader.result.split(',')[1];
+                        let blobInfo = blobCache.create(id, file, base64);
+                        blobCache.add(blobInfo);
+                        // call the callback and populate the Title field with the file name
+                        cb(blobInfo.blobUri(), { title: file.name });
+                    };
+                    reader.readAsDataURL(file);
+                };
+                input.click();
+            }
+        });
+    </script>
+    <script>
+        function groups(){
+            var radios = document.getElementsByName('KnowledgeIsGroup');
+            for (var i = 0, length = radios.length; i < length; i++) {
+            if (radios[i].checked) {
+                if (radios[i].value == 1){
+                    $('#Groupsdiv').removeClass('hidden');
+                }
+                else{
+                    $('#Groupsdiv').addClass('hidden');
+                }
+            }
+            }
+        }
+    </script>
+    <script>
+        $.fn.extend({
+            treed: function (o) {
+
+                let openedClass = 'glyphicon-minus-sign';
+                let closedClass = 'glyphicon-plus-sign';
+
+                if (typeof o != 'undefined') {
+                    if (typeof o.openedClass != 'undefined') {
+                        openedClass = o.openedClass;
+                    }
+                    if (typeof o.closedClass != 'undefined') {
+                        closedClass = o.closedClass;
+                    }
+                }
+
+                //initialize each of the top levels
+                let tree = $(this);
+                tree.addClass("tree");
+                tree.find('li').has("ul").each(function () {
+                    let branch = $(this); //li with children ul
+                    branch.prepend("<i class='indicator glyphicon " + closedClass + "'></i>");
+                    branch.addClass('branch');
+                    branch.on('click', function (e) {
+                        if (this == e.target) {
+                            let icon = $(this).children('i:first');
+                            icon.toggleClass(openedClass + " " + closedClass);
+                            $(this).children().children().toggle();
+                        }
+                    })
+                    branch.children().children().toggle();
+                });
+                //fire event from the dynamically added icon
+                tree.find('.branch .indicator').each(function () {
+                    $(this).on('click', function () {
+                        $(this).closest('li').click();
+                    });
+                });
+                //fire event to open branch if the li contains an anchor instead of text
+                tree.find('.branch>a').each(function () {
+                    $(this).on('click', function (e) {
+                        $(this).closest('li').click();
+                        e.preventDefault();
+                    });
+                });
+                //fire event to open branch if the li contains a button instead of text
+                tree.find('.branch>button').each(function () {
+                    $(this).on('click', function (e) {
+                        $(this).closest('li').click();
+                        e.preventDefault();
+                    });
+                });
+            }
+        });
+
+        $('#tree1').treed();
+
+        function setChartId(id, name, type) {
+            if (type == 3) {
+                document.getElementById('id_KnowledgeProcess').value = id;
+                document.getElementById('KnowledgeProcessText').value = name;
+            } else {
+                alert('لطفا یک فرآیند انتخاب کنید');
+            }
+            console.log(type)
+        }
+    </script>
+
+    {% endblock %}
+
+    {% block cssBlock %}
+    <link href="{% static 'assets/vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'range_style.css' %}" rel="stylesheet"/>
+    <style>
+        span.select2.select2-container.select2-container--default {
+            width: 100% !important;
+        }
+        hr{
+            width: 96%;
+            border-top: 1px solid rgb(184, 184, 184);
+        }
+        .list-group-item.active{
+            background-color: #2b3c4a;
+            border-color : #2b3c4a;
+        }
+        .equalizer{
+            padding: 22px 1px;
+        }
+
+    </style>
+
+    {% endblock %}
+
+    {% block pageContent %}
+    <div class="">
+        <div class="tab-pane" role="tabpanel" id="complete">
+            <div class="x_panel">
+                <div class="x_title bg-primary">
+                    <h2 class="pull-right">نظر کمیته </h2>
+                    <ul class="nav navbar-left panel_toolbox">
+                        <li>
+                            <a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+
+                <form action="" method="post" role="form" enctype="multipart/form-data" style="margin-top: -11px;">
+                    {% csrf_token %}
+                    <br>
+
+                    <div class="col-md-4 col-sm-12 col-xs-12 form-group pull-right">
+                        <a class="list-group-item list-group-item-action active" aria-current="true">
+                          معیار ارزیابی
+                        </a>
+                        {% for item in indicators %}
+                        <p  class="list-group-item list-group-item-action equalizer" style="text-align: -webkit-center;" >{{ item.indicator }}</p>
+                        {% endfor %}
+                      </div>
+                      <div class="col-md-8 col-sm-12 col-xs-12 form-group pull-right">
+                        <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                          مقادیر ارزیابی
+                        </a>
+                        {% for item in indicators %}
+                        <div class="slidecontainer list-group-item list-group-item-action">
+                            <input name="indicatorScore" type="range" dir="ltr" class="slider" value="50" min="0" max="100" step="1" >
+                            <label class="limit"></label>
+                        </div>
+                        {% endfor %}
+
+                        <script>
+                            function updateLabel() {
+                            var limit = this.parentElement.getElementsByClassName("limit")[0];
+                            limit.innerHTML = this.value;
+                            }
+
+                            var slideContainers = document.getElementsByClassName("slidecontainer");
+
+                            for (var i = 0; i < slideContainers.length; i++) {
+                            var slider = slideContainers[i].getElementsByClassName("slider")[0];
+                            updateLabel.call(slider);
+                            slider.oninput = updateLabel;
+                            }
+                        </script>
+                      </div>
+                      <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">توضیحات :
+                             </label>
+                        <div class="clearfix"></div>
+                        {{TblExpertReviewForm.description}}
+                        </div>
+                    <button type="submit" class="btn btn-success">ثبت </button>
+
+    </form>
+    </div>
+    </section>
+    </div>
+    </div>
+
+{% endblock pageContent %}

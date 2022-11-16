@@ -1,0 +1,220 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="{% static 'new_login/style.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/main.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/util.css' %}" rel="stylesheet"/>
+    <link href="{% static 'login_routes/font-awesome.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'login_routes/custom.min.css' %}" rel="stylesheet"/>
+    <title>مدیریت دانش</title>
+
+    <link href="{% static 'assets/Content/bootstrap-rtl.min.css' %}" rel="stylesheet"/>
+    <script src="{% static 'assets/Scripts/bootstrap-rtl.min.js' %}"></script>
+
+    <!--Stylesheet-->
+    <style>
+        
+        .shape:first-child {
+            background: linear-gradient( #1845ad, #23a2f6);
+            left: -80px;
+            top: -80px;
+        }
+        
+        .shape:last-child {
+            background: linear-gradient( to right, #ff512f, #f09819);
+            right: -30px;
+            bottom: -80px;
+        }
+        
+        form {
+            height: 520px;
+            width: 400px;
+            background-color: rgba(255, 255, 255, 0.13);
+            position: absolute;
+            transform: translate(-50%, -50%);
+            top: 50%;
+            left: 50%;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
+            padding: 50px 35px;
+        }
+        
+        form * {
+            font-family: 'Vazir';
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            outline: none;
+            border: none;
+        }
+        
+        form h3 {
+            font-size: 32px;
+            font-weight: 500;
+            line-height: 42px;
+            text-align: center;
+        }
+        
+        label {
+            display: block;
+            margin-top: 30px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        input {
+            display: block;
+            height: 50px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.07);
+            border-radius: 3px;
+            padding: 0 10px;
+            margin-top: 8px;
+            font-size: 14px;
+            font-weight: 300;
+        }
+        
+         ::placeholder {
+            color: #e5e5e5;
+        }
+        
+        button {
+            margin-top: 50px;
+            width: 100%;
+            background-color: #ffffff;
+            color: #080710;
+            padding: 15px 0;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .social {
+            margin-top: 30px;
+            display: flex;
+        }
+        
+        .social div {
+            background: red;
+            width: 150px;
+            border-radius: 3px;
+            padding: 5px 10px 10px 5px;
+            background-color: rgba(255, 255, 255, 0.27);
+            color: #eaf0fb;
+            text-align: center;
+        }
+        
+        .social div:hover {
+            background-color: rgba(255, 255, 255, 0.47);
+        }
+        
+        .social .fb {
+            margin-left: 25px;
+        }
+        
+        .social i {
+            margin-right: 4px;
+        }
+        
+        .social-btn::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            /* Change the position of transformed element */
+            transform-origin: bottom;
+            /*  Rotates around x-axis */
+            transform: rotateX(180deg);
+            line-height: 0.85em;
+            /* linear-gradient defined by up,down,left ,right ,diagonal */
+            background-image: linear-gradient(0deg, #ffffff 0, transparent 95%);
+            color: transparent;
+            opacity: 0.7;
+        }
+        .links {
+            font-size: 25px;
+            color: black;
+        }
+    </style>
+
+
+
+</head>
+
+<body>
+
+
+    <div class="erike-logo" style="position: absolute;top: 93%;left: 86%;">
+        <img class="erike-logo-black" src="{% static 'new_login/logo/erike-logo.png' %}" weight="25px" height="25px" />
+    </div>
+
+    <div class="custom-shape-divider-top-1649500778">
+        <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" class="shape-fill"></path>
+        </svg>
+    </div>
+
+    <div class="custom-shape-divider-top-1649500637">
+        <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" class="shape-fill"></path>
+        </svg>
+    </div>
+
+
+        <div class='social-links'>
+
+            <a style="text-decoration: none;" href="/feedback_suggestion">
+                <div class='social-btn flex-center'>
+                    <img class='img' src="{% static 'new_login/logo/vote.png' %}" width="100" height="100">
+                    <span> <div class = 'links'>  انتقادات و پیشنهادات </div> </span>
+                </div>
+            </a>
+
+
+            <a style="text-decoration: none;" href="{% url 'home' %}">
+                <div class='social-btn flex-center'>
+                    <img class='img' src="{% static 'new_login/logo/km.png' %}" width="100" height="100">
+                    <span><div class = 'links'> مدیریت دانش </div> </span>
+                </div>
+            </a>
+
+
+            <a style="text-decoration: none;" href="#">
+                <div class='social-btn flex-center'>
+                    <img class='img' src="{% static 'new_login/logo/calender.png' %}" width="100" height="100">
+                    <span> <div class = 'links'>  تقویم کاری  </div> </span>
+                </div>
+            </a>
+
+        </div>
+
+    <div id="scroll-container">
+        <div id="scroll-text">
+            <h1>{{get_information.text | safe}}
+            </h1>
+        </div>
+    </div>
+
+
+    <div class="practice">
+        <div class="flag">
+            <img class="flag-size" src="{% static 'new_login/logo/flag.png' %}" weight="60px" height="100px" />
+        </div>
+
+        <div class="white-bridge-logo">
+            <img class="flag-size" style="border-radius: 50%;" src="{% static 'new_login/white-bridge/pol-sefid-ahvaz.jpg' %}" weight="60px" height="100px" />
+        </div>
+
+    </div>
+
+
+
+</body>
+
+</html>

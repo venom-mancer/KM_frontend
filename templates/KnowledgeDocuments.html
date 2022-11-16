@@ -1,0 +1,130 @@
+{% extends '_layout.html' %}
+
+
+{% block jsBlock %}
+{% for Knowledge in Knowledges %}
+{% endfor %}
+{% endblock %}
+<script>
+    $('input[type=file]').addClass('form-control');
+</script>
+
+{% block cssBlock %}
+
+{% endblock %}
+
+
+{% block pageContent %}
+
+<div class="">
+    <div class="x_panel">
+        <div class="x_title bg-primary">
+            <h2 class="pull-right">لیست</h2>
+            <ul class="nav navbar-left panel_toolbox">
+                <li>
+                    <a class="close-link"><i class="fa fa-close"></i></a>
+                </li>
+                <li>
+                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <div class="row">
+                {% if errors %}
+                <div class="alert alert-danger">
+                    {{ error }}
+                </div>
+                {% endif %}
+                <form action="" method="post" role="form" enctype="multipart/form-data" style="margin-top: -11px;">
+                    {% csrf_token %}
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label for="id_KnowledgeMap"
+                            class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">نقشه</label>
+                        {{ KnowledgeDocumentForm.KnowledgeMap }}
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label for="id_Knowledgeslides"
+                            class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">اسلایدهای اداری آموزشی و ..</label>
+                        {{ KnowledgeDocumentForm.Knowledgeslides }}
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label for="id_Knowledgefilm"
+                            class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">فیلم</label>
+                        {{ KnowledgeDocumentForm.Knowledgefilm }}
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label for="id_Knowledgedocument"
+                            class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">مستندات ارتقای شغلی(خبره و عالی)</label>
+                        {{ KnowledgeDocumentForm.Knowledgedocument }}
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label for="id_KnowledgeJournal"
+                            class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">نشریه تخصصی مدیریت دانش</label>
+                        {{ KnowledgeDocumentForm.KnowledgeJournal }}
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label for="id_KnowledgePicture"
+                            class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">عکس</label>
+                        {{ KnowledgeDocumentForm.KnowledgePicture }}
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label for="id_KnowledgeProceedings"
+                            class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">صورت جلسه</label>
+                        {{ KnowledgeDocumentForm.KnowledgeProceedings }}
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label for="id_KnowledgePaper"
+                            class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">مقاله</label>
+                        {{ KnowledgeDocumentForm.KnowledgePaper }}
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label for="id_KnowledgeHandout"
+                            class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">جزوه آموزشی</label>
+                        {{ KnowledgeDocumentForm.KnowledgeHandout }}
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label for="id_KnowledgeProcessingMethod"
+                            class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">روش اجرا</label>
+                        {{ KnowledgeDocumentForm.KnowledgeProcessingMethod }}
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label for="id_KnowledgeBook"
+                            class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">کتاب</label>
+                        {{ KnowledgeDocumentForm.KnowledgeBook }}
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label for="id_KnowledgeInstructions"
+                            class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">دستورالعمل</label>
+                        {{ KnowledgeDocumentForm.KnowledgeInstructions }}
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label for="id_KnowledgeLetter"
+                            class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">نامه</label>
+                        {{ KnowledgeDocumentForm.KnowledgeLetter }}
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label for="id_KnowledgeReport"
+                            class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">گزارش</label>
+                        {{ KnowledgeDocumentForm.KnowledgeReport }}
+                    </div>
+                    <input type="text" name="KnowledgeCode" id="id_KnowledgeCode" class="hidden" value="{{KnowledgeCode}}">
+                    <div class="col-md-3 col-sm-12 col-xs-12 form-group pull-right">
+                        <button type="submit" onclick="clickAndDisable(this)" class="btn btn-primary">ذخیره</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function clickAndDisable(link) {
+     // disable subsequent clicks
+     link.onclick = function(event) {
+        event.preventDefault();
+     }
+   }   
+    </script>
+{% endblock %}

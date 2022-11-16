@@ -1,0 +1,330 @@
+{% extends '_layout.html' %}
+{% load static %}
+
+{% block jsBlock %}
+    <script>
+        function printDiv(divName) {
+            let printContents = document.getElementById(divName).innerHTML;
+            let originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+        }
+    </script>
+    
+    {% if Knowledge.KnowledgeFromDate %}
+    <script>
+        document.getElementById("fromDate").innerHTML = normalizeDate('{{ Knowledge.KnowledgeFromDate }}');
+    </script>
+    {% endif %}
+
+    
+    {% if Knowledge.KnowledgetoDate  %}
+    <script>
+        document.getElementById("toDate").innerHTML = normalizeDate('{{ Knowledge.KnowledgetoDate }}');
+    </script>
+    {% endif %}
+    
+{% endblock %}
+
+
+{% block cssBlock %}
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Montserrat');
+
+* {
+	box-sizing: border-box;
+}
+
+
+h3 {
+	margin: 10px 0;
+}
+
+h6 {
+	margin: 5px 0;
+	text-transform: uppercase;
+}
+
+p {
+	font-size: 14px;
+	line-height: 21px;
+}
+
+.card-container {
+	background-color: #28436a;
+	border-radius: 5px;
+	box-shadow: 0px 10px 20px -10px rgba(0,0,0,0.75);
+	color: #B3B8CD;
+    margin: 10px 0px;
+	padding-top: 30px;
+	position: relative;
+	width: 350px;
+	max-width: 100%;
+	text-align: center;
+}
+
+.card-container .pro {
+	color: #231E39;
+	background-color: #FEBB0B;
+	border-radius: 3px;
+	font-size: 14px;
+	font-weight: bold;
+	padding: 3px 7px;
+	position: absolute;
+	top: 30px;
+	left: 30px;
+}
+
+.card-container .round {
+	border: 1px solid #03BFCB;
+	border-radius: 50%;
+	padding: 7px;
+}
+
+button.primary {
+	background-color: #03BFCB;
+	border: 1px solid #03BFCB;
+	border-radius: 3px;
+	color: #231E39;
+	font-family: Montserrat, sans-serif;
+	font-weight: 500;
+	padding: 10px 25px;
+}
+
+button.primary.ghost {
+	background-color: transparent;
+	color: #02899C;
+}
+
+.skills {
+	background-color: #28436a;
+	text-align: left;
+	padding: 15px;
+	margin-top: 30px;
+}
+
+.skills ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+.skills ul li {
+	border: 1px solid #03BFCB;
+	border-radius: 2px;
+	display: inline-block;
+	font-size: 12px;
+	margin: 0 7px 7px 0;
+	padding: 7px;
+}
+
+
+footer i {
+    color: red;
+}
+
+footer a {
+    color: #3c97bf;
+    text-decoration: none;
+}
+.limit_text{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+}
+</style>
+{% endblock %}
+
+
+{% block pageContent %}
+
+    <!-- Button trigger modal -->
+    <div dir="ltr" style="margin-top: -3%;" class="col-md-12 col-sm-12 col-xs-12 form-group pull-left">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+            جستجو فیلتر دار<i class="fa fa-filter"></i>
+          </button>
+    </div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-content">
+    <div class="modal-header" style="background-color: #337ab7;">
+      <h4 style="color:white" class="modal-title" id="exampleModalLongTitle"> جستجو...</h4>
+      <button style="color:white;" type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <form action="" method="get">
+    <div class="modal-footer">
+        <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+            <p class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">جستجو کاربر :  </p>
+            <input type="text" name="search" id="id_SearchTitle" class="form-control">
+        </div>
+
+        <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+            <p class="control-label col-md-12 col-sm-12 col-xs-12 pull-right"> امتیاز :  </p>
+            <input type="text" name="point" id="id_ChartTitle" class="form-control">
+        </div>
+
+        <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+            <p class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">   دانش های ثبت شده :  </p>
+            <input type="text" name="knowleges" id="id_ChartTitle" class="form-control">
+        </div>
+        
+      <button type="button" class="btn btn-danger" data-dismiss="modal">خروج</button>
+      <button type="submit" class="btn btn-primary">جستجو </button>
+    </div>
+    </form>
+  </div>
+</div>
+</div>
+    <div class="">
+        <div class="x_panel">
+            <div class="x_title bg-primary">
+                <h2 class="pull-right">{{ Knowledge.KnowledgeTitle.KnowledgeTitleText }}</h2>
+                <ul class="nav navbar-left panel_toolbox">
+                    <li>
+                        <a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            
+            {% for user in users %}
+                <div class="col-md-3">
+                <div class="card-container">
+
+                    {% if user.profile_picture %}
+                                <img class="round" src={{user.profile_picture.url}} style="width:90px;height:80px;" alt="">
+                            {% else %}
+                                <img class="round" src="/static/assets/images/user.png" style="width:90px;height:80px;" alt="">
+                            {% endif %}
+
+
+                    {% if user.first_name and user.last_name %}
+                            <h3 class="limit_text">{{user.first_name}} {{user.last_name}}</h3>
+                        {% else %}
+                            <h3 class="limit_text">{{user.username}}</h3>
+                        {% endif %}
+                    <h6 class="limit_text">{{user.username}}</h6>
+                    <span>                    <p class="limit_text" style="overflow: hidden;">
+                        {% if user.email %}
+                        {{user.email}}
+                    {% else %}
+                        ایمیل ندارد                 
+                    {% endif %}
+                </p></span>
+                    <div class="buttons">
+                        <a type="button" href="/message/{{ user.member }}" class="btn btn-primary mt-3 btn-rounded waves-effect w-md waves-light" style="background-color: #031728;border-color: #141c24;">  ارسال پیام </a>
+                        <a type="button" href="/userProfile/{{ user.member }}" class="btn btn-primary mt-3 btn-rounded waves-effect w-md waves-light" style="background-color: #031728;border-color: #141d26;"> مشاهده ی پروفایل</a>
+                    </div>
+                    <div class="skills">
+
+                    </div>
+                </div>
+            </div>
+                {% endfor %}
+                <div class="col-md-12 col-sm-4 col-xs-4 form-group pull-right">
+
+                    <ul class="pagination justify-content-center">
+                    
+                
+                {% if users.has_previous %}
+                    <li class="page-item"><a class="page-link" id="first" href="?page=1">&laquo اول</a></li>
+                
+                    <li class="page-item"><a class="page-link" id="previous" href="?page={{ users.previous_page_number }}">قبلی</a></li>
+                    
+                {% endif %}
+        
+                {% if users.has_next %}
+                    <li class="page-item"><a class="page-link" id="next" href="?page={{ users.next_page_number }}">بعدی</a></li>
+                
+                    <li class="page-item"><a class="page-link" id="last" href="?page={{ users.paginator.num_pages }}">آخر &raquo</a></li>
+                
+                {% endif %}
+                
+                </ul>
+        
+        </div>
+        </div>
+        
+
+        <script>
+            var pathname = window.location.href;
+            pathname = pathname.split('conversation_hall/?')      
+            console.log('pathname',pathname[1])
+            if(String(pathname).includes('search=')){
+                if ($('#next').length > 0) {
+    
+                    if(String(pathname[1]).startsWith('search=')){
+                    var next_href = document.getElementById('next').href;
+                    next_href = next_href +'&'+ String(pathname[1])
+                    console.log('next_href',next_href)
+                    document.getElementById('next').href=next_href;
+                    }
+                    else if (String(pathname[1]).startsWith('page')){
+                        var next_href = document.getElementById('next').href;
+                        var remained_url = pathname[1].split('&')
+                        next_href = next_href +'&'+ String(remained_url[1])+'&'+ String(remained_url[2])
+                        console.log('next',next_href)
+                        document.getElementById('next').href=next_href;
+                    }
+                }
+    
+    
+    
+                if ($('#last').length > 0) {
+    
+                    if(String(pathname[1]).startsWith('search=')){
+                    var last_href = document.getElementById('last').href;
+                    last_href = last_href +'&'+ String(pathname[1])
+                    console.log('last_href',last_href)
+                    document.getElementById('last').href=last_href;
+                    }
+                    else if (String(pathname[1]).startsWith('page')){
+                        var last_href = document.getElementById('last').href;
+                        var remained_url2 = pathname[1].split('&')
+                        last_href = last_href +'&'+ String(remained_url2[1])+'&'+ String(remained_url2[2])
+                        console.log('last',last_href)
+                        document.getElementById('last').href=last_href;
+                    }
+                }            
+             
+    
+                if ($('#previous').length > 0) {
+    
+                    console.log('num',pathname[1][5])
+    
+                    var previous_href = document.getElementById('previous').href;
+                    var remained_url3 = pathname[1].split('&')
+                    previous_href = previous_href +'&'+ String(remained_url3[1])+'&'+ String(remained_url3[2])
+                    console.log('previous_href',previous_href)
+                    document.getElementById('previous').href=previous_href;
+                }
+    
+    
+                if ($('#first').length > 0) {
+    
+                    console.log('num',pathname[1][5])
+    
+                    var first_href = document.getElementById('first').href;
+                    var remained_url4 = pathname[1].split('&')
+                    first_href = first_href +'&'+ String(remained_url4[1])+'&'+ String(remained_url4[2])
+                    console.log('first_href',first_href)
+                    document.getElementById('first').href=first_href;
+                }
+    
+    
+    
+            }
+            else{
+                console.log('nooo')
+            }
+        </script>
+    </div>
+{% endblock %}

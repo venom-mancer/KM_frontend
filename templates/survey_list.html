@@ -1,0 +1,163 @@
+{% extends '_layout.html' %}
+{% load static %}
+
+{% block jsBlock %}
+    <!-- Datatables -->
+    <script src="{% static 'assets/vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/jszip/dist/jszip.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/pdfmake.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/vfs_fonts.js' %}"></script>
+    {% for item in surveys %}
+        <script>
+            document.getElementById("{{ item.create_date }}{{ forloop.counter }}").innerHTML = normalizeDate("{{ item.create_date }}");
+        </script>
+    {% endfor %}
+{% endblock %}
+
+{% block cssBlock %}
+    <!-- Datatables -->
+
+    <link href="{% static 'assets/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}"
+          rel="stylesheet">
+{% endblock %}
+
+
+{% block pageContent %}
+
+    <div class="">
+        <div class="x_panel">
+            <div class="x_title bg-primary">
+                <h2 class="pull-right"> لیست نظر سنجی</h2>
+                <ul class="nav navbar-left panel_toolbox">
+                    <li>
+                        <a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <div class="row">
+                    <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap"
+                           cellspacing="0" width="100%">
+                        <thead>
+                        <tr>
+                            <th>ردیف</th>
+                            <th>عنوان</th>
+                            <th>طراح </th>
+                            <th>تاریخ طرح</th>
+                            
+                            {% if not mySurvey %}
+                            <th>وضعیت</th>
+                            {% endif %}
+                            <th>عملیات</th>
+                        
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in surveys %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.creator.first_name }} {{ item.creator.last_name }}</td>
+                                <td id="{{ item.create_date }}{{ forloop.counter }}"></td>
+
+
+                                {% if not mySurvey %}
+                                <td>
+                                    {% if item.send_status == -1 %}
+                                        ارسال نشده
+                                    {% else %}
+                                        ارسال شده
+                                    {% endif %}
+                                </td>
+                                {% endif %}
+
+                                {% if not mySurvey %}
+                                <td>                                  
+                                    {% if item.send_status == -1 %}
+                                        <a href='/delete_survey/{{ item.id }}' class="btn btn-danger" > حذف نظر سنجی </a>
+                                        <a href='/edit_survey/{{ item.id }}' class="btn btn-warning" > ویرایش نظر سنجی </a>
+                                        <a href='/send_survey/{{ item.id }}' class="btn btn-success" > ارسال نظر سنجی </a>
+                                    {% else %}
+                                        <a href='/delete_survey/{{ item.id }}' class="btn btn-danger" > حذف نظر سنجی </a>
+                                        <a href='/edit_survey/{{ item.id }}' class="btn btn-warning" > ویرایش نظر سنجی </a>
+                                    {% endif %}
+                                </td>
+                                {% else %}
+                                <td>
+                                    <a href='/take_survey/{{ item.id }}' class="btn btn-primary" > شرکت در نظر سنجی </a>
+                                </td>
+
+                                {% endif %}
+
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+                    <!-- <p id="demo"></p> -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
+
+<!-- <script>
+var time = 10000000000; // This is the time allowed
+var saved_countdown = localStorage.getItem('saved_countdown');
+
+if(saved_countdown == null) {
+    // Set the time we're counting down to using the time allowed
+    var new_countdown = new Date().getTime() + (time + 2) * 1000;
+
+    time = new_countdown;
+    localStorage.setItem('saved_countdown', new_countdown);
+} else {
+    time = saved_countdown;
+}
+
+// Update the count down every 1 second
+var x = setInterval(() => {
+
+    // Get today's date and time
+    var now = new Date().getTime();
+
+    // Find the distance between now and the allowed time
+    var distance = time - now;
+
+    // Time counter
+    var counter = Math.floor((distance % (1000 * 60)) / 1000);
+
+    // Output the result in an element with id="demo"
+    document.getElementById("demo").innerHTML = counter + " s";
+        
+    // If the count down is over, write some text 
+    if (counter <= 0) {
+        clearInterval(x);
+        localStorage.removeItem('saved_countdown');
+        document.getElementById("demo").innerHTML = "EXPIRED";
+    }
+}, 1000);
+</script> -->
+{% endblock %}

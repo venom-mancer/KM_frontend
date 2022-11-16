@@ -1,0 +1,186 @@
+{% extends 'templates_feedback/_layout_feedback.html' %}
+{% load static %}
+{% load comon_tags %}
+{% block jsBlock %}
+    <script>
+        function printDiv(divName) {
+            let printContents = document.getElementById(divName).innerHTML;
+            let originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+        }
+    </script>
+    
+    {% if Knowledge.KnowledgeFromDate %}
+    <script>
+        document.getElementById("fromDate").innerHTML = normalizeDate('{{ Knowledge.KnowledgeFromDate }}');
+    </script>
+    {% endif %}
+
+    
+    {% if Knowledge.KnowledgetoDate  %}
+    <script>
+        document.getElementById("toDate").innerHTML = normalizeDate('{{ Knowledge.KnowledgetoDate }}');
+    </script>
+    {% endif %}
+    
+{% endblock %}
+
+
+{% block cssBlock %}
+    <style>
+        p {
+            margin: 25px 10px;
+            color : black;
+            font-size: 14px;
+        }
+
+        ul {
+            margin-top: 20px;
+        }
+
+        .style_class {
+            margin: 1px -35%
+        }
+        .style_class2 {
+            margin: 1px -26%
+        }
+        .size_Style{
+            font-size: 14px;
+        }
+        .colorfull{
+            color : black;
+            font-size: 14px;
+        }
+        hr{
+            width: 95%;
+            border-top: 1px solid rgb(184, 184, 184);
+        }
+    </style>
+{% endblock %}
+
+
+{% block pageContent %}
+
+    <div class="">
+        <div class="x_panel">
+            <div class="x_title bg-primary">
+                <h2 class="pull-right">{{ Knowledge.KnowledgeTitle.KnowledgeTitleText }}</h2>
+                <a onclick="printDiv('printarea');"> <i class="fa fa-print" style="
+                    font-size: 30px;
+                    color: white;
+                    cursor: pointer;"> </i><h2> پرینت این صفحه </h2> </a>
+                <ul class="nav navbar-left panel_toolbox">
+                    <li>
+                        <a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <a type="button" style="border: solid black 1px;" class="btn btn-light" >
+            {% if suggest_owner.profile_picture %}
+                        <img src={{suggest_owner.profile_picture.url}} style="width:60px;height:60px;" alt="">
+                        {% else %}
+                        <img src="/static/assets/images/user.png" style="width:60px;height:60px;" alt="">
+                        {% endif %}
+                        <br>
+                {% if suggest_owner.first_name and suggest_owner.last_name %}
+                                <span class="colorfull">{{suggest_owner.first_name}} {{suggest_owner.last_name}}</span>
+                            {% else %}
+                                <span class="colorfull">{{suggest_owner.username}}</span>
+                            {% endif %}
+                            <br>
+                            {% if userPercentage != -1 %}
+                            <span class="colorfull">درصد مشارکت : {{userPercentage}}</span>
+                            
+                            {% endif %}
+                            <br>
+
+                            <span class="colorfull">امتیاز : {{ suggest_owner | calculator }}</span>
+                
+                        </a>
+            {% for member in team  %}
+            <a type="button" style="border: solid black 1px;" class="btn btn-light" >
+                {% if member.user.profile_picture %}
+                        <img src={{member.user.profile_picture.url}} style="width:60px;height:60px;" alt="">
+                        {% else %}
+                        <img src="/static/assets/images/user.png" style="width:60px;height:60px;" alt="">
+                        {% endif %}
+                    <br>
+                 <span class="colorfull">{{member.user.first_name}} {{member.user.last_name}}</span>
+                 <br>
+                 <span class="colorfull">درصد مشارکت : {{ member.join_percentage }}</span>
+                 <br>
+
+                 <span class="colorfull">امتیاز : {{ member.user | calculator }}</span>
+            </a>
+            
+            {% endfor %}
+            <hr>
+
+            <div class="x_content">
+                <div class="row" id="printarea">
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"> <i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i> دسته :</label>
+                        <span class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                            <span class="colorfull">پیشنهاد</span>                     
+                    </span>
+                
+                    </div>
+
+                    <hr>
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"><i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i>  زمینه ی پیشنهاد :</label>
+                        <span  class="col-md-12 col-sm-12 col-xs-12 form-group pull-right colorfull">
+                            {{ suggest.suggestion_background }}
+                        </span>
+
+                    </div>
+                    
+                    <hr>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right ">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"><i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i>   عنوان :</label>
+                        <span class="col-md-12 col-sm-12 col-xs-12 form-group pull-right colorfull">
+                            {{ suggest.suggestion_title }}
+                        </span>
+                        
+                    </div>
+
+                    <hr>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right"><i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i> شرح روش پیشنهادی و مزایای آن : </label>
+                        {{ suggest.description_of_proposed_suggestion|safe }}
+                    </div> 
+
+                    <hr>
+                    
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"> <i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i> امکانات مورد نیاز :</label>
+                        <span class="col-md-12 col-sm-12 col-xs-12 form-group pull-right colorfull">{{ suggest.required_facilities|safe }}</span>
+
+                    </div>
+
+                    <hr>
+                    {% if suggest.is_way_fix_bugs_disadvantages == 0 %}
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"> <i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i> آیا روشی برای رفع اشکالات و معایب وجود دارد ? :</label>  
+                        <span class="style_class colorfull"><p>خیر</p></span>
+                    </div>   
+                    {% else %}
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"> <i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i> آیا روشی برای رفع اشکالات و معایب وجود دارد ? :</label>  
+                        <span class="style_class colorfull">{{ suggest.describe_method|safe }}</span>
+                    </div>              
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

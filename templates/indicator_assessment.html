@@ -1,0 +1,106 @@
+{% extends '_layout.html' %}
+
+{% load static %}
+{% block jsBlock %}
+<script src="{% static 'assets/vendors/select2/dist/js/select2.min.js' %}"></script>
+
+     <script>
+        $('input[type=text]').prop('required',true);
+        $('input[type=file]').addClass('form-control');
+        $('input[type=float]').addClass('form-control');
+        $('input[type=number]').addClass('form-control');
+        $('input[type=text]').addClass('form-control');
+        $('input[type=email]').addClass('form-control');
+        function whoValidation(){
+            var taskArray = new Array();
+            $("input[name=percentageJoin]").each(function() {
+            taskArray.push($(this).val());
+            });
+            const taskArray2 = taskArray.map((i) => Number(i));
+            const sum_arr2=taskArray2.reduce((partial_sum, a) => partial_sum + a, 0);
+
+        }
+    </script>
+
+
+    {% endblock %}
+
+    {% block cssBlock %}
+
+    {% endblock %}
+
+    {% block pageContent %}
+    <div class="">
+
+        <div class="row">
+            <section>
+                <div class="wizard">
+
+                    {% if errors %}
+                    <div class="alert alert-danger">
+                        <p>{{ errors }}</p>
+                    </div>
+                    {% endif %}
+                    <form action="" method="post" role="form" enctype="multipart/form-data" style="margin-top: -11px;">
+                        <div class="tab-content">
+
+                            {% csrf_token %}
+
+                            <div class="tab-pane active" role="tabpanel" id="step1">
+                                <div class="x_panel">
+                                    <div class="x_title bg-info">
+
+                                        <h2 class="pull-right">شاخص ارزیاب</h2>
+
+                                        <ul class="nav navbar-left panel_toolbox">
+                                            <li>
+                                                <a class="close-link"><i class="fa fa-close"></i></a>
+                                            </li>
+                                            <li>
+                                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                            </li>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>
+
+                                        <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                            <label class="control-label col-md-6 col-sm-12 col-xs-12 pull-right">شاخص  :</label>
+                                            <input type="text" name="indicator" value="{{text_value}}">
+                                        </div>
+                                        <div class="col-md-3 col-sm-12 col-xs-12 form-group pull-right">
+                                            <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">بارم شاخص  :</label>
+                                            <input type="float" name="indicator_point" min="1.0" max="10.0" value="{{ point_value }}">
+                                        </div>
+
+                                        <div class="clearfix"></div>
+
+                                                <button id="btn1" class="btn btn-success" type="submit">
+                                                    ثبت 
+                                                </button>
+                                            {% if error %}
+                                            <center>
+                                            <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                                                <div id="fadeout" class="alert alert-danger" role="alert" style="width: 40%;">
+                                                    {{ error }}
+                                                </div>
+                                            </div>
+                                        </center>
+                                            {% endif %}
+                                    </div>
+                                    <script>
+                                    $("#fadeout").show();
+                                    setTimeout(function() { $("#fadeout").hide(); }, 5000);
+                                    </script>
+                                </div>
+                            </div>
+
+    <div class="clearfix"></div>
+    </div>
+    </form>
+    </div>
+    </section>
+    </div>
+    </div>
+
+
+    {% endblock pageContent %}

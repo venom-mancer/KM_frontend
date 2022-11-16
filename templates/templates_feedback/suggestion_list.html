@@ -1,0 +1,129 @@
+{% extends 'templates_feedback/_layout_feedback.html' %}
+{% load static %}
+
+{% block jsBlock %}
+    <!-- Datatables -->
+    <script src="{% static 'assets/vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/jszip/dist/jszip.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/pdfmake.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/vfs_fonts.js' %}"></script>
+    {% for item in suggestions %}
+        <script>
+            document.getElementById("{{ item.create_date }}{{ forloop.counter }}").innerHTML = normalizeDate("{{ item.create_date }}");
+        </script>
+    {% endfor %}
+{% endblock %}
+
+{% block cssBlock %}
+    <!-- Datatables -->
+
+    <link href="{% static 'assets/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}"
+          rel="stylesheet">
+{% endblock %}
+
+
+{% block pageContent %}
+
+    <div class="">
+        <div class="x_panel">
+            <div class="x_title bg-primary">
+                <h2 class="pull-right"> لیست ازمون</h2>
+                <ul class="nav navbar-left panel_toolbox">
+                    <li>
+                        <a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <div class="row">
+                    <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap"
+                           cellspacing="0" width="100%">
+                        <thead>
+                        <tr>
+                            <th>ردیف</th>
+                            <th>عنوان</th>
+                            <th>شخص ثبت کننده </th>
+                            <th>تاریخ ثبت</th>
+                            <th>وضعیت</th>
+                            <th>عملیات</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in suggestions %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ item.suggestion_title }}</td>
+                                <td>{{ item.creator_user_id.first_name }} {{ item.creator_user_id.last_name }}</td>
+                                <td id="{{ item.create_date }}{{ forloop.counter }}"></td>
+                                <td>
+                                    {% if item.register_status == 1 %}
+                                    ثبت شده
+                                    {% elif item.register_status == 2 %}
+                                        ارسال شده به دبیر خانه
+                                    {% elif item.register_status == 3 %}
+                                    رد شده از سمت دبیرخانه
+                                    {% elif item.register_status == 4 %}
+                                    ارسال شده به کمیته
+                                    {% elif item.register_status == 5 %}
+                                    ارسال از کمیته به دبیرخانه
+                                    {% elif item.register_status == 6 %}
+                                    ارسال از دبیرخانه به کارگروه
+                                    {% elif item.register_status == 7 %}
+                                    ارسال از کارگروه به دبیرخانه
+                                    {% elif item.register_status == 8 %}
+                                       تایید نهایی توسط دبیرخانه
+                                    {% endif %}
+                                </td>
+                                <td>                                  
+                                    <a href='{% url "suggestion_paperwork" id=item.id %}' class="btn btn-success" > کاربرگ </a>
+                                        {% if item.register_status == 1 or item.register_status == 2 or item.register_status == 3 %}
+
+                                            <a href='{% url "edit_submit_suggestion" id=item.id %}' class="btn btn-primary" > ویرایش </a>
+                                            <a href='{% url "delete_submit_suggestion" id=item.id %}' class="btn btn-danger" > حذف </a>
+                                        {% endif %}
+                                        
+                                        {% if item.register_status == 1 or item.register_status == 3 %}
+                                            <a href='{% url "send_user_suggestion_it" id=item.id %}' class="btn btn-primary" > ارسال </a>
+                                        {% endif %}
+
+                                        {% if item.register_status == 3 %}
+                                        <a href='{% url "reject_suggestion_reason" id=item.id %}' class="btn btn-dark" > دلیل رد شدن </a>
+                                        {% endif %}
+
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
+
+
+{% endblock %}

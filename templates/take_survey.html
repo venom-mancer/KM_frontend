@@ -1,0 +1,166 @@
+{% extends '_layout.html' %}
+{% load static %}
+{% load comon_tags %}
+
+{% block jsBlock %}
+    <!-- Datatables -->
+    <script src="{% static 'assets/vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/jszip/dist/jszip.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/pdfmake.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/vfs_fonts.js' %}"></script>
+    {% for Knowledge in Knowledges %}
+        <script>
+            document.getElementById("{{ Knowledge.CreateDate }}{{ forloop.counter }}").innerHTML = normalizeDate("{{ Knowledge.CreateDate }}{{ forloop.counter }}");
+        </script>
+    {% endfor %}
+
+
+{% endblock %}
+
+{% block cssBlock %}
+    <!-- Datatables -->
+
+    <link href="{% static 'assets/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}"
+          rel="stylesheet">
+          <style>
+              .form-group{
+                bottom: -8px;
+              }
+              hr{
+            width: 95%;
+            border-top: 1px solid rgb(184, 184, 184);
+        }
+        .answer{
+            color : black;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .question{
+            color : black;
+            font-size: 14px;
+        }
+        .timer{
+            color : black;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .red_timer{
+            color : red;
+            font-size: 13px;
+            font-weight: bold;
+        }
+          </style>
+{% endblock %}
+
+
+{% block pageContent %}
+
+<div class="">
+    <div class="x_panel">
+        <div class="x_title bg-primary">
+            <h2 class="pull-right">فرم ثبت</h2>
+            <ul class="nav navbar-left panel_toolbox">
+                <li>
+                    <a class="close-link"><i class="fa fa-close"></i></a>
+                </li>
+                <li>
+                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        
+            <div class="x_content">
+                <ul class="nav nav-tabs"> 
+                    <li class="active" ><a id="questionTab" data-toggle="tab" href="#question">سوال </a></li>
+                </ul>
+                  <form action="" id="surveyForm" method="post" enctype="multipart/form-data" style="background-color: white">
+                    {% csrf_token %}
+
+                <div class="tab-content" >
+                    
+                    <div class="clearfix" style="padding: 15px;"></div>
+
+                    <div id="question{{ question.id }}" class="tab-pane fade in active">
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">                                
+                        <span  class="col-md-12 col-sm-12 col-xs-12 form-group pull-right question">
+                            {{ survey.question|safe }} 
+                        </span>
+
+                    </div>
+                    {% for option in options %}
+                                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">                                
+                                        <span  class="col-md-12 col-sm-12 col-xs-12 form-group pull-right answer">
+                                            
+                                            {% if survey.answer_status == 1 %}
+                                            <input type="radio" value="{{ option.id }}" name="checkboxOptions" >
+                                            {% else %}
+                                            <input type="checkbox" value="{{ option.id }}" name="checkboxOptions" >
+                                            {% endif %}
+                                                
+                                            {{forloop.counter}}-
+                                            {{ option.option_text }} 
+                                            
+                                        </span>
+                                    </div>                                                                       
+                    {% endfor %}
+                    <div class="clearfix"></div>
+                  </div>
+
+                  <div class="clearfix"></div>
+
+                  <div style="margin-top: 35px;" class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                    <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">نظر شما:</label>
+                    <div class="clearfix"></div>
+                    <textarea name="nazar_comment" cols="40" rows="10" maxlength="4000" id="id_text"></textarea>
+                </div>
+
+
+                    <div class="col-md-3 col-sm-4 col-xs-4 form-group pull-right">
+                        <button type="button" onclick="submitFunc();" class="btn btn-success">ذخیره</button>
+                    </div>
+
+            </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+    <script>
+        function submitFunc(){
+            check_boxes= document.getElementsByName('checkboxOptions')
+            var count = 0
+            for(var i=0; i < check_boxes.length;i++){
+                if (check_boxes[i].checked){
+                    count++;
+                }
+            }
+            console.log(count)
+            if(count > 0){
+            $('form#surveyForm').submit();
+            }
+            else{
+                alert('حداقل یک گزینه را انتخاب نمایید!')
+            }
+        }
+
+
+    </script>
+{% endblock %}

@@ -1,0 +1,204 @@
+{% extends '_layout.html' %}
+{% load static %}
+{% load comon_tags %}
+{% block jsBlock %}
+    <script>
+        function printDiv(divName) {
+            let printContents = document.getElementById(divName).innerHTML;
+            let originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+        }
+    </script>
+    
+    {% if Knowledge.KnowledgeFromDate %}
+    <script>
+        document.getElementById("fromDate").innerHTML = normalizeDate('{{ Knowledge.KnowledgeFromDate }}');
+    </script>
+    {% endif %}
+
+    
+    {% if Knowledge.KnowledgetoDate  %}
+    <script>
+        document.getElementById("toDate").innerHTML = normalizeDate('{{ Knowledge.KnowledgetoDate }}');
+    </script>
+    {% endif %}
+    
+{% endblock %}
+
+
+{% block cssBlock %}
+    <style>
+        p {
+            margin: 25px 10px;
+            color : black;
+            font-size: 14px;
+        }
+
+        ul {
+            margin-top: 20px;
+        }
+
+        .style_class {
+            margin: 1px -35%
+        }
+        .style_class2 {
+            margin: 1px -26%
+        }
+        .size_Style{
+            font-size: 14px;
+        }
+        .colorfull{
+            color : black;
+            font-size: 14px;
+        }
+        hr{
+            width: 95%;
+            border-top: 1px solid rgb(184, 184, 184);
+        }
+    </style>
+{% endblock %}
+
+
+{% block pageContent %}
+
+    <div class="">
+        <div class="x_panel">
+            <div class="x_title bg-primary">
+                <h2 class="pull-right">{{ Knowledge.KnowledgeTitle.KnowledgeTitleText }}</h2>
+                <a onclick="printDiv('printarea');"> <i class="fa fa-print" style="
+                    font-size: 30px;
+                    color: white;
+                    cursor: pointer;"> </i><h2> پرینت این صفحه </h2> </a>
+                <ul class="nav navbar-left panel_toolbox">
+                    <li>
+                        <a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <a type="button" style="border: solid black 1px;" class="btn btn-light" >
+                
+                {% if knowledge_owner.profile_picture %}
+                        <img src={{knowledge_owner.profile_picture.url}} style="width:60px;height:60px;" alt="">
+                        {% else %}
+                        <img src="/static/assets/images/user.png" style="width:60px;height:60px;" alt="">
+                        {% endif %}
+                        <br>
+                {% if knowledge_owner.first_name and knowledge_owner.last_name %}
+                                <span class="colorfull">{{knowledge_owner.first_name}} {{knowledge_owner.last_name}}</span>
+                            {% else %}
+                                <span class="colorfull">{{knowledge_owner.username}}</span>
+                            {% endif %}
+                            <br>
+                            {% if userPercentage != -1 %}
+                            <span class="colorfull">درصد مشارکت : {{userPercentage}}</span>
+
+                            {% endif %}
+                            <br>
+                            
+                            <span class="colorfull">دانش های ثبت شده: {{ knowledge_owner | knowledge_counter }}</span>
+                            <br>
+                            <span class="colorfull">امتیاز : {{ knowledge_owner | calculator }}</span>
+                
+                        </a>
+            
+            {% for member in team  %}
+            <a type="button" style="border: solid black 1px;" class="btn btn-light" >
+                {% if member.TeamMember.profile_picture %}
+                        <img src={{member.TeamMember.profile_picture.url}} style="width:60px;height:60px;" alt="">
+                        {% else %}
+                        <img src="/static/assets/images/user.png" style="width:60px;height:60px;" alt="">
+                        {% endif %}
+                    <br>
+                 <span class="colorfull">{{member.TeamMember.first_name}} {{member.TeamMember.last_name}}</span>
+                 <br>
+                 <span class="colorfull">درصد مشارکت : {{ member.joinPercentage }}</span>
+                 <br>
+
+                 <span class="colorfull">دانش های ثبت شده : {{ member.TeamMember | knowledge_counter }}</span>
+                 <br>
+                 <span class="colorfull">امتیاز : {{ member.TeamMember | calculator }}</span>
+            </a>
+            
+            {% endfor %}
+            <hr>
+
+            <div class="x_content">
+                <div class="row" id="printarea">
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"> <i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i> دسته :</label>
+                        <span class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                            {% if knowledge_type == 1 %}
+                            <span class="colorfull">تجربه</span>
+                        {% elif knowledge_type == 3 %}
+                            <span class="colorfull">تجربه ی تطبیقی</span>
+                        {% elif knowledge_type == 4 %}
+                            <span class="colorfull">تجربه ی مهارت</span>
+                        {% elif knowledge_type == 5 %}
+                            <span class="colorfull">(خبره و عالی) ارتقای شغلی</span>
+                        {% endif %}
+                    </span>
+                
+                    </div>
+
+
+                    <hr>
+                    
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"> <i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i> عنوان :</label>
+                        <span class="col-md-12 col-sm-12 col-xs-12 form-group pull-right colorfull">{{ Knowledge.KnowledgeTitle|safe }}</span>
+
+                    </div>
+
+                    <hr>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"> <i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i> بیان مشکلات
+                            :</label>  
+                        {% if Knowledge.KnowledgeProblems %}
+                        <span class="style_class colorfull">{{ Knowledge.KnowledgeProblems|safe }}</span>
+                        {% endif %}
+                    </div>
+
+                    <hr>
+
+                    
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"><i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i> ارایه راهکار های اجرای حل مشکلات
+
+                            :</label>
+                        <span class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">{{ Knowledge.KnowledgeSolution|safe }}</span>
+                    </div>
+
+                    <hr>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"> <i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i>
+                            حوزه دانش(فرآیند دانش) :</label>                           
+                            {% if Knowledge.KnowledgeProcess %}
+                            <span class="col-md-12 col-sm-12 col-xs-12 form-group pull-right colorfull">{{ Knowledge.KnowledgeProcess|safe }}</span>
+                            {% endif %}
+                    </div>
+
+                    <hr>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                            <label style="color : blue;" class="control-label col-md-12 col-sm-12 col-xs-12 pull-right size_Style"> <i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i>   موفقیت های شغلی کسب شده
+    
+
+                                : </label>
+
+                        <span class="style_class">{{ Knowledge.KnowledgeJobSuccess|safe }}</span>
+
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,231 @@
+{% extends '_layout.html' %}
+{% load static %}
+
+{% block jsBlock %}
+    <!-- Datatables -->
+    <script src="{% static 'assets/vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/jszip/dist/jszip.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/pdfmake.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/vfs_fonts.js' %}"></script>
+    {% for item in all_notifs %}
+<script>
+    document.getElementById("{{ item.notif.create_date }}{{ forloop.counter }}").innerHTML = normalizeDate("{{ item.notif.create_date }}");
+</script>
+{% endfor %}
+
+{% for item in all_notifs %}
+<script>
+    document.getElementById("{{ item.notif.CreateDate }}{{ forloop.counter }}").innerHTML = normalizeDate("{{ item.notif.CreateDate }}");
+</script>
+{% endfor %}
+
+{% endblock %}
+
+
+{% block cssBlock %}
+    <!-- Datatables -->
+
+    <link href="{% static 'assets/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <style>
+        .limit_text{
+            white-space: nowrap;
+            overflow: hidden;
+            width: 390px;
+            height: 30px;
+            text-overflow: ellipsis; 
+        }
+    </style>
+{% endblock %}
+
+
+{% block pageContent %}
+
+    <div class="">
+        <!-- Button trigger modal -->
+        {% if search_show_button == 1 %}
+        <div dir="ltr" style="margin-top: -3%;" class="col-md-12 col-sm-12 col-xs-12 form-group pull-left">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                جستجوی فیلتر دار<i class="fa fa-filter"></i>
+              </button>
+        </div>
+        {% endif %}
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #337ab7;">
+          <h4 style="color:white" class="modal-title" id="exampleModalLongTitle"> جستجو...</h4>
+          <button style="color:white;" type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="" method="GET" >
+        <div class="modal-footer">
+            <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                <p class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">جستجو کاربر :  </p>
+                <input type="text" name="search" id="id_SearchTitle" class="form-control">
+            </div>
+
+            <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                <p class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">جستجو کد ملی :  </p>
+                <input type="text" name="nationalCode"  class="form-control"
+                pattern='[0-9]{10}'
+                oninvalid="this.setCustomValidity('کد ملی معتبر وارد کنید')"
+                onchange="this.setCustomValidity('')"
+                >
+            </div>
+
+            <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                <p class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">جستجو کد پرسنلی :  </p>
+                <input type="text" name="personalCode"  class="form-control">
+            </div>
+
+            <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                <p class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">جستجو حوزه دانشی :  </p>
+                <input type="text" name="chart"  class="form-control">
+            </div>
+
+          <button type="button" class="btn btn-danger" data-dismiss="modal">خروج</button>
+          <button type="submit" class="btn btn-primary">جستجو </button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+        <div class="x_panel">
+            <div class="x_title bg-primary">
+                <h2 class="pull-right"> لیست اعلانات</h2>
+                <ul class="nav navbar-left panel_toolbox">
+                    <li>
+                        <a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <!-- Content -->
+                <div class="row">
+                <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap"
+                cellspacing="0" width="100%">
+             <thead>
+             <tr>
+                 <th>ردیف</th>
+                 <th>عنوان</th>
+                 <th>نوع</th>
+                 <th>شخص ثبت کننده</th>
+                 <th>تاریخ</th>
+                 <th>عملیات</th>
+             </tr>
+             </thead>
+             <tbody>
+                {% for item in all_notifs %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td><p class="limit_text" >{{ item.notif }}</p></td>
+                    <td>
+                        {% if item.notif_type == 1 %}
+                            امتحان
+                        {% elif item.notif_type == 2 %}
+                            نظر سنجی
+
+                        {% elif item.notif_type == 3 %}
+                            تالار گفتمان
+                            (درخواست دانش)
+
+                        {% elif item.notif_type == 4 %}
+                            تالار گفتمان
+                            (درخواست سوال)
+
+                        {% elif item.notif_type == 5 %}
+                        چت
+                        {% elif item.notif_type == 6 %}
+                            تجربه توسط دبیرخانه تایید شد 
+
+                        {% elif item.notif_type == 7 %}
+                        تجربه توسط دبیرخانه رد شد 
+
+                        {% elif item.notif_type == 8 %}
+                        تجربه تبدیل به دانش شد
+
+                        {% elif item.notif_type == 9 %}
+                        تجربه توسط خبرگان رد شد 
+
+                        {% elif item.notif_type == 10 %}
+                          (دبیرخانه )تجربه نیازمند بررسی
+                        
+                        {% elif item.notif_type == 11 %}
+                         یک تجربه از سمت دبیرخانه نیازمند بررسی
+                         (خبرگان)
+
+                        {% elif item.notif_type == 12 %}
+                         یک تجربه از سمت خبرگان نیازمند بررسی است
+                         (ناظر)
+
+                        {% elif item.notif_type == 14 %}
+                            تجربه توسط ناظر تایید شد
+
+                        {% elif item.notif_type == 15 %}
+                            تجربه توسط ناظر رد شد
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if item.notif_type == 1 or item.notif_type == 2 %}
+                        {{ item.notif.creator.first_name }} {{ item.notif.creator.last_name }}
+
+
+                        {% elif item.notif_type == 3 or item.notif_type == 4 or item.notif_type >= 6 and item.notif_type <= 15  %}
+
+
+                            {{ item.notif.CreatorUserID.first_name }} {{ item.notif.CreatorUserID.last_name }}
+
+                        {% elif item.notif_type == 5 %}
+                        {{ item.notif.sender.first_name }} {{ item.notif.sender.last_name }}
+
+                        {% endif %}
+                    </td>
+
+
+                    {% if item.notif_type >= 6  and item.notif_type <= 15  %}
+
+
+                    <td id="{{ item.notif.CreateDate }}{{ forloop.counter }}"></td>
+                    {% else %}
+                    <td id="{{ item.notif.create_date }}{{ forloop.counter }}"></td>
+                    {% endif %}
+                    
+                    <td><a href="/{{item.url}}" class="btn btn-primary" > نمایش  </a></td>
+                </tr>
+                {% endfor %}
+             </tbody>
+         </table>
+        </div>
+    </div>
+
+</div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,355 @@
+{% extends '_layout.html' %}
+{% load static %}
+
+
+{% block jsBlock %}
+    <script src="{% static 'assets/cloack/moment.js' %}"></script>
+    <script src="{% static 'assets/cloack/datetimepicker.js' %}"></script>
+    <script src="{% static 'assets/vendors/select2/dist/js/select2.min.js' %}"></script>
+
+
+    <script src="{% static 'assets/Scripts/persian-datepicker.js'%}"></script>
+    <script src="{% static 'assets/vendors/MdBootstrapPersianDateTimePicker/js/calendar.js' %}"
+    type="text/javascript"></script>
+    <script
+        src="{% static 'assets/vendors/MdBootstrapPersianDateTimePicker/js/jquery.Bootstrap-PersianDateTimePicker.js' %}"
+        type="text/javascript">
+    </script>
+
+    <script>
+        $('input').prop('required',true);
+        $('input[type=file]').addClass('form-control');
+        $('input[type=number]').addClass('form-control');
+        $('input[type=text]').addClass('form-control');
+        $('input[type=email]').addClass('form-control');
+        $('select').addClass('form-control');
+        $(document).ready(function () { $('select').select2();});
+        $("#id_from_date").addClass('hidden');
+        $("#id_to_date").addClass('hidden');
+    </script>
+    
+    <script>
+        $(function () {
+            $('#datepicker0').datepicker();
+            $('#datepicker1').datepicker();
+        });
+    </script>
+    <script>
+        function datepicker1Change() {
+            document.getElementById("id_from_date").value = fixNumbers($('#fromDate1').val().replace("/", "").replace("/", ""));
+        }
+
+        function datepicker2Change() {
+            document.getElementById("id_to_date").value = fixNumbers($('#fromDate2').val().replace("/", "").replace("/", ""));
+        }
+    </script>
+    <script>
+        $('#fromDate1').val(normalizeDate($('#id_from_date').val()));
+        $('#fromDate2').val(normalizeDate($('#id_to_date').val()));
+    </script>
+
+<script src="{% static 'assets/vendors/tinymce/tinymce.min.js' %}"></script>
+<!-- tinyMce -->
+<script type="text/javascript">
+    tinymce.init({
+        selector: 'textarea',
+        editor_selector: "id_KnowledgeTextSummary",
+        height: 300,
+        language: "fa_IR",
+        plugins: [
+            'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+            'searchreplace wordcount visualblocks visualchars code fullscreen',
+            'insertdatetime media nonbreaking save table directionality',
+            'emoticons template paste textpattern imagetools image'
+        ],
+        image_advtab: true,
+        toolbar1: 'bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | styleselect formatselect fontselect fontsizeselect ',
+        toolbar2: 'cut copy paste pastetext pasteword | search replace bullist numlist | outdent indent blockquote | undo redo | link unlink anchor image cleanup help code | insertdate inserttime preview | forecolor backcolor',
+        toolbar3: 'tablecontrols hr removeformat visualaid | sub sup | charmap emotions iespell media advhr | print | ltr rtl | fullscreen | insertlayer moveforward movebackward absolute | styleprops spellchecker | cite abbr acronym del ins attribs | visualchars nonbreaking template blockquote pagebreak | insertfile insertimage emoticons',
+        // enable title field in the Image dialog
+        image_title: true,
+        // enable automatic uploads of images represented by blob or data URIs
+        automatic_uploads: true,
+        // add custom filepicker only to Image dialog
+        file_picker_types: 'image',
+        file_picker_callback: function (cb, value, meta) {
+            let input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/*');
+            input.onchange = function () {
+                let file = this.files[0];
+                let reader = new FileReader();
+                reader.onload = function () {
+                    let id = 'blobid' + (new Date()).getTime();
+                    let blobCache = tinymce.activeEditor.editorUpload.blobCache;
+                    let base64 = reader.result.split(',')[1];
+                    let blobInfo = blobCache.create(id, file, base64);
+                    blobCache.add(blobInfo);
+                    // call the callback and populate the Title field with the file name
+                    cb(blobInfo.blobUri(), { title: file.name });
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click();
+        }
+    });
+</script>
+
+
+{% endblock %}
+
+
+{% block cssBlock %}
+<link rel="stylesheet" href="{% static 'assets/cloack/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">
+
+<link href="{% static 'assets/vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" />
+
+<style>
+
+span.select2.select2-container.select2-container--default {
+    width: 100% !important;
+}
+
+</style>
+
+
+{% endblock %}
+
+
+{% block pageContent %}
+        <div class="">
+            <div class="x_panel">
+                <div class="x_title bg-primary">
+                    <h2 class="pull-right">تعریف نظرسنجی </h2>
+                    <ul class="nav navbar-left panel_toolbox">
+                        <li>
+                            <a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+
+                    <ul class="nav nav-tabs">
+                        <li class="active" ><a  data-toggle="tab" href="#survey">نظرسنجی</a></li>
+                        <li><a  data-toggle="tab" href="#surveyQuestion">سوال نظر سنجی</a></li>
+                    </ul>
+
+                    <form action="" method="post" role="form" enctype="multipart/form-data" style="margin-top: -11px;">
+                        {% csrf_token %}
+
+                        <div class="tab-content" >
+                    
+                            <div class="clearfix" style="padding: 15px;"></div>
+
+                            <div id="survey" class="tab-pane fade in active">
+
+                                <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                    <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">کد نظرسنجی</label>
+                                    {{ TblSurveyForm.code }}
+                                </div>
+
+                                <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                    <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">نام نظرسنجی</label>
+                                    {{ TblSurveyForm.name }}
+                                </div>
+
+                                <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                    <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">از تاریخ</label>
+                                    <input type="text" class="form-control" id="fromDate1"
+                                    data-mddatetimepicker="true" data-trigger="click"
+                                    data-targetselector="#fromDate1" data-groupid="group1" data-fromdate="true"
+                                    data-enabletimepicker="false" data-placement="right"
+                                    onchange="datepicker1Change()">
+                                    {{ TblSurveyForm.from_date }}
+                                </div>
+                                
+                                <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                    <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">تا تاریخ</label>
+                                    <input type="text" class="form-control" id="fromDate2"
+                                    data-mddatetimepicker="true" data-trigger="click"
+                                    data-targetselector="#fromDate2" data-groupid="group1" data-fromdate="true"
+                                    data-enabletimepicker="false" data-placement="right"
+                                    onchange="datepicker2Change()">
+                                    {{ TblSurveyForm.to_date }}
+                                </div>
+
+                                <div class="col-md-2 col-sm-12 col-xs-12 form-group pull-right">
+                                    <label for="">از ساعت:</label>
+                                    <div class='input-group date' id='datetimepicker1'>
+                                        {{ TblSurveyForm.from_hour }}
+                                        <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2 col-sm-12 col-xs-12 form-group pull-right">
+                                    <label for=""> تا ساعت :</label>
+                                    <div class='input-group date' id='datetimepicker2'>
+                                        {{ TblSurveyForm.to_hour }}
+                                        <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-left">
+                                    <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right"> نوع نظرسنجی</label>
+                                    {{ TblSurveyForm.answer_status }}
+                                </div>
+
+
+                                <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                                    <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">توضیحات
+                                        </label>
+                                    <div class="clearfix"></div>
+                                    {{ TblSurveyForm.description }}
+                                </div>
+
+                        </div>
+
+                        <div id="surveyQuestion" class="tab-pane fade">
+
+                            <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                                <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">سوال
+                                     </label>
+                                <div class="clearfix"></div>
+                                {{ TblSurveyForm.question }}
+                            </div>
+
+                        
+                        {% if not  servey_options %}
+                            <div class="fieldwrapper col-md-9 col-sm-12 col-xs-12 form-group pull-right">
+                                <label class="control-label col-md-1 col-sm-12 col-xs-12 pull-right">گزینه1:</label>
+                                <input type="text" name="option" class="form-control">
+                            </div>
+                            
+                            <div class="fieldwrapper col-md-9 col-sm-12 col-xs-12 form-group pull-right">
+                                <label class="control-label col-md-1 col-sm-12 col-xs-12 pull-right">گزینه2:</label>
+                                <input type="text" name="option" class="form-control">
+                            </div>  
+                        {% endif %}
+
+                        
+                        {% for servey_option in servey_options %}
+
+                        <div class="fieldwrapper col-md-9 col-sm-12 col-xs-12 form-group pull-right">
+                            <label class="control-label col-md-1 col-sm-12 col-xs-12 pull-right">گزینه{{ servey_option.option_number }}:</label>
+                            <input type="text" value='{{ servey_option.option_text }}' name="option" class="form-control">
+                        </div>  
+                            
+                        {% endfor %}
+                            
+
+                            <div  id="buildyourform">
+
+                            </div>  
+                              
+                            <div class="clear"></div>
+                            <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                                <button class="btn btn-primary" value="Add a field" class="add" id="add" style="margin: 0px;" type="button">افزودن <i class="fa fa-plus" aria-hidden="true"></i></button>
+                                <span type="button" onclick="" class="glyphicon glyphicon-trash row-remover5 btn btn-danger button_location" style="margin: 0px;"  value="حذف"></span>
+                            </div>
+
+                            <div class="clear"></div>
+                            <div class="col-md-3 col-sm-12 col-xs-12 form-group pull-right">
+                                <button class="btn btn-success" >ثبت</button>
+                            </div>         
+
+                        </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(function() {
+          $('#datetimepicker1').datetimepicker({
+                    format: 'HH:mm'
+          });
+        
+        });
+        $(function() {
+          $('#datetimepicker2').datetimepicker({
+                    format: 'HH:mm'
+          });
+        
+        });
+        </script>
+
+
+
+<script type="text/JavaScript">
+
+    var count=document.getElementsByName("option").length;
+    var count_option=count+1;
+    $(document).ready(function() {
+        $("#add").click(function() {
+         
+            if (count <8) {       
+            var lastField = $("#buildyourform div:last");
+            var intId = (lastField && lastField.length && lastField.data("idx") + 1) || 1;
+            var fieldWrapper = $("<div class=\"fieldwrapper\" id=\"field" + intId + "\"/>");
+            fieldWrapper.data("idx", intId);
+            var fName = $("<div class=\"col-md-9 col-sm-12 col-xs-12 form-group pull-right\"><label class=\"control-label col-md-1 col-sm-12 col-xs-12 pull-right\">گزینه"+ count_option +":</label><input type=\"text\" required name=\"option\" maxlength=\"200\" id=\"id_KnowledgePlace\" class=\"form-control\"></div>");
+            var fType = $();
+            // var removeButton = $("<span type=\"button\" class=\"glyphicon glyphicon-trash row-remover2 btn btn-danger button_location\" value=\"حذف\" /></span>");
+            count++;
+            count_option++;
+            }
+
+            fieldWrapper.append(fName);
+            fieldWrapper.append(fType);
+            $("#buildyourform").append(fieldWrapper);
+        });
+        $("#preview").click(function() {
+            $("#yourform").remove();
+            var fieldSet = $("<fieldset id=\"yourform\"><legend>Your Form</legend></fieldset>");
+            $("#buildyourform div").each(function() {
+                var id = "input" + $(this).attr("id").replace("field","");
+                var label = $("<label for=\"" + id + "\">" + $(this).find("input.form-control").first().val() + "</label>");
+                var input;
+                switch ($(this).find("select.fieldtype").first().val()) {
+                    case "checkbox":
+                        input = $("<input type=\"checkbox\" id=\"" + id + "\" name=\"" + id + "\" />");
+                        break;
+                    case "textbox":
+                        input = $("<input type=\"text\" id=\"" + id + "\" name=\"" + id + "\" />");
+                        break;
+                    case "textarea":
+                        input = $("<textarea id=\"" + id + "\" name=\"" + id + "\" ></textarea>");
+                        break;    
+                }
+                fieldSet.append(label);
+                fieldSet.append(input);
+            });
+            $("body").append(fieldSet);
+        });
+    });
+     </script>
+     <script>
+            $("body").on('click', '.row-remover5', function() {
+                if(count > 2){
+                    $('div.fieldwrapper:last').remove();
+                    count--;
+                    count_option--;
+                }
+                else{
+                    alert("هر سوال باید حداقل 2 گزینه داشته باشد!")
+                }
+            });
+     </script>
+
+     <script>
+    setTimeout(function(){
+    $("#errQuestion").remove()
+    }, 5000);
+     </script>
+{% endblock %}

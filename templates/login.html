@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <title>ورود</title>
+    {% include '_header.html' %}
+    <!-- Custom Theme Style -->
+    <link href="{% static 'custom.css' %}" rel="stylesheet"/>
+    <link href="{% static 'assets/Content/custom.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'assets/Content/Site.css' %}" rel="stylesheet"/>
+    
+</head>
+<body class="login"
+      style="background-image: url('{% static 'assets/images/pol-sefid-icon.jpg' %}'); background-repeat: no-repeat;
+              background-attachment: fixed;
+              background-size: cover;">
+<div>
+    <div class="row">
+        <div class="col-md-2 col-sm-6 col-xs-6 js-tilt" data-tilt>
+            <img src="{% static 'assets/images/IRI-KHZ-LOGO-B.png' %}" alt="استانداری خوزستان" style="width: 100%;"/>
+        </div>
+    </div>
+    <div class="login_wrapper">
+        <div class="animate form login_form">
+            <section class="login_content">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div>
+                        <div class="text-center">
+                            <input type="text" class="form-control" placeholder="نام کاربری" name="username" value="{{ username }}"  id="username"/>
+                        </div>
+                        <div>
+                            <div class="text-center">
+                                <input type="password" class="form-control" placeholder="رمز عبور" name="password" id="password"/>
+
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="text-center">
+                            <input type="submit" class="btn btn-primary pull-right" value="ورود">
+                        </div>
+                        <div class="clearfix" style="margin-top: 20px;"></div>
+                        {% if error %}
+                            <div class="alert alert-danger">
+                                {{ error }}
+                            </div>
+                        {% endif %}
+
+                        <div class="separator">
+                            <br/>
+                            <div style="color: black;">
+                                <div class="clearfix"></div>
+                                <h5><i class="fa fa-check"></i>اریکه پیشگامان اروند</h5>
+                                <p>©تحلیل و پیاده سازی توسط شرکت اریکه پیشگامان اروند.</p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </section>
+
+        </div>
+    </div>
+</div>
+<!-- jQuery -->
+<script src="{% static 'assets/Scripts/jquery-3.5.1.min.js' %}"></script>
+<script src="{% static 'tilt.jquery.min.js' %}"></script>
+<script src="{% static 'assets/vendors/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script >
+    $('.js-tilt').tilt({
+        scale: 1.1
+    })
+</script>
+</body>
+</html>

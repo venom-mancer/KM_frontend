@@ -1,0 +1,1731 @@
+{% extends '_layout.html' %}
+{% load static %}
+
+{% block jsBlock %}
+    <!-- Datatables -->
+    <script src="{% static 'assets/vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/jszip/dist/jszip.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/pdfmake.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/vfs_fonts.js' %}"></script>
+    <script src="{% static 'assets/vendors/select2/dist/js/select2.min.js' %}"></script>
+    <script>
+        $('input[type=file]').addClass('form-control');
+        $('input[type=number]').addClass('form-control');
+        $('input[type=text]').addClass('form-control');
+        $('input[type=email]').addClass('form-control');
+    </script>
+    <script>
+        $.fn.extend({
+            treed: function (o) {
+
+                var openedClass = 'glyphicon-minus-sign';
+                var closedClass = 'glyphicon-plus-sign';
+
+                if (typeof o != 'undefined') {
+                    if (typeof o.openedClass != 'undefined') {
+                        openedClass = o.openedClass;
+                    }
+                    if (typeof o.closedClass != 'undefined') {
+                        closedClass = o.closedClass;
+                    }
+                }
+                ;
+
+                //initialize each of the top levels
+                var tree = $(this);
+                tree.addClass("tree");
+                tree.find('li').has("ul").each(function () {
+                    var branch = $(this); //li with children ul
+                    branch.prepend("<i class='indicator glyphicon " + closedClass + "'></i>");
+                    branch.addClass('branch');
+                    branch.on('click', function (e) {
+                        if (this == e.target) {
+                            var icon = $(this).children('i:first');
+                            icon.toggleClass(openedClass + " " + closedClass);
+                            $(this).children().children().toggle();
+                        }
+                    })
+                    branch.children().children().toggle();
+                });
+                //fire event from the dynamically added icon
+                tree.find('.branch .indicator').each(function () {
+                    $(this).on('click', function () {
+                        $(this).closest('li').click();
+                    });
+                });
+                //fire event to open branch if the li contains an anchor instead of text
+                tree.find('.branch>a').each(function () {
+                    $(this).on('click', function (e) {
+                        $(this).closest('li').click();
+                        e.preventDefault();
+                    });
+                });
+                //fire event to open branch if the li contains a button instead of text
+                tree.find('.branch>button').each(function () {
+                    $(this).on('click', function (e) {
+                        $(this).closest('li').click();
+                        e.preventDefault();
+                    });
+                });
+            }
+        });
+
+        //Initialization of treeviews
+
+        $('#tree1').treed();
+
+        function setChartId(id, name, type) {
+            console.log(type)
+            switch (type) {
+                case '1':
+                   console.log(1)
+                    break;
+                case '2':
+                    console.log(2)
+                    break;
+                case '3':
+                    addTeam(id,name)
+                    break;
+            }
+
+        }
+    </script>
+
+    <script>
+        $("#id_birthday_age").addClass('hidden');
+    </script>
+
+    <script>
+        function normalizeDate(dateInt) {
+        return dateInt.substring(0, 4) + '/' + dateInt.substring(4, 6) + '/' + dateInt.substring(6, 8);
+        ;}
+        document.getElementById("fromDate1").value=normalizeDate(document.getElementById("id_birthday_age").value)
+        
+    </script>
+
+    <script>
+        function datepicker1Change() {
+            document.getElementById("id_birthday_age").value = fixNumbers($('#fromDate1').val().replace("/", "").replace("/", ""));
+        }
+    </script>
+<script>
+$('#id_last_name').keypress(function (e) {
+        var regex = new RegExp(/^[\u0600-\u06FF\s]+$/);
+        var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+        if (regex.test(str)) {
+            return true;
+        }
+        else {
+            e.preventDefault();
+            return false;
+        }
+    });
+    $('#id_first_name').keypress(function (e) {
+        var regex = new RegExp(/^[\u0600-\u06FF\s]+$/);
+        var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+        if (regex.test(str)) {
+            return true;
+        }
+        else {
+            e.preventDefault();
+            return false;
+        }
+    });
+    $('#id_mobileNumber').on('input', function (event) { 
+    this.value = this.value.replace(/[^0-9]/g, '');
+    });
+    </script>
+
+{% endblock %}
+
+{% block cssBlock %}
+    <!-- Datatables -->
+
+    <link href="{% static 'assets/vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'assets/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}"
+          rel="stylesheet">
+
+          <style>
+            .hide{
+              display:none;
+            }
+            </style>
+            <style>
+                .tree,
+                .tree ul {
+                    margin: 0;
+                    padding: 0;
+                    list-style: none
+                }
+        
+                .tree ul {
+                    margin-left: 1em;
+                    position: relative
+                }
+        
+                .tree ul ul {
+                    margin-left: .5em
+                }
+        
+                .tree ul:before {
+                    content: "";
+                    display: block;
+                    width: 0;
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    left: 0;
+                    border-left: 1px solid
+                }
+        
+                .tree li {
+                    margin: 0;
+                    padding: 0 1em;
+                    line-height: 2em;
+                    color: #369;
+                    font-weight: 700;
+                    position: relative
+                }
+        
+                .tree ul li:before {
+                    content: "";
+                    display: block;
+                    width: 10px;
+                    height: 0;
+                    border-top: 1px solid;
+                    margin-top: -1px;
+                    position: absolute;
+                    top: 1em;
+                    left: 0
+                }
+        
+                .tree ul li:last-child:before {
+                    background: #fff;
+                    height: auto;
+                    top: 1em;
+                    bottom: 0
+                }
+        
+                .indicator {
+                    margin-right: 5px;
+                }
+        
+                .tree li a {
+                    text-decoration: none;
+                    color: #369;
+                }
+        
+                .tree li button,
+                .tree li button:active,
+                .tree li button:focus {
+                    text-decoration: none;
+                    color: #369;
+                    border: none;
+                    background: transparent;
+                    margin: 0px 0px 0px 0px;
+                    padding: 0px 0px 0px 0px;
+                    outline: 0;
+                }
+        
+                .limit_text{
+                    white-space: nowrap;
+                    overflow: hidden;
+                    width: 380px;
+                    height: 30px;
+                    text-overflow: ellipsis; 
+                }
+            </style>
+        
+{% endblock %}
+
+
+{% block pageContent %}
+<style>
+    input[type="file"] {
+  display: block;
+}
+.imageThumb {
+  max-height: 75px;
+  border: 2px solid;
+  padding: 1px;
+  cursor: pointer;
+}
+.pip {
+  display: inline-block;
+  margin: 10px 10px 0 0;
+}
+
+.remove {
+  display: block;
+  background: #444;
+  border: 1px solid black;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+}
+.remove:hover {
+  background: white;
+  color: black;
+}
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.modal-dialog{
+    width: 1000px;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+.top_title {
+    top: -8px;
+}
+</style>
+<div class="">
+    <div class="x_panel">
+        <div class="x_title bg-primary">
+            <h2 class="pull-right">فرم ثبت</h2>
+            <ul class="nav navbar-left panel_toolbox">
+                <li>
+                    <a class="close-link"><i class="fa fa-close"></i></a>
+                </li>
+                <li>
+                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        
+            <div class="x_content">
+                <ul class="nav nav-tabs">
+                    <li class="active" ><a id="organPorposTab" data-toggle="tab" href="#organPorpos"> اطلاعات پایه</a></li>
+                    <li><a data-toggle="tab" id="organChartTab" href="#editorganchart">ویرایش اطلاعات حرفه ای</a></li>
+                  </ul>
+                  <form action="" method="post" enctype="multipart/form-data" style="background-color: white" novalidate>
+                    {% csrf_token %}
+                <div class="tab-content" >
+                    <div class="clearfix" style="padding: 15px;"></div>
+                  <div id="organPorpos" class="tab-pane fade in active">
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">نام :</label>
+                        {{members_form.first_name}}
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">نام خانوادگی :</label>
+                    {{members_form.last_name}}
+                    </div>
+            
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">نام کاربری :</label>
+                        {{members_form.username}}
+                    </div>
+                    <script>
+                        $(function () {
+            
+                            $('#datepicker0').datepicker();
+                            $('#datepicker1').datepicker();
+                            $('#datepicker2').datepicker();
+                        });
+                    </script>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">شماره پرسنلی:</label>
+                        {{members_form.personal_number}}
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">کد ملی:</label>
+                        {{members_form.nationalCode}}
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">شماره شناسنامه:</label>
+                        {{members_form.identity_number}}
+                    </div>
+                  
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">تغییر عکس پروفایل :</label>
+                        {{members_form.profile_picture}}
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">ایمیل :</label>
+                        {{members_form.email}}
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">ایمیل سازمانی :</label>
+                        {{members_form.organization_email}}
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">شماره تلفن همراه :</label>
+                        {{members_form.mobileNumber}}
+                    </div>
+                       
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label for="fromDate1"
+                            class="control-label col-md-5 col-sm-3 col-xs-12 pull-right"> تاریخ تولد :</label>
+                        <input type="text" class="form-control" id="fromDate1"
+                            data-mddatetimepicker="true" data-trigger="click"
+                            data-targetselector="#fromDate1" data-groupid="group1" data-fromdate="true"
+                            data-enabletimepicker="false" data-placement="right"
+                            onchange="datepicker1Change()"
+                            >
+                        {{ members_form.birthday_age }}
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">آخرین مدرک تحصیلی :</label>
+                        {{ members_form.latest_edu_degree }}
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+
+                    <div id="editorganchart" class="tab-pane fade">
+                        <script>
+                            var tableIndex2 = 0;
+                            function add_pro_degree() {
+                                if(document.getElementById("degree_title").value.length == 0)
+                                    {
+                                        alert("عنوان نمیتواند خالی باشد")
+                                    }
+                                let val2 = $('#degree_title').val();
+                                console.log(val2)
+                                let text2 = $('#degree_title').val();
+                                var x2 = document.getElementById("tblFile").rows.namedItem(val2);
+                                console.log(x2);
+                                if (x2 == null && text2.trim() !='') {
+                                    var table2 = document.getElementById("tblFile");
+                                    var row2 = table2.insertRow(tableIndex2);
+                                    row2.id = val2;
+                                    var cell11 = row2.insertCell(0);
+                                    var cell22 = row2.insertCell(1);
+                                    var cell33 = row2.insertCell(2);
+                                    cell11.innerHTML = text2 + "<input name='degree_title' value='" + val2.trim() + "' class='hidden'>";
+                                    cell22.innerHTML="<input name='degree_files' required type='file' class=''>"
+                                    cell33.innerHTML = "<span class='glyphicon glyphicon-trash row-remover2 btn btn-danger '></span>";
+                                    tableIndex2++;
+                                }
+                                $('#degree_title').val('')
+                            }
+                            $("body").on('click', '.row-remover2', function() {
+                                $(this).closest('tr').remove();
+                                tableIndex2--;
+                            });
+                        </script>
+                        <!-- MODAL 1 -->
+                        <a type="button" style="border: solid black 1px;" class="btn btn-light" data-toggle="modal" data-target="#degree">
+                            <img src="static/assets/images/document-file-svgrepo-com.svg" style="width:50px;height:50px;" alt="">
+                            اطلاعات حرفه ای
+                        </a>
+
+                          <div class="modal fade" id="degree" tabindex="-1" role="dialog" aria-labelledby="degreeTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered " role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="degreelLongTitle">مدرک حرفه ای</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                        <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right pb-5 top_title">عنوان مدرک حرفه ای :
+                                             </label>
+                                        <input id="degree_title" type="text" required>
+                                        <button onclick="add_pro_degree();" class="btn btn-primary" style="position :absolute" type="button">افزودن <i class="fa fa-plus" aria-hidden="true"></i></button>
+                                    </div>   
+                                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right ">
+                                        <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                                            <label for=""> مدرک حرفه ای :</label>
+                                            <table class="table table-striped table-bordered dt-responsive nowrap"
+                                                cellspacing="0" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>عنوان فایل</th>
+                                                        <th>اسم فایل</th>                                            
+                                                        <th>حذف</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tblFile">
+                                                    
+                                                    {% for item in degree_objects %}
+                                                    <tr>
+                                                        <td>
+                                                            {{ item.title }}
+                                                            <input value="{{ item.title }}" class='hidden'>
+                                                        </td>
+                                                        <td>
+                                                            <a href="/media/{{ item.degree_file }}" target="_blank">{{ item.degree_file.name }}</a>
+                                                        </td>
+                                                        <td>
+                                                            <span onclick='ajaxFunc("{{ item.id }}");' class='glyphicon glyphicon-trash row-remover2 btn btn-danger'></span>
+                                                        </td>
+                                                    </tr>                                        
+                                                    {% endfor %}                                      
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+
+                                </div>
+                              </div>
+                            </div>
+                          </div>                 
+                        
+                        <script>
+                            var tableIndex3 = 0;
+                            function add_edu_record() {
+                                if(document.getElementById("edu_records_title").value.length == 0)
+                                    {
+                                        alert("عنوان نمیتواند خالی باشد")
+                                    }
+                                let val3 = $('#edu_records_title').val();
+                                console.log(val3)
+                                let text3 = $('#edu_records_title').val();
+                                var x3 = document.getElementById("tbl_EDUFile").rows.namedItem(val3);
+                                console.log(x3);
+                                if (x3 == null && text3.trim() !='') {
+                                    var table1 = document.getElementById("tbl_EDUFile");
+                                    var row3 = table1.insertRow(tableIndex3);
+                                    row3.id = val3;
+                                    var cellEDU = row3.insertCell(0);
+                                    var cellEDU2 = row3.insertCell(1);
+                                    var cellEDU3 = row3.insertCell(2);
+                                    cellEDU.innerHTML = text3 + "<input name='edu_records_title' value='" + val3.trim() + "' class='hidden'>";
+                                    cellEDU2.innerHTML="<input name='edu_records_files' required type='file' class=''>"
+                                    cellEDU3.innerHTML = "<span class='glyphicon glyphicon-trash row-remover3 btn btn-danger '></span>";
+                                    tableIndex3++;
+                                }
+                                $('#edu_records_title').val('')
+                            }
+                            $("body").on('click', '.row-remover3', function() {
+                                $(this).closest('tr').remove();
+                                tableIndex3--;
+                            });
+                        </script>
+                        <!-- Button trigger modal -->
+<a type="button" class="btn btn-light" style="border: solid black 1px;" data-toggle="modal" data-target="#edu">
+    <img src="static/assets/images/education-svgrepo-com.svg" style="width:50px;height:50px;" alt="">
+    سوابق تحصیلی
+</a>
+  
+  <!-- Modal 2 -->
+  <div class="modal fade" id="edu" tabindex="-1" role="dialog" aria-labelledby="eduTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="eduLongTitle"> سوابق تحصیلی </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right pb-5 top_title">عنوان سوابق تحصیلی  :
+                     </label>
+                <input id="edu_records_title" type="text">
+                <button onclick="add_edu_record();" class="btn btn-primary" style="position :absolute" type="button">افزودن <i class="fa fa-plus" aria-hidden="true"></i></button>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right ">
+                <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                    <label for="">   سوابق تحصیلی :</label>
+                    <table class="table table-striped table-bordered dt-responsive nowrap"
+                        cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>عنوان فایل</th>
+                                <th>اسم فایل</th>
+                                <th>حذف</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbl_EDUFile">
+                            
+                            {% for item in edu_record_objects %}
+                            <tr>
+                                <td>
+                                    {{ item.title }}
+                                    <input value="{{ item.title }}" class='hidden'>
+                                </td>
+                                <td>
+                                    <a href="/media/{{ item.file_edu_records }}" target="_blank">{{ item.file_edu_records.name }}</a>
+                                </td>
+                                <td>
+                                    <span onclick='ajaxFunc_edu("{{ item.id }}");' class='glyphicon glyphicon-trash row-remover3 btn btn-danger'></span>
+                                </td>
+                            </tr>                                        
+                            {% endfor %}                                      
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+                        <script>
+                            var tableIndex4 = 0;
+                            function add_job_record() {
+                                if(document.getElementById("job_record_title").value.length == 0)
+                                    {
+                                        alert("عنوان نمیتواند خالی باشد")
+                                    }
+                                let val4 = $('#job_record_title').val();
+                                console.log(val4)
+                                let text4 = $('#job_record_title').val();
+                                var x4 = document.getElementById("tbl_jobFile").rows.namedItem(val4);
+                                console.log(x4);
+                                if (x4 == null && text4.trim() !='') {
+                                    var table4 = document.getElementById("tbl_jobFile");
+                                    var row4 = table4.insertRow(tableIndex4);
+                                    row4.id = val4;
+                                    var celljob = row4.insertCell(0);
+                                    var celljob2 = row4.insertCell(1);
+                                    var celljob3 = row4.insertCell(2);
+                                    celljob.innerHTML = text4 + "<input name='job_record_title' value='" + val4.trim() + "' class='hidden'>";
+                                    celljob2.innerHTML="<input name='job_record_files' required type='file' class=''>"
+                                    celljob3.innerHTML = "<span class='glyphicon glyphicon-trash row-remover4 btn btn-danger '></span>";
+                                    tableIndex4++;
+                                }
+                                $('#job_record_title').val('')
+                            }
+                            $("body").on('click', '.row-remover4', function() {
+                                $(this).closest('tr').remove();
+                                tableIndex4--;
+                            });
+                        </script>
+
+<a type="button" style="border: solid black 1px;" class="btn btn-light" data-toggle="modal" data-target="#job">
+    <img src="static/assets/images/job-svgrepo-com.svg" style="width:50px;height:50px;" alt="">
+    سوابق شغلی
+</a>
+  
+  <!-- Modal 3 -->
+  <div class="modal fade" id="job" tabindex="-1" role="dialog" aria-labelledby="jobTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="jobLongTitle">سوابق شغلی</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right pb-5 top_title">عنوان سوابق شغلی  :
+                     </label>
+                <input id="job_record_title" type="text">
+                <button onclick="add_job_record();" class="btn btn-primary" style="position: absolute;" type="button">افزودن <i class="fa fa-plus" aria-hidden="true"></i></button>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right ">
+                <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                    <label for=""> سوابق شغلی   :</label>
+                    <table class="table table-striped table-bordered dt-responsive nowrap"
+                        cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>عنوان فایل</th>
+                                <th>اسم فایل</th>
+                                <th>حذف</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbl_jobFile">
+                            
+                            {% for item in job_record_objects %}
+                            <tr>
+                                <td>
+                                    {{ item.title }}
+                                    <input value="{{ item.title }}" class='hidden'>
+                                </td>
+                                <td>
+                                    <a href="/media/{{ item.job_record_file }}" target="_blank">{{ item.job_record_file.name }}</a>
+                                </td>
+                                <td>
+                                    <span onclick='ajaxFunc_job("{{ item.id }}");' class='glyphicon glyphicon-trash row-remover4 btn btn-danger'></span>
+                                </td>
+                            </tr>                                        
+                            {% endfor %}                                      
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+                        <script>
+                            var tableIndex5 = 0;
+                            function add_skills() {
+                                if(document.getElementById("skills_title").value.length == 0)
+                                    {
+                                        alert("عنوان نمیتواند خالی باشد")
+                                    }
+                                let val5 = $('#skills_title').val();
+                                console.log(val5)
+                                let text5 = $('#skills_title').val();
+                                var x5 = document.getElementById("tbl_skillFile").rows.namedItem(val5);
+                                console.log(x5);
+                                if (x5 == null && text5.trim() !='') {
+                                    var table5 = document.getElementById("tbl_skillFile");
+                                    var row5 = table5.insertRow(tableIndex5);
+                                    row5.id = val5;
+                                    var cellskill = row5.insertCell(0);
+                                    var cellskill2 = row5.insertCell(1);
+                                    var cellskill3 = row5.insertCell(2);
+                                    cellskill.innerHTML = text5 + "<input name='skills_title' value='" + val5.trim() + "' class='hidden'>";
+                                    cellskill2.innerHTML="<input name='skills_files' required type='file' class=''>"
+                                    cellskill3.innerHTML = "<span class='glyphicon glyphicon-trash row-remover5 btn btn-danger '></span>";
+                                    tableIndex5++;
+                                }
+                                $('#skills_title').val('')
+                            }
+                            $("body").on('click', '.row-remover5', function() {
+                                $(this).closest('tr').remove();
+                                tableIndex5--;
+                            });
+                        </script>
+                        <!-- Button trigger modal -->
+<a type="button" class="btn btn-light" style="border: solid black 1px;" data-toggle="modal" data-target="#skills">
+    <img src="static/assets/images/skills-svgrepo-com.svg" style="width:50px;height:50px;" alt="">
+    مهارت ها 
+</a>
+  
+  <!-- Modal 4 -->
+  <div class="modal fade" id="skills" tabindex="-1" role="dialog" aria-labelledby="skillsTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="skillsLongTitle">مهارت ها </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right pb-5 top_title">عنوان مهارت ها  :
+                     </label>
+                <input id="skills_title" type="text">
+                <button onclick="add_skills();" class="btn btn-primary" style="position: absolute;" type="button">افزودن <i class="fa fa-plus" aria-hidden="true"></i></button>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right ">
+                <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                    <label for="">  مهارت ها   :</label>
+                    <table class="table table-striped table-bordered dt-responsive nowrap"
+                        cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>عنوان فایل</th>
+                                <th>اسم فایل</th>
+                                <th>حذف</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbl_skillFile">
+                            
+                            {% for item in skills_objects %}
+                            <tr>
+                                <td>
+                                    {{ item.title }}
+                                    <input value="{{ item.title }}" class='hidden'>
+                                </td>
+                                <td>
+                                    <a href="/media/{{ item.skills_file }}" target="_blank">{{ item.skills_file.name }}</a>
+                                </td>
+                                <td>
+                                    <span onclick='ajaxFunc_skill("{{ item.id }}");' class='glyphicon glyphicon-trash row-remover5 btn btn-danger'></span>
+                                </td>
+                            </tr>                                        
+                            {% endfor %}                                      
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+
+                        <script>
+                            var tableIndex6 = 0;
+                            function add_articles() {
+                                if(document.getElementById("articles_title").value.length == 0)
+                                    {
+                                        alert("عنوان نمیتواند خالی باشد")
+                                    }
+                                let val6 = $('#articles_title').val();
+                                console.log(val6)
+                                let text6 = $('#articles_title').val();
+                                var x6 = document.getElementById("tbl_articleFile").rows.namedItem(val6);
+                                console.log(x6);
+                                if (x6 == null && text6.trim() !='') {
+                                    var table6 = document.getElementById("tbl_articleFile");
+                                    var row6 = table6.insertRow(tableIndex6);
+                                    row6.id = val6;
+                                    var cellarticle = row6.insertCell(0);
+                                    var cellarticle2 = row6.insertCell(1);
+                                    var cellarticle3 = row6.insertCell(2);
+                                    cellarticle.innerHTML = text6 + "<input name='articles_title' value='" + val6.trim() + "' class='hidden'>";
+                                    cellarticle2.innerHTML="<input name='articles_files' required type='file' class=''>"
+                                    cellarticle3.innerHTML = "<span class='glyphicon glyphicon-trash row-remover6 btn btn-danger '></span>";
+                                    tableIndex6++;
+                                }
+                                $('#articles_title').val('')
+                            }
+                            $("body").on('click', '.row-remover6', function() {
+                                $(this).closest('tr').remove();
+                                tableIndex6--;
+                            });
+                        </script>
+                        <!-- Button trigger modal -->
+<a type="button" class="btn btn-light" style="border: solid black 1px;" data-toggle="modal" data-target="#articles">
+    <img src="static/assets/images/atom-svgrepo-com.svg" style="width:50px;height:50px;" alt="">
+    مقالات
+</a>
+  
+  <!-- Modal 5 -->
+  <div class="modal fade" id="articles" tabindex="-1" role="dialog" aria-labelledby="articlesTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="articlesLongTitle"> مقالات</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right pb-5 top_title">عنوان مقالات   :
+                     </label>
+                <input id="articles_title" type="text">
+                <button onclick="add_articles();" class="btn btn-primary" style="position: absolute;" type="button">افزودن <i class="fa fa-plus" aria-hidden="true"></i></button>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right ">
+                <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                    <label for="">  مقالات   :</label>
+                    <table class="table table-striped table-bordered dt-responsive nowrap"
+                        cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>عنوان فایل</th>
+                                <th>اسم فایل</th>
+                                <th>حذف</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbl_articleFile">
+                            
+                            {% for item in articles_objects %}
+                            <tr>
+                                <td>
+                                    {{ item.title }}
+                                    <input value="{{ item.title }}" class='hidden'>
+                                </td>
+                                <td>
+                                    <a href="/media/{{ item.articles_file }}" target="_blank">{{ item.articles_file.name }}</a>
+                                </td>
+                                <td>
+                                    <span onclick='ajaxFunc_article("{{ item.id }}");' class='glyphicon glyphicon-trash row-remover6 btn btn-danger'></span>
+                                </td>
+                            </tr>                                        
+                            {% endfor %}                                      
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+                        <script>
+                            var tableIndex7 = 0;
+                            function add_books() {
+                                if(document.getElementById("books_title").value.length == 0)
+                                    {
+                                        alert("عنوان نمیتواند خالی باشد")
+                                    }
+                                let val7 = $('#books_title').val();
+                                console.log(val7)
+                                let text7 = $('#books_title').val();
+                                var x7 = document.getElementById("tbl_bookFile").rows.namedItem(val7);
+                                console.log(x7);
+                                if (x7 == null && text7.trim() !='') {
+                                    var table7 = document.getElementById("tbl_bookFile");
+                                    var row7 = table7.insertRow(tableIndex7);
+                                    row7.id = val7;
+                                    var cellbook = row7.insertCell(0);
+                                    var cellbook2 = row7.insertCell(1);
+                                    var cellbook3 = row7.insertCell(2);
+                                    cellbook.innerHTML = text7 + "<input name='books_title' value='" + val7.trim() + "' class='hidden'>";
+                                    cellbook2.innerHTML="<input name='books_files' required type='file' class=''>"
+                                    cellbook3.innerHTML = "<span class='glyphicon glyphicon-trash row-remover7 btn btn-danger '></span>";
+                                    tableIndex7++;
+                                }
+                                $('#books_title').val('')
+                            }
+                            $("body").on('click', '.row-remover7', function() {
+                                $(this).closest('tr').remove();
+                                tableIndex7--;
+                            });
+                        </script>
+                        <!-- Button trigger modal -->
+<a type="button" class="btn btn-light" style="border: solid black 1px;" data-toggle="modal" data-target="#books">
+    <img src="static/assets/images/books-svgrepo-com.svg" style="width:50px;height:50px;" alt="">
+    کتاب ها 
+</a>
+  
+  <!-- Modal 6 -->
+  <div class="modal fade" id="books" tabindex="-1" role="dialog" aria-labelledby="booksTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="booksLongTitle">کتابها </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right pb-5 top_title">عنوان کتابها   :
+                     </label>
+                <input id="books_title" type="text">
+                <button onclick="add_books();" class="btn btn-primary" style="position: absolute" type="button">افزودن <i class="fa fa-plus" aria-hidden="true"></i></button>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right ">
+                <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                    <label for="">  کتابها   :</label>
+                    <table class="table table-striped table-bordered dt-responsive nowrap"
+                        cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>عنوان فایل</th>
+                                <th>اسم فایل</th>
+                                <th>حذف</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbl_bookFile">
+                            
+                            {% for item in books_objects %}
+                            <tr>
+                                <td>
+                                    {{ item.title }}
+                                    <input value="{{ item.title }}" class='hidden'>
+                                </td>
+                                <td>
+                                    <a href="/media/{{ item.books_file }}" target="_blank">{{ item.books_file.name }}</a>
+                                </td>
+                                <td>
+                                    <span onclick='ajaxFunc_books("{{ item.id }}");' class='glyphicon glyphicon-trash row-remover7 btn btn-danger'></span>
+                                </td>
+                            </tr>                                        
+                            {% endfor %}                                      
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+
+                        <script>
+                            var tableIndex8 = 0;
+                            function add_inventions() {
+                                if(document.getElementById("inventions_title").value.length == 0)
+                                    {
+                                        alert("عنوان نمیتواند خالی باشد")
+                                    }
+                                let val8 = $('#inventions_title').val();
+                                console.log(val8)
+                                let text8 = $('#inventions_title').val();
+                                var x8 = document.getElementById("tbl_inventionFile").rows.namedItem(val8);
+                                console.log(x8);
+                                if (x8 == null && text8.trim() !='') {
+                                    var table8 = document.getElementById("tbl_inventionFile");
+                                    var row8 = table8.insertRow(tableIndex8);
+                                    row8.id = val8;
+                                    var cellinvention = row8.insertCell(0);
+                                    var cellinvention2 = row8.insertCell(1);
+                                    var cellinvention3 = row8.insertCell(2);
+                                    cellinvention.innerHTML = text8 + "<input name='inventions_title' value='" + val8.trim() + "' class='hidden'>";
+                                    cellinvention2.innerHTML="<input name='inventions_files' required type='file' class=''>"
+                                    cellinvention3.innerHTML = "<span class='glyphicon glyphicon-trash row-remover8 btn btn-danger '></span>";
+                                    tableIndex8++;
+                                }
+                                $('#inventions_title').val('')
+                            }
+                            $("body").on('click', '.row-remover8', function() {
+                                $(this).closest('tr').remove();
+                                tableIndex8--;
+                            });
+                        </script>
+                        <!-- Button trigger modal -->
+<a type="button" class="btn btn-light" style="border: solid black 1px;" data-toggle="modal" data-target="#inventions">
+    <img src="static/assets/images/invention-light-svgrepo-com.svg" style="width:50px;height:50px;" alt="">
+    اختراعات
+</a>
+  
+  <!-- Modal 7 -->
+  <div class="modal fade" id="inventions" tabindex="-1" role="dialog" aria-labelledby="inventionsTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="inventionsLongTitle">اختراعات </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right pb-5 top_title">عنوان اختراعات   :
+                     </label>
+                <input id="inventions_title" type="text">
+                <button onclick="add_inventions();" class="btn btn-primary" style="position: absolute ;" type="button">افزودن <i class="fa fa-plus" aria-hidden="true"></i></button>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right ">
+                <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                    <label for="">  اختراعات   :</label>
+                    <table class="table table-striped table-bordered dt-responsive nowrap"
+                        cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>عنوان فایل</th>
+                                <th>اسم فایل</th>
+                                <th>حذف</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbl_inventionFile">
+                            
+                            {% for item in inventions_objects %}
+                            <tr>
+
+                                    <td>
+                                        {{ item.title }}
+                                        <input value="{{ item.title }}" class='hidden'>
+                                    </td>
+                                    <td>
+                                    <a href="/media/{{ item.inventions_file }}" target="_blank">{{ item.inventions_file.name }}</a>
+                                </td>
+                                <td>
+                                    <span onclick='ajaxFunc_inventions("{{ item.id }}");' class='glyphicon glyphicon-trash row-remover8 btn btn-danger'></span>
+                                </td>
+                            </tr>                                        
+                            {% endfor %}                                      
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+
+                        <script>
+                            var tableIndex9 = 0;
+                            function add_trials() {
+                                if(document.getElementById("passed_trials_title").value.length == 0)
+                                    {
+                                        alert("عنوان نمیتواند خالی باشد")
+                                    }
+                                let val9 = $('#passed_trials_title').val();
+                                console.log(val9)
+                                let text9 = $('#passed_trials_title').val();
+                                var x9 = document.getElementById("tbl_trialFile").rows.namedItem(val9);
+                                console.log(x9);
+                                if (x9 == null && text9.trim() !='') {
+                                    var table9 = document.getElementById("tbl_trialFile");
+                                    var row9 = table9.insertRow(tableIndex9);
+                                    row9.id = val9;
+                                    var celltrials = row9.insertCell(0);
+                                    var celltrials2 = row9.insertCell(1);
+                                    var celltrials3 = row9.insertCell(2);
+                                    celltrials.innerHTML = text9 + "<input name='passed_trials_title' value='" + val9.trim() + "' class='hidden'>";
+                                    celltrials2.innerHTML="<input name='passed_trials_files' required type='file' class=''>"
+                                    celltrials3.innerHTML = "<span class='glyphicon glyphicon-trash row-remover9 btn btn-danger '></span>";
+                                    tableIndex9++;
+                                }
+                                $('#passed_trials_title').val('')
+                            }
+                            $("body").on('click', '.row-remover9', function() {
+                                $(this).closest('tr').remove();
+                                tableIndex9--;
+                            });
+                        </script>
+                        <!-- Button trigger modal -->
+<a type="button" class="btn btn-light" style="border: solid black 1px;" data-toggle="modal" data-target="#trials">
+    <img src="static/assets/images/tutorial-enter-svgrepo-com.svg" style="width:50px;height:50px;" alt="">
+    دوره های گذرانده شده
+</a>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="trials" tabindex="-1" role="dialog" aria-labelledby="trialsTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">دوره های گذرانده شده </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right pb-5 top_title">عنوان دوره های گذرانده شده   :
+                     </label>
+                <input id="passed_trials_title" type="text">
+                <button onclick="add_trials();" class="btn btn-primary" style="position: absolute ;" type="button">افزودن <i class="fa fa-plus" aria-hidden="true"></i></button>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right ">
+                <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                    <label for="">  دوره های گذرانده شده   :</label>
+                    <table class="table table-striped table-bordered dt-responsive nowrap"
+                    cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>عنوان فایل</th>
+                            <th>اسم فایل</th>
+                            <th>حذف</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbl_trialFile">
+                        
+                        {% for item in passed_trials_objects %}
+                        <tr>
+                            <td>
+                                {{ item.title }}
+                                <input value="{{ item.title }}" class='hidden'>
+                            </td>
+                            <td>
+                                <a href="/media/{{ item.passed_trials_file }}" target="_blank">{{ item.passed_trials_file.name }}</a>
+                            </td>
+                            <td>
+                                <span onclick='ajaxFunc_passed_trials("{{ item.id }}");' class='glyphicon glyphicon-trash row-remover9 btn btn-danger'></span>
+                            </td>
+                        </tr>                                        
+                        {% endfor %}                                      
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+  <a type="button" class="btn btn-light" style="border: solid black 1px;" data-toggle="modal" data-target="#org_struc">
+    <img src="static/assets/images/bar-chart-svgrepo-com.svg" style="width:50px;height:50px;" alt="">
+    فرایند ساختار سازمانی
+</a>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="org_struc" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">فرایند ساختار سازمانی</h5>
+
+        </div>
+        <div class="modal-body">
+                <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                    <table class="table table-striped table-bordered dt-responsive nowrap"
+                        cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>نام</th>
+                                <th>حذف</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tblTeam">
+                            {% for item in member_charts %}
+                            <tr id="{{item.TeamMember.member}}">
+                                <td>
+                                    {{item.chart.ChartText}}
+                                    <input name='chartMember' value='{{item.chart.Chart}}'
+                                        class='hidden'>
+                                </td>
+                                <td>
+                                    <span class='glyphicon glyphicon-trash row-remover85 btn btn-danger '></span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <script>
+                    let tableIndex = 0;
+                    function addTeam( value,innerText ) {
+
+                        let val = value;
+                        console.log(val)
+                        let text = innerText;
+                        console.log(text)
+                        var x = document.getElementById("tblTeam").rows.namedItem(val);
+                        console.log(x);
+                        if (x == null) {
+                            var table = document.getElementById("tblTeam");
+                            var row = table.insertRow(tableIndex);
+                            row.id = val;
+                            var cell1 = row.insertCell(0);
+                            var cell2 = row.insertCell(1);
+                            cell1.innerHTML = "<p class='limit_text' >" + text + "</p>" + "<input name='chartMember' value='" + val + "' class='hidden'>";
+                            cell2.innerHTML = "<span class='glyphicon glyphicon-trash row-remover85 btn btn-danger '></span>";
+                            tableIndex++;
+                        }
+                    }
+
+
+                    $("body").on('click', '.row-remover85', function() {
+                    $(this).closest('tr').remove();
+                    tableIndex--;
+                    });
+
+                </script>
+
+                <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right" dir="ltr">
+                    <ul id="tree1">
+                        {{ html_chart|safe }}
+                    </ul>
+                </div>
+
+                <div class="clearfix"></div>
+        </div>
+        <div class="modal-footer">
+ 
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+                    <div class="col-md-3 col-sm-4 col-xs-4 form-group pull-right">
+                        <button type="submit" class="btn btn-success">ذخیره</button>
+                    </div>
+            </div>
+            </form>
+            {% for field in members_form %}
+            {% if field.errors %}
+                <div class="alert alert-danger">
+                    {{ field.label_tag }} {{ field.errors }}
+                </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+
+  <script>
+    $.fn.fileUploader = function (filesToUpload) {
+this.closest(".files").change(function (evt) {
+
+  for (var i = 0; i < evt.target.files.length; i++) {
+      filesToUpload.push(evt.target.files[i]);
+  };
+  var output = [];
+
+  for (var i = 0, f; f = evt.target.files[i]; i++) {
+      var removeLink = "<a class=\"removeFile\" href=\"#\" data-fileid=\"" + i + "\"> حذف این فایل</a>";
+
+      output.push("<li><strong>", escape(f.name), "</strong> - ",
+          f.size, " bytes. &nbsp; &nbsp; ", removeLink, "</li> ");
+  }
+
+  $(this).children(".fileList")
+      .append(output.join(""));
+});
+};
+
+var filesToUpload = [];
+$(document).on("click",".removeFile", function(e){
+e.preventDefault();
+var fileName = $(this).parent().children("strong").text();
+for(i = 0; i < filesToUpload.length; ++ i){
+  if(filesToUpload[i].name == fileName){
+      filesToUpload.splice(i, 1);
+  }	
+}
+$(this).parent().remove();
+});
+$("#books_file").fileUploader(filesToUpload);
+$("#uploadBtn").click(function (e) {
+  e.preventDefault();
+});
+</script>
+<script>
+    $.fn.fileUploader = function (filesToUpload) {
+this.closest(".files").change(function (evt) {
+
+  for (var i = 0; i < evt.target.files.length; i++) {
+      filesToUpload.push(evt.target.files[i]);
+  };
+  var output = [];
+
+  for (var i = 0, f; f = evt.target.files[i]; i++) {
+      var removeLink = "<a class=\"removeFile\" href=\"#\" data-fileid=\"" + i + "\"> حذف این فایل</a>";
+
+      output.push("<li><strong>", escape(f.name), "</strong> - ",
+          f.size, " bytes. &nbsp; &nbsp; ", removeLink, "</li> ");
+  }
+
+  $(this).children(".fileList")
+      .append(output.join(""));
+});
+};
+
+var filesToUpload = [];
+$(document).on("click",".removeFile", function(e){
+e.preventDefault();
+var fileName = $(this).parent().children("strong").text();
+for(i = 0; i < filesToUpload.length; ++ i){
+  if(filesToUpload[i].name == fileName){
+      filesToUpload.splice(i, 1);
+  }	
+}
+$(this).parent().remove();
+});
+$("#inventions_file").fileUploader(filesToUpload);
+$("#uploadBtn").click(function (e) {
+  e.preventDefault();
+});
+</script>
+  <script>
+    $.fn.fileUploader = function (filesToUpload) {
+this.closest(".files").change(function (evt) {
+
+  for (var i = 0; i < evt.target.files.length; i++) {
+      filesToUpload.push(evt.target.files[i]);
+  };
+  var output = [];
+
+  for (var i = 0, f; f = evt.target.files[i]; i++) {
+      var removeLink = "<a class=\"removeFile\" href=\"#\" data-fileid=\"" + i + "\"> حذف این فایل</a>";
+
+      output.push("<li><strong>", escape(f.name), "</strong> - ",
+          f.size, " bytes. &nbsp; &nbsp; ", removeLink, "</li> ");
+  }
+
+  $(this).children(".fileList")
+      .append(output.join(""));
+});
+};
+
+var filesToUpload = [];
+$(document).on("click",".removeFile", function(e){
+e.preventDefault();
+var fileName = $(this).parent().children("strong").text();
+for(i = 0; i < filesToUpload.length; ++ i){
+  if(filesToUpload[i].name == fileName){
+      filesToUpload.splice(i, 1);
+  }	
+}
+$(this).parent().remove();
+});
+$("#articles_file").fileUploader(filesToUpload);
+$("#uploadBtn").click(function (e) {
+  e.preventDefault();
+});
+</script>
+
+  <script>
+    $.fn.fileUploader = function (filesToUpload) {
+this.closest(".files").change(function (evt) {
+
+  for (var i = 0; i < evt.target.files.length; i++) {
+      filesToUpload.push(evt.target.files[i]);
+  };
+  var output = [];
+
+  for (var i = 0, f; f = evt.target.files[i]; i++) {
+      var removeLink = "<a class=\"removeFile\" href=\"#\" data-fileid=\"" + i + "\"> حذف این فایل</a>";
+
+      output.push("<li><strong>", escape(f.name), "</strong> - ",
+          f.size, " bytes. &nbsp; &nbsp; ", removeLink, "</li> ");
+  }
+
+  $(this).children(".fileList")
+      .append(output.join(""));
+});
+};
+
+var filesToUpload = [];
+$(document).on("click",".removeFile", function(e){
+e.preventDefault();
+var fileName = $(this).parent().children("strong").text();
+for(i = 0; i < filesToUpload.length; ++ i){
+  if(filesToUpload[i].name == fileName){
+      filesToUpload.splice(i, 1);
+  }	
+}
+$(this).parent().remove();
+});
+$("#file_edu_records").fileUploader(filesToUpload);
+$("#uploadBtn").click(function (e) {
+  e.preventDefault();
+});
+</script>
+  <script>
+    $.fn.fileUploader = function (filesToUpload) {
+this.closest(".files").change(function (evt) {
+
+  for (var i = 0; i < evt.target.files.length; i++) {
+      filesToUpload.push(evt.target.files[i]);
+  };
+  var output = [];
+
+  for (var i = 0, f; f = evt.target.files[i]; i++) {
+      var removeLink = "<a class=\"removeFile\" href=\"#\" data-fileid=\"" + i + "\"> حذف این فایل</a>";
+
+      output.push("<li><strong>", escape(f.name), "</strong> - ",
+          f.size, " bytes. &nbsp; &nbsp; ", removeLink, "</li> ");
+  }
+
+  $(this).children(".fileList")
+      .append(output.join(""));
+});
+};
+
+var filesToUpload = [];
+$(document).on("click",".removeFile", function(e){
+e.preventDefault();
+var fileName = $(this).parent().children("strong").text();
+for(i = 0; i < filesToUpload.length; ++ i){
+  if(filesToUpload[i].name == fileName){
+      filesToUpload.splice(i, 1);
+  }	
+}
+$(this).parent().remove();
+});
+$("#skills_file").fileUploader(filesToUpload);
+$("#uploadBtn").click(function (e) {
+  e.preventDefault();
+});
+</script>
+      <script>
+          $.fn.fileUploader = function (filesToUpload) {
+    this.closest(".files").change(function (evt) {
+
+        for (var i = 0; i < evt.target.files.length; i++) {
+            filesToUpload.push(evt.target.files[i]);
+        };
+        var output = [];
+
+        for (var i = 0, f; f = evt.target.files[i]; i++) {
+            var removeLink = "<a class=\"removeFile\" href=\"#\" data-fileid=\"" + i + "\"> حذف این فایل</a>";
+
+            output.push("<li><strong>", escape(f.name), "</strong> - ",
+                f.size, " bytes. &nbsp; &nbsp; ", removeLink, "</li> ");
+        }
+
+        $(this).children(".fileList")
+            .append(output.join(""));
+    });
+};
+
+var filesToUpload = [];
+$(document).on("click",".removeFile", function(e){
+    e.preventDefault();
+    var fileName = $(this).parent().children("strong").text();
+    for(i = 0; i < filesToUpload.length; ++ i){
+        if(filesToUpload[i].name == fileName){
+            filesToUpload.splice(i, 1);
+        }	
+	}
+    $(this).parent().remove();
+});
+    $("#passed_trials_file").fileUploader(filesToUpload);
+    $("#uploadBtn").click(function (e) {
+        e.preventDefault();
+    });
+      </script>
+            <script>
+                $.fn.fileUploader = function (filesToUpload) {
+          this.closest(".files").change(function (evt) {
+      
+              for (var i = 0; i < evt.target.files.length; i++) {
+                  filesToUpload.push(evt.target.files[i]);
+              };
+              var output = [];
+      
+              for (var i = 0, f; f = evt.target.files[i]; i++) {
+                  var removeLink = "<a class=\"removeFile\" href=\"#\" data-fileid=\"" + i + "\"> حذف این فایل</a>";
+      
+                  output.push("<li><strong>", escape(f.name), "</strong> - ",
+                      f.size, " bytes. &nbsp; &nbsp; ", removeLink, "</li> ");
+              }
+      
+              $(this).children(".fileList")
+                  .append(output.join(""));
+          });
+      };
+      
+      var filesToUpload = [];
+      $(document).on("click",".removeFile", function(e){
+          e.preventDefault();
+          var fileName = $(this).parent().children("strong").text();
+          for(i = 0; i < filesToUpload.length; ++ i){
+              if(filesToUpload[i].name == fileName){
+                  filesToUpload.splice(i, 1);
+              }	
+          }
+          $(this).parent().remove();
+      });
+          $("#job_record_file").fileUploader(filesToUpload);
+          $("#uploadBtn").click(function (e) {
+              e.preventDefault();
+          });
+            </script>
+            <script>
+                $.fn.fileUploader = function (filesToUpload) {
+            this.closest(".files").change(function (evt) {
+            
+              for (var i = 0; i < evt.target.files.length; i++) {
+                  filesToUpload.push(evt.target.files[i]);
+              };
+              var output = [];
+            
+              for (var i = 0, f; f = evt.target.files[i]; i++) {
+                  var removeLink = "<a class=\"removeFile\" href=\"#\" data-fileid=\"" + i + "\"> حذف این فایل</a>";
+            
+                  output.push("<li><strong>", escape(f.name), "</strong> - ",
+                      f.size, " bytes. &nbsp; &nbsp; ", removeLink, "</li> ");
+              }
+            
+              $(this).children(".fileList")
+                  .append(output.join(""));
+            });
+            };
+            
+            var filesToUpload = [];
+            $(document).on("click",".removeFile", function(e){
+            e.preventDefault();
+            var fileName = $(this).parent().children("strong").text();
+            for(i = 0; i < filesToUpload.length; ++ i){
+              if(filesToUpload[i].name == fileName){
+                  filesToUpload.splice(i, 1);
+              }	
+            }
+            $(this).parent().remove();
+            });
+            $("#degree_file").fileUploader(filesToUpload);
+            $("#uploadBtn").click(function (e) {
+              e.preventDefault();
+            });
+            </script>
+            <script type="application/javascript">
+                function ajaxFunc(idObjFile) {
+                    // e.preventDefault();
+                    $.ajax({
+                        type: 'POST',
+                        url: '/edit_pro_degree',
+                        data: {
+                            fileid: idObjFile,
+                            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                            action: 'post'
+                        },
+                        success: function (json) {
+                            if (json['result'] == "success" ){
+                                alert('success')
+                            }
+                        },
+                        error: function (xhr, errmsg, err) {
+                            alert('faild')
+                        }
+                    });
+                }
+            </script>
+                        <script type="application/javascript">
+                function ajaxFunc_edu(idObjFile) {
+                    // e.preventDefault();
+                    $.ajax({
+                        type: 'POST',
+                        url: '/edit_edu_records',
+                        data: {
+                            fileid: idObjFile,
+                            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                            action: 'post'
+                        },
+                        success: function (json) {
+                            // if (json['result'] == "success" ){
+                            //     alert('با موفقیت')
+                            // }
+                        },
+                        error: function (xhr, errmsg, err) {
+                            // alert('خطا')
+                        }
+                    });
+                }
+            </script>
+                                    <script type="application/javascript">
+                function ajaxFunc_job(idObjFile) {
+                    // e.preventDefault();
+                    $.ajax({
+                        type: 'POST',
+                        url: '/edit_job_record',
+                        data: {
+                            fileid: idObjFile,
+                            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                            action: 'post'
+                        },
+                        success: function (json) {
+                            // if (json['result'] == "success" ){
+                            //     alert('با موفقیت')
+                            // }
+                        },
+                        error: function (xhr, errmsg, err) {
+                            // alert('خطا')
+                        }
+                    });
+                }
+            </script>
+            <script type="application/javascript">
+                function ajaxFunc_skill(idObjFile) {
+                    // e.preventDefault();
+                    $.ajax({
+                        type: 'POST',
+                        url: '/edit_skills',
+                        data: {
+                            fileid: idObjFile,
+                            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                            action: 'post'
+                        },
+                        success: function (json) {
+                            // if (json['result'] == "success" ){
+                            //     alert('با موفقیت')
+                            // }
+                        },
+                        error: function (xhr, errmsg, err) {
+                            // alert('خطا')
+                        }
+                    });
+                }
+            </script>
+                        <script type="application/javascript">
+                function ajaxFunc_article(idObjFile) {
+                    // e.preventDefault();
+                    $.ajax({
+                        type: 'POST',
+                        url: '/edit_articles',
+                        data: {
+                            fileid: idObjFile,
+                            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                            action: 'post'
+                        },
+                        success: function (json) {
+                            // if (json['result'] == "success" ){
+                            //     alert('با موفقیت')
+                            // }
+                        },
+                        error: function (xhr, errmsg, err) {
+                            // alert('خطا')
+                        }
+                    });
+                }
+            </script>
+                              <script type="application/javascript">
+                function ajaxFunc_books(idObjFile) {
+                    // e.preventDefault();
+                    $.ajax({
+                        type: 'POST',
+                        url: '/edit_books',
+                        data: {
+                            fileid: idObjFile,
+                            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                            action: 'post'
+                        },
+                        success: function (json) {
+                            // if (json['result'] == "success" ){
+                            //     alert('با موفقیت')
+                            // }
+                        },
+                        error: function (xhr, errmsg, err) {
+                            // alert('خطا')
+                        }
+                    });
+                }
+            </script>
+                                  <script type="application/javascript">
+                function ajaxFunc_inventions(idObjFile) {
+                    // e.preventDefault();
+                    $.ajax({
+                        type: 'POST',
+                        url: '/edit_inventions',
+                        data: {
+                            fileid: idObjFile,
+                            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                            action: 'post'
+                        },
+                        success: function (json) {
+                            // if (json['result'] == "success" ){
+                            //     alert('با موفقیت')
+                            // }
+                        },
+                        error: function (xhr, errmsg, err) {
+                            // alert('خطا')
+                        }
+                    });
+                }
+            </script>
+       <script type="application/javascript">
+                function ajaxFunc_passed_trials(idObjFile) {
+                    // e.preventDefault();
+                    $.ajax({
+                        type: 'POST',
+                        url: '/edit_passed_trials',
+                        data: {
+                            fileid: idObjFile,
+                            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                            action: 'post'
+                        },
+                        success: function (json) {
+                            // if (json['result'] == "success" ){
+                            //     alert('با موفقیت')
+                            // }
+                        },
+                        error: function (xhr, errmsg, err) {
+                            // alert('خطا')
+                        }
+                    });
+                }
+            </script>
+    </div>
+</div>
+{% endblock %}

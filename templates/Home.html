@@ -1,0 +1,365 @@
+{% extends '_layout.html' %}
+{% load comon_tags %}
+{% load static %}
+
+{% block jsBlock %}
+    <!-- Datatables -->
+    <script src="{% static 'assets/vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/jszip/dist/jszip.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/pdfmake.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/vfs_fonts.js' %}"></script>
+    {% for Knowledge in Knowledges %}
+        <script>
+            document.getElementById("{{ Knowledge.CreateDate }}{{ forloop.counter }}").innerHTML = normalizeDate("{{ Knowledge.CreateDate }}");
+        </script>
+    {% endfor %}
+{% endblock %}
+
+{% block cssBlock %}
+    <!-- Datatables -->
+    <style>
+        .inline_order {
+            width: 25%;
+        }
+        .dataTables_filter{
+            display: none;
+        }
+        label{
+            display: none;
+        }
+        .limit_text{
+            white-space: nowrap;
+            overflow: hidden;
+            width: 380px;
+            height: 30px;
+            text-overflow: ellipsis; 
+        }
+
+    </style>
+    <link href="{% static 'assets/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}"
+          rel="stylesheet">
+{% endblock %}
+
+
+{% block pageContent %}
+    <div class="row">
+        
+        <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+            <a href="/used_knowlege">
+            <div class="col-md-1 col-sm-12 col-xs-12 inline_order">
+                <div class="panel panel-primary text-center no-boder card_dash">
+                    <div class="panel-left pull-left green">
+                        <img src="/static/assets/images/recycle-svgrepo-com.svg" style="width:60px;height:60px;" alt="">
+                    </div>
+                    <div class="panel-right">
+                        <h3>{{used}}</h3>
+                        <strong> استفاده شده</strong>
+                    </div>
+                </div>
+            </div>
+            </a>
+            <div class="col-md-1 col-sm-12 col-xs-12 inline_order">
+                <div class="panel panel-primary text-center no-boder card_dash">
+                    <div class="panel-left pull-left blue">
+                        <img src="/static/assets/images/eye-svgrepo-com.svg" style="width:60px;height:60px;" alt="">
+                    </div>
+
+                    <div class="panel-right">
+                        <h3>{{view_count}} </h3>
+                        <strong> بازدید شده</strong>
+
+                    </div>
+                </div>
+            </div>
+            <a href="/followings">
+            <div class="col-md-1 col-sm-12 col-xs-12 inline_order">
+                <div  class="panel panel-primary text-center no-boder card_dash">
+                    <div class="panel-left pull-left red">
+                        <img src="/static/assets/images/group-of-people-svgrepo-com.svg" style="width:60px;height:50px;" alt="">
+
+                    </div>
+                    <div class="panel-right">
+                        <h3>{{ followings }} </h3>
+                        <strong> دنبال شوندگان </strong>
+
+                    </div>
+                </div>
+            </div>
+        </a>
+            <a href="/followers">
+            <div class="col-md-1 col-sm-12 col-xs-12 inline_order">
+                <div  class="panel panel-primary text-center no-boder card_dash">
+                    <div class="panel-left pull-left brown">
+                        <img src="/static/assets/images/people-user-svgrepo-com.svg" style="width:50px;height:50px;" alt="">
+
+                    </div>
+                    <div class="panel-right">
+                        <h3>{{ followers }} </h3>
+                        <strong>دنبال کنندگان</strong>
+
+                    </div>
+                </div>
+            </div>
+        </a>
+            <a href="/my_knowledge_list/{{request.user.member}}">
+            <div class="col-md-1 col-sm-12 col-xs-12 inline_order">
+                <div  class="panel panel-primary text-center no-boder card_dash">
+                    <div class="panel-left pull-left brown">
+                        <img src="/static/assets/images/envelope-svgrepo-com.svg" style="width:50px;height:50px;" alt="">
+
+                    </div>
+                    <div class="panel-right">
+                        <h3>{{ my_knowledge }}</h3>
+                        <strong>دانش های من</strong>
+
+                    </div>
+                </div>
+            </div>
+        </a>
+            <a href="/KnowledgeReport">
+            <div class="col-md-1 col-sm-12 col-xs-12 inline_order">
+                <div class="panel panel-primary text-center no-boder card_dash">
+                    <div class="panel-left pull-left brown">
+                        <img src="/static/assets/images/news-paper-svgrepo-com.svg" style="width:50px;height:50px;" alt="">
+
+                    </div>
+                    <div class="panel-right">
+                        <h3>{{ items }} </h3>
+                        <strong>کل دانش ها</strong>
+
+                    </div>
+                </div>
+            </div>
+        </a>
+        <a href="#">
+            <div class="col-md-1 col-sm-12 col-xs-12 inline_order">
+                <div  class="panel panel-primary text-center no-boder card_dash">
+                    <div class="panel-left pull-left brown">
+                        <img src="/static/assets/images/heart-svgrepo-com.svg" style="width:50px;height:50px;" alt="">
+
+
+                    </div>
+                    <div class="panel-right">
+                        <h3>{{up_votes}} </h3>
+                        <strong>پسندیده شده</strong>
+
+                    </div>
+                </div>
+            </div>
+        </a>
+            <a href="/KnowledgeList/1">
+            <div class="col-md-1 col-sm-12 col-xs-12 inline_order">
+                <div class="panel panel-primary text-center no-boder card_dash">
+                    <div class="panel-left pull-left brown">
+                        <img src="/static/assets/images/analysis-analytics-magnifier-magnifying-search-svgrepo-com.svg" style="width:50px;height:50px;" alt="">
+
+                    </div>
+                    <div class="panel-right">
+                        <h3>
+                            {% if request.user|has_group:"IT" %}
+                            {{knowldge_in_check_process}}
+                            {% else %}
+                            {{unchecked_knowledges}}
+                            {% endif %}
+                        </h3>
+                        <strong>درحال بررسی </strong>
+
+                    </div>
+                </div>
+            </div>
+        </a>
+        </div>
+        
+        
+
+        <div class="col-md-12 col-sm-12 col-xs-12 ">
+            <div class="x_panel">
+                <div class="x_title bg-main">
+                    <h2 class="pull-right">نمودار ثبت دانشنامه</h2>
+                    <ul class="nav navbar-left panel_toolbox">
+                        <li>
+                            <a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <script src="{% static 'assets/cloack/Chart.min.js'%}"></script>
+                    <center><canvas id="myChart2" style="width:110%;max-width:800px"></canvas></center>
+                    
+
+                    <script>
+                        var xValues = ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند',];
+                        new Chart("myChart2", {
+                          type: "line",
+                          data: {
+                            labels: xValues,
+                            datasets: [{ 
+                              data: {{ data_month | safe }},
+                              borderColor: "green",
+                              fill: true,
+                              label: 'ثبت شده'
+                            }, { 
+                              data: {{ unsubmitted_data_month | safe }},
+                              borderColor: "red",
+                              fill: true,
+                              label: 'ثبت نشده'
+                            }]
+                          },
+                          options: {
+                            legend: {display: true,}
+                          }
+                        });
+                        </script>
+                </div>
+            </div>
+        </div>
+            <script src="{% static 'assets/Scripts/apexcharts.min.js'%}"></script>
+                <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title bg-main">
+                    <h2 class="pull-right"> نمودار ثبت   دانش ها </h2>
+                    <ul class="nav navbar-left panel_toolbox">
+                        <li>
+                            <a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+						<div class="card">
+							<div class="card-body">
+								<div id="chart8"></div>
+							</div>
+						</div>
+
+
+                </div>
+
+            </div>
+
+        <script>
+
+
+        	// chart 8
+            var options = {
+                series: {{ data | safe }},
+                chart: {
+                    foreColor: '#9ba7b2',
+                    height: 330,
+                    type: 'pie',
+                },
+                colors: [
+                        '#b380bd', '#da004b', '#2c80bd' ,'#6f6ff2','#6f6f8b','#fa9985','#1d9902','#99FFFF','#8A3434',"#FFFF99",'#FFE5CC',"#ff00ff","#6bc678","#bedbff",'#460646','#282e47','#838584','#2c5244','#000101','#9bb76c','#0200f9'
+                ],
+                labels: {{ labels | safe }}
+                ,
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            height: 360
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            };
+            var chart = new ApexCharts(document.querySelector("#chart8"), options);
+            chart.render();
+
+        </script>
+
+
+        </div>
+        
+        
+        <div class="x_content">
+            <div class="row">
+                <div class="alert bg-purple" role="alert">
+                    لیست اخرین دانش های ثبت شده
+                  </div>
+                <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap"
+                       cellspacing="0" width="100%">
+                    <thead>
+                    <tr>
+                        <th>ردیف</th>
+                        <th>عنوان</th>
+                        <th>ثبت کننده</th>
+                        <th>تاریخ</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for Knowledge in Knowledges %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><p class="limit_text">{{ Knowledge.KnowledgeTitle }}</p></td>
+                            <td>{% if Knowledge.CreatorUserID.first_name and Knowledge.CreatorUserID.last_name %}
+                                {{ Knowledge.CreatorUserID.first_name }} {{ Knowledge.CreatorUserID.last_name }}
+                            {% else %}
+                                {{ Knowledge.CreatorUserID.username }}
+                            {% endif %}</td>
+                            <td id="{{ Knowledge.CreateDate }}{{ forloop.counter }}"></td>                           
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .piestyle{
+            position: absolute!important;
+            top: 20px!important;
+            right: 0 !important;
+            white-space: nowrap!important;
+            overflow: scroll!important;
+            width: 250px!important;
+            text-overflow: ellipsis!important;
+        }
+    </style>
+
+
+    <script>
+
+
+
+        function excutepiechartlegendstoright(){
+
+        var PieChartLegends = document.getElementsByClassName("apexcharts-legend apexcharts-align-center position-right")
+        PieChartLegends[0].classList.add("piestyle");
+
+
+            setTimeout(excutepiechartlegendstoright, 500);
+        }
+
+        excutepiechartlegendstoright();
+
+
+    </script>
+{% endblock %}

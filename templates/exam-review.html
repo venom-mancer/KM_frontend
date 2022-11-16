@@ -1,0 +1,231 @@
+{% extends '_layout.html' %}
+{% load static %}
+{% load comon_tags %}
+
+{% block jsBlock %}
+    <!-- Datatables -->
+    <script src="{% static 'assets/vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/jszip/dist/jszip.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/pdfmake.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/vfs_fonts.js' %}"></script>
+{% endblock %}
+
+{% block cssBlock %}
+    <!-- Datatables -->
+
+    <link href="{% static 'assets/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}"
+          rel="stylesheet">
+
+      <style>
+        p {
+            margin: 25px 10px;
+            color : black;
+            font-size: 14px;
+        }
+
+        ul {
+            margin-top: 20px;
+        }
+
+        .style_class {
+            margin: 1px -35%
+        }
+        .style_class2 {
+            margin: 1px -26%
+        }
+        .size_Style{
+            font-size: 14px;
+        }
+        .colorfull{
+            color : black;
+            font-size: 14px;
+        }
+        hr{
+            width: 95%;
+            border-top: 1px solid rgb(184, 184, 184);
+        }
+    </style>
+{% endblock %}
+
+
+{% block pageContent %}
+
+<div class="">
+    <h2>مرور آزمون</h2>
+    <div class="x_panel">
+        <div class="x_title bg-primary">      
+            <h2 class="pull-right">
+            نمره شما در این آزمون : {{ score_user }} 
+            از  {{ total_score_exam }}
+            </h2>
+            <ul class="nav navbar-left panel_toolbox">
+                <li>
+                    <a class="close-link"><i class="fa fa-close"></i></a>
+                </li>
+                <li>
+                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        
+            <div class="x_content">
+                <ul class="nav nav-tabs">                  
+                    {% for question in questions %}                      
+                        {% if forloop.counter == 1 %}
+                            <li class="active" ><a id="question{{ question.id }}Tab" data-toggle="tab" href="#question{{ question.id }}">سوال {{ forloop.counter }} </a></li>
+                        {% else %}
+                            <li><a id="question{{ question.id }}Tab" data-toggle="tab" href="#question{{ question.id }}">سوال {{ forloop.counter }} </a></li>
+                        {% endif %}                  
+                    {% endfor %}
+                </ul>
+
+                <div class="tab-content" >
+                    
+                    <div class="clearfix" style="padding: 15px;"></div>
+                    {% for question in questions  %}
+                    {% if forloop.counter == 1 %}
+                    <div id="question{{ question.id }}" class="tab-pane fade in active">
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">                                
+                        <span  class="col-md-12 col-sm-12 col-xs-12 form-group pull-right question">
+                            {{ question.question|safe }} 
+                        </span>
+
+                    </div>
+                    {% for option in options|in_question_options:question %}
+                                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                                        {% if option in this_user_answers %}                               
+                                            {% if option.is_answer %}
+                                                <span style="background-color: rgb(215, 246, 157);width: 25%;"  class="col-md-12 col-sm-12 col-xs-12 alert form-group pull-right answer">
+
+                                                    {% if option.is_answer %}
+                                                        <input type="checkbox" disabled checked value="{{ option.id }}" name="question{{ question.id }}" >
+                                                        {% else %}
+                                                        <input type="checkbox" disabled value="{{ option.id }}" name="question{{ question.id }}" >
+                                                    {% endif %}
+
+                                                    {{forloop.counter}}-
+                                                    {{ option.option_text }} 
+                                                </span>
+                                            {% else %}
+                                                <span style="background-color: rgb(246, 190, 157);width: 25%;"  class="col-md-12 col-sm-12 col-xs-12 alert form-group pull-right answer">
+                                                
+                                                    {% if option.is_answer %}
+                                                        <input type="checkbox" disabled checked value="{{ option.id }}" name="question{{ question.id }}" >
+                                                        {% else %}
+                                                        <input type="checkbox" disabled value="{{ option.id }}" name="question{{ question.id }}" >
+                                                    {% endif %}
+                                                
+                                                    {{forloop.counter}}-
+                                                    {{ option.option_text }} 
+                                                </span>
+                                            
+                                            {% endif %}
+                                        {% else %}
+                                            <span  class="col-md-12 col-sm-12 col-xs-12 alert form-group pull-right answer">
+                                                    
+                                                {% if option.is_answer %}
+                                                    <input type="checkbox" disabled checked value="{{ option.id }}" name="question{{ question.id }}" >
+                                                    {% else %}
+                                                    <input type="checkbox" disabled value="{{ option.id }}" name="question{{ question.id }}" >
+                                                {% endif %}
+                                                                    
+                                                {{forloop.counter}}-
+                                                {{ option.option_text }}    
+                                            </span>
+                                        
+                                        {% endif %}
+                                    </div>                                                                       
+                    {% endfor %}
+                                 بارم سوال :
+                             {{ question.grade }}
+                    <div class="clearfix"></div>
+                  </div>
+                    {% else %}
+                    <div id="question{{ question.id }}" class="tab-pane fade">
+                        <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">                                
+                            <span  class="col-md-12 col-sm-12 col-xs-12 form-group pull-right question">
+                                {{ question.question|safe }} 
+                            </span>
+    
+                        </div>
+
+                        {% for option in options|in_question_options:question %}
+                        <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">                                
+                            {% if option in this_user_answers %}
+                            
+                                {% if option.is_answer %}
+                                    <span style="background-color: rgb(215, 246, 157);width: 25%;"  class="col-md-12 col-sm-12 col-xs-12 alert form-group pull-right answer">
+                                            
+                                        {% if option.is_answer %}
+                                            <input type="checkbox" disabled checked value="{{ option.id }}" name="question{{ question.id }}" >
+                                            {% else %}
+                                            <input type="checkbox" disabled value="{{ option.id }}" name="question{{ question.id }}" >
+                                        {% endif %}
+                                                            
+                                        {{forloop.counter}}-
+                                        {{ option.option_text }} 
+                                    </span>
+                                {% else %}
+                                    <span style="background-color: rgb(246, 190, 157);width: 25%;"  class="col-md-12 col-sm-12 col-xs-12 alert form-group pull-right answer">
+
+                                        {% if option.is_answer %}
+                                            <input type="checkbox" disabled checked value="{{ option.id }}" name="question{{ question.id }}" >
+                                            {% else %}
+                                            <input type="checkbox" disabled value="{{ option.id }}" name="question{{ question.id }}" >
+                                        {% endif %}
+
+                                        {{forloop.counter}}-
+                                        {{ option.option_text }} 
+                                    </span>
+
+                                {% endif %}
+                                                               
+
+                            {% else %}
+                                <span  class="col-md-12 col-sm-12 col-xs-12 alert form-group pull-right answer">
+                                        
+                                    {% if option.is_answer %}
+                                        <input type="checkbox" disabled checked value="{{ option.id }}" name="question{{ question.id }}" >
+                                        {% else %}
+                                        <input type="checkbox" disabled value="{{ option.id }}" name="question{{ question.id }}" >
+                                    {% endif %}
+                                                        
+                                    {{forloop.counter}}-
+                                    {{ option.option_text }}    
+                                </span>
+                            
+                            {% endif %}
+                            
+                        </div>
+                                                           
+                        {% endfor %}
+                        بارم سوال :
+                        {{ question.grade }}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

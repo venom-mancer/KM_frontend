@@ -1,0 +1,310 @@
+{% extends '_layout.html' %}
+{% load static %}
+{% load comon_tags %}
+{% block jsBlock %}
+    <script>
+        function printDiv(divName) {
+            let printContents = document.getElementById(divName).innerHTML;
+            let originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+        }
+    </script>
+    
+    {% if Knowledge.KnowledgeFromDate %}
+    <script>
+        document.getElementById("fromDate").innerHTML = normalizeDate('{{ Knowledge.KnowledgeFromDate }}');
+    </script>
+    {% endif %}
+
+    
+    {% if Knowledge.KnowledgetoDate  %}
+    <script>
+        document.getElementById("toDate").innerHTML = normalizeDate('{{ Knowledge.KnowledgetoDate }}');
+    </script>
+    {% endif %}
+    
+{% endblock %}
+
+
+{% block cssBlock %}
+    <style>
+        p {
+            margin: 25px 10px;
+            color : black;
+            font-size: 14px;
+        }
+
+        ul {
+            margin-top: 20px;
+        }
+
+        .style_class {
+            margin: 1px -35%
+        }
+        .style_class2 {
+            margin: 1px -26%
+        }
+        .size_Style{
+            font-size: 14px;
+        }
+        .colorfull{
+            color : black;
+            font-size: 14px;
+        }
+        hr{
+            width: 95%;
+            border-top: 1px solid rgb(184, 184, 184);
+        }
+    </style>
+{% endblock %}
+
+
+{% block pageContent %}
+
+    <div class="">
+        <div class="x_panel">
+            <div class="x_title bg-primary">
+                <h2 class="pull-right">{{ Knowledge.KnowledgeTitle.KnowledgeTitleText }}</h2>
+                <a onclick="printDiv('printarea');"> <i class="fa fa-print" style="
+                    font-size: 30px;
+                    color: white;
+                    cursor: pointer;"> </i><h2> پرینت این صفحه </h2> </a>
+                <ul class="nav navbar-left panel_toolbox">
+                    <li>
+                        <a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <a type="button" style="border: solid black 1px;" class="btn btn-light" >
+                
+                {% if Jalase_owner.profile_picture %}
+                        <img src={{Jalase_owner.profile_picture.url}} style="width:60px;height:60px;" alt="">
+                        {% else %}
+                        <img src="/static/assets/images/user.png" style="width:60px;height:60px;" alt="">
+                        {% endif %}
+                        <br>
+                {% if Jalase_owner.first_name and Jalase_owner.last_name %}
+                                <span class="colorfull">{{Jalase_owner.first_name}} {{Jalase_owner.last_name}}</span>
+                            {% else %}
+                                <span class="colorfull">{{Jalase_owner.username}}</span>
+                            {% endif %}
+                            <br>
+                            {% if userPercentage != -1 %}
+                            <span class="colorfull">درصد مشارکت : {{userPercentage}}</span>
+
+                            {% endif %}
+                            <br>
+                            
+                            <span class="colorfull">دانش های ثبت شده: {{ Jalase_owner | knowledge_counter }}</span>
+                            <br>
+                            <span class="colorfull">امتیاز : {{ Jalase_owner | calculator }}</span>
+                
+                        </a>
+            
+            {% for member in team  %}
+            <a type="button" style="border: solid black 1px;" class="btn btn-light" >
+                {% if member.TeamMember.profile_picture %}
+                        <img src={{member.TeamMember.profile_picture.url}} style="width:60px;height:60px;" alt="">
+                        {% else %}
+                        <img src="/static/assets/images/user.png" style="width:60px;height:60px;" alt="">
+                        {% endif %}
+                    <br>
+                 <span class="colorfull">{{member.TeamMember.first_name}} {{member.TeamMember.last_name}}</span>
+                 <br>
+                 <span class="colorfull">درصد مشارکت : {{ member.joinPercentage }}</span>
+                 <br>
+
+                 <span class="colorfull">دانش های ثبت شده : {{ member.TeamMember | knowledge_counter }}</span>
+                 <br>
+                 <span class="colorfull">امتیاز : {{ member.TeamMember | calculator }}</span>
+            </a>
+            
+            {% endfor %}
+            <hr>
+
+            <div class="x_content">
+                <div class="row" id="printarea">
+                    {% if Jalase.KnowledgePermission %}
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <label style="color : rgb(27, 87, 19);" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"><i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i>  جلسه محرمانه است </label>
+
+                    </div>
+                    {% else %}
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <label style="color : rgb(131, 0, 0);" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"><i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i>  جلسه محرمانه نیست </label>
+
+                    </div>
+                    {% endif %}
+                    <hr>
+                    {% if Jalase.KnowledgeIsSpecial %}
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right ">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"><i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i>  ویژگی دانش :</label>
+                        <span class="col-md-12 col-sm-12 col-xs-12 form-group pull-right colorfull">
+                            {{ Jalase.KnowledgeIsSpecial|safe }}
+                        </span>
+                        
+                    </div>
+                    {% else %}
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right ">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"><i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i>  ویژگی دانش :</label>
+                        <span class="col-md-12 col-sm-12 col-xs-12 form-group pull-right colorfull">
+                        </span>
+                        
+                    </div>
+                    {% endif %}
+
+                    <hr>
+                    {% if Jalase.JalaseSpecialReason %}
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right"><i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i> دلیل ویژه بودن : </label>
+                        {{ Jalase.JalaseSpecialReason|safe }}
+                    </div> 
+                    {% else %}
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right"><i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i> دلیل ویژه بودن : </label>
+                        <p>جلسه ویژه نیست </p> 
+                    </div>
+                    {% endif %}
+                    <hr>
+                    
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"> <i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i> موضوع جلسه :</label>
+                        <span class="col-md-12 col-sm-12 col-xs-12 form-group pull-right colorfull"> {{ Jalase.JalaseTitle }}</span>
+
+                    </div>
+
+                    <hr>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"> <i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i> مکان وقوع جلسه :</label>  
+                        {% if Jalase.JalasePlace %}
+                        <span class="style_class colorfull">{{ Jalase.JalasePlace|safe }}</span>
+                        {% endif %}
+                    </div>
+
+                    <hr>
+                    
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"><i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i> مزایای جلسه :</label>
+                        <span class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">{{ Jalase.JalaseCause|safe }}</span>
+                    </div>
+
+                    <hr>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"> <i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i>
+                            حوزه دانش(فرآیند دانش) :</label>                           
+                            {% if Jalase.KnowledgeProcess %}
+                            <span class="col-md-12 col-sm-12 col-xs-12 form-group pull-right colorfull">{{ Jalase.KnowledgeProcess|safe }}</span>
+                            {% endif %}
+                    </div>
+
+                    <hr>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                            <label style="color : blue;" class="control-label col-md-12 col-sm-12 col-xs-12 pull-right size_Style"> <i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i> شرح
+                                جلسه (روش حل مشکل) : </label>
+
+                        <span class="style_class">{{ Jalase.JalaseWhichAction|safe }}</span>
+
+                    </div>
+                   
+                    <hr>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"> <i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i> تغییرات مورد نیاز به منظور بومی سازی:  : </label>
+                        <span class="style_class">{{ Jalase.JalaseResults|safe }}</span>
+
+                    </div>
+
+                    <hr>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"> <i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i> پیشنهادات حاصل از جلسه : </label>
+                        
+                        <span class="style_class colorfull">{{ Jalase.JalaseUsedCases|safe }}</span>
+
+                    </div>
+
+                    <hr>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <label  style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"> <i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i> مخاطبان و کاربران (موارد کاربرد) :</label>
+                        <span class="style_class colorfull">{{ Jalase.JalaseUsers|safe }}</span>
+
+                    </div>
+
+                    <hr>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"> <i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i> فرهنگ واژگان :</label>
+                        
+                        {% if Jalase.JalaseKeywords %}
+                        <span class="col-md-12 col-sm-12 col-xs-12 form-group pull-right colorfull">{{ Jalase.JalaseKeywords }}</span>
+                        {% endif %}   
+
+                    </div>
+
+                    <hr>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"> <i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i> خلاصه ی جلسه :</label>
+                        <span class="style_class">{{ Jalase.JalaseSummary|safe }}</span>
+
+                    </div>
+
+                    <hr>                   
+                        
+                    <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right ">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"><i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i> فایل های ضمیمه :</label>
+                        {% if len_files == 1 %}
+                        <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                            <table class="table table-striped table-bordered dt-responsive nowrap"
+                                cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th class="colorfull">عنوان فایل</th>
+                                        <th class="colorfull">لینک فایل</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tblFile">
+    
+                                    {% for item in obj_files %}
+                                    <tr class="colorfull">
+                                        <td class="colorfull">
+                                        {{ item.title }}
+                                        <input value="{{ item.title }}" class='hidden'>
+                                        </td>
+                                        <td class="colorfull">
+                                            <a class="colorfull" href="/media/{{ item.file }}" target="_blank">{{ item.file.name }}</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <hr>
+                    {% if voice %}
+                    
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <label style="color : blue;" class="control-label col-md-5 col-sm-3 col-xs-12 pull-right size_Style"> <i class="fa fa-circle" style="color : blue;" aria-hidden="true"></i> ویس:</label>
+                        <audio controls="" src="{{ voice }}"></audio>
+
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

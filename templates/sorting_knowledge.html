@@ -1,0 +1,313 @@
+{% extends '_layout.html' %}
+
+{% load static %}
+{% block jsBlock %}
+<script src="{% static 'assets/vendors/select2/dist/js/select2.min.js' %}"></script>
+
+<script src="{% static 'assets/vendors/MdBootstrapPersianDateTimePicker/js/calendar.js' %}"
+    type="text/javascript"></script>
+<script
+    src="{% static 'assets/vendors/MdBootstrapPersianDateTimePicker/js/jquery.Bootstrap-PersianDateTimePicker.js' %}"
+    type="text/javascript"></script>
+<script src="{% static 'assets/Scripts/persian-datepicker.js' %}"></script>
+<script src="{% static 'assets/vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'assets/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+<script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+<script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'assets/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+<script src="{% static 'assets/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+<script src="{% static 'assets/vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'assets/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+<script src="{% static 'assets/vendors/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
+
+<script>
+    </script>
+     <script>
+        $('input[type=file]').addClass('form-control');
+        $('input[type=number]').addClass('form-control');
+        $('input[type=text]').addClass('form-control');
+        $('input[type=email]').addClass('form-control');
+        $('select').addClass('form-control');
+        $(document).ready(function () { $('select').select2();});
+        function hideErroruser(){
+            $('#erroruser').addClass('hidden');
+        }
+        setTimeout(hideErroruser, 6000)
+    </script>
+    <script>
+
+        $('#fromDate1').val(normalizeDate($('#id_KnowledgeExpireDate').val()));
+
+        $('input[type=text]').addClass('form-control');
+
+        $('input[type=file]').addClass('form-control');
+        $('input[type=number]').addClass('form-control');
+        $("#id_KnowledgeExpireDate").addClass('hidden');
+        $("#hideKnowledgeProcess").addClass('hidden');
+        document.getElementById('KnowledgeKeywordsViewer').value = document.getElementById('id_KnowledgeKeywords').value
+
+        function datepicker1Change() {
+            document.getElementById("id_KnowledgeFromDate").value = fixNumbers($('#fromDate1').val().replace("/", "").replace("/", ""));
+        }
+
+        function datepicker2Change() {
+            document.getElementById("id_KnowledgetoDate").value = fixNumbers($('#fromDate2').val().replace("/", "").replace("/", ""));
+        }
+
+    </script>
+
+    {% endblock %}
+
+    {% block cssBlock %}
+    <link href="{% static 'assets/vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'assets/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'checkbox.css' %}"
+          rel="stylesheet">
+    <style>
+        span.select2.select2-container.select2-container--default {
+            width: 100% !important;
+        }
+
+    </style>
+    <style>
+            .limit_text{
+            white-space: nowrap;
+            overflow: hidden;
+            width: 500px;
+            display: block;
+            height: 30px;
+            text-overflow: ellipsis
+        }
+
+        .form-check-input {
+            width: 1em;
+            height: 1em;
+            margin-top: .25em;
+            vertical-align: top;
+            background-color: #fff;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            border: 1px solid rgba(0, 0, 0, .25);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            -webkit-print-color-adjust: exact;
+            color-adjust: exact;
+        }
+
+        .form-check-input:checked {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .form-check-input:checked[type=checkbox] {
+            background-image: url({% static 'images/checkbox-pic.svg' %});
+        }
+
+
+    </style>
+
+    {% endblock %}
+
+    {% block pageContent %}
+    <div class="">
+        <div class="x_panel">
+            <div class="x_title bg-primary">
+                <h2 class="pull-right">گزارش دانش</h2>
+                <ul class="nav navbar-left panel_toolbox">
+                    <li>
+                        <a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form action="" method="post" enctype="multipart/form-data" >
+                    {% csrf_token %}
+                    <div class="row">
+
+                        <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                            <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">از تاریخ</label>
+                            <input type="text" class="form-control" id="fromDate1"
+                            name="from_date"
+                            data-mddatetimepicker="true" data-trigger="click"
+                            data-targetselector="#fromDate1" data-groupid="group1" data-fromdate="true"
+                            data-enabletimepicker="false" data-placement="right"
+                            onchange="datepicker1Change()">
+                        </div>
+                        <div class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                            <label class="control-label col-md-5 col-sm-3 col-xs-12 pull-right">تا تاریخ</label>
+                            <input type="text" class="form-control" id="fromDate2"
+                            name="to_date"
+                            data-mddatetimepicker="true" data-trigger="click"
+                            data-targetselector="#fromDate2" data-groupid="group1" data-fromdate="true"
+                            data-enabletimepicker="false" data-placement="right"
+                            onchange="datepicker1Change()">
+                        </div>
+
+
+                        <div style="top: -3px;" class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                            <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right"  style="padding-left: 21px;font-size: 15px;font-weight: bold;">موضوع 1 </label>
+
+                                <div class="container">
+                                    <div class="input-group"> <span class="input-group-addon">
+                                        <input type="checkbox" class="form-check-input" name="mozo1_chekbox" value="1">
+                                        </span>
+                                        <select class="form-control" id="topic1-subject" name="mozo1">
+                                            <option ></option>
+                                            {% for item in get_topic1 %}
+                                            <option value="{{item.id}}"> {{item.mozo1}}</option>
+                                        {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                        </div>
+
+
+                        <div style="top: -3px;" class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                            <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right"  style="padding-left: 21px;font-size: 15px;font-weight: bold;">موضوع 2</label>
+
+                                <div class="container">
+                                    <div class="input-group"> <span class="input-group-addon">
+                                        <input type="checkbox" class="form-check-input" name="mozo2_chekbox" value="1">
+
+                                        </span>
+                                        <select id="topic2-subject" name="mozo2">
+                                        </select>
+                                    </div>
+                                </div>
+                        </div>
+
+
+                        <div style="top: -3px;" class="col-md-6 col-sm-12 col-xs-12 form-group pull-right">
+                            <label class="control-label col-md-12 col-sm-12 col-xs-12 pull-right"  style="padding-left: 21px;font-size: 15px;font-weight: bold;">موضوع 3 </label>
+
+                                <div class="container">
+                                    <div class="input-group"> <span class="input-group-addon">
+                                        <input type="checkbox" class="form-check-input" name="mozo3_chekbox" value="1">
+
+
+                                        </span>
+                                        <select id="topic3-subject" name="mozo3">
+
+                                        </select>
+                                    </div>
+                                </div>
+                        </div>
+
+
+
+                        <div class="clear"></div>
+                        <div class="col-md-3 col-sm-12 col-xs-12 form-group pull-right">
+                            <button class="btn btn-primary"  type="submit">نمایش</button>
+                        </div>
+                        <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap"
+                           cellspacing="0" width="100%">
+                        <thead>
+                        <tr>
+                            <th>ردیف</th>
+                            <th> نام شخص</th>
+                            <th>نظر خبره </th>
+                            <th>عملیات</th>
+                        </tr>
+                        </thead>
+                        <tbody>                            
+                            {% for item in knowledges %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ item.CreatorUserID.get_full_name }}</td>
+                                    <td><span class="limit_text">{{item.KnowledgeTitle }}</span></td>
+                                    <td>
+                                        <a class="btn btn-success" href="/KnowledgeView/{{ item.KnowledgeCode }}"> کاربرگ</a>      
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    </div>
+                </form>
+                <script>
+                    $("#topic1-subject").change(function () {
+                        const subjectId = $(this).val();  // get the selected subject ID from the HTML dropdown list 
+                        $.ajax({                       // initialize an AJAX request
+                            type: "POST",
+                            url: '{% url "topic2_view" %}',
+                            data: {
+                                'subject_id': subjectId,       // add the country id to the POST parameters
+                                'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+                            },
+                            success: function (data) {   // `data` is from `topic1_view` view 
+                                var topic2 = document.getElementById('topic2-subject').innerHTML = "";
+                                var topic3 = document.getElementById('topic3-subject').innerHTML = "";
+                                console.log('data',data)
+                                let arr_from_json = JSON.parse(data);
+                                for (let i = 0; i < arr_from_json.length; i++) {
+                                $('#topic2-subject').append("<option value=" + arr_from_json[i].id + ">" + arr_from_json[i].text + "</option>");
+                            }
+        
+                                //// this cause mozo 3 npt to be null
+                                const subjectId = arr_from_json[0].id // get the selected subject ID from the HTML dropdown list 
+                                $.ajax({                       // initialize an AJAX request
+                                    type: "POST",
+                                    url: '{% url "topic3_view" %}',
+                                    data: {
+                                        'subject_id': subjectId,       // add the country id to the POST parameters
+                                        'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+                                    },
+                                    success: function (data) {   // `data` is from `topic1_view` view 
+                                        document.getElementById('topic3-subject').innerHTML = "";
+                                        console.log('data',data)
+                                        let arr_from_json = JSON.parse(data);
+                                        for (let i = 0; i < arr_from_json.length; i++) {
+                                        $('#topic3-subject').append("<option value=" + arr_from_json[i].id + ">" + arr_from_json[i].text + "</option>");
+                                    }
+        
+                                    }
+                                });
+                                /////
+                        
+                            }
+                        });
+                    });
+                </script>
+                        <script>
+                            $("#topic2-subject").change(function () {
+                                const subjectId = $(this).val();  // get the selected subject ID from the HTML dropdown list 
+                                $.ajax({                       // initialize an AJAX request
+                                    type: "POST",
+                                    url: '{% url "topic3_view" %}',
+                                    data: {
+                                        'subject_id': subjectId,       // add the country id to the POST parameters
+                                        'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+                                    },
+                                    success: function (data) {   // `data` is from `topic1_view` view 
+                                        document.getElementById('topic3-subject').innerHTML = "";
+                                        console.log('data',data)
+                                        let arr_from_json = JSON.parse(data);
+                                        for (let i = 0; i < arr_from_json.length; i++) {
+                                        $('#topic3-subject').append("<option value=" + arr_from_json[i].id + ">" + arr_from_json[i].text + "</option>");
+                                    }
+        
+                                    }
+                                });
+                            });
+                        </script>
+            </div>
+        </div>
+    </div>
+
+    {% endblock pageContent %}

@@ -1,0 +1,1125 @@
+{% load static %}
+{% load comon_tags %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <title>{{ Title }}</title>
+    {% include '_header.html' %}
+
+    <!-- Css Block -->
+    {% block cssBlock %}{% endblock %}
+    <!-- jQuery custom content scroller -->
+    <link href="{% static 'assets/vendors/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.min.css' %}"
+
+          rel="stylesheet"/>
+    <!-- Custom Theme Style -->
+    <link href="{% static 'assets/Content/custom.min.css' %}" rel="stylesheet"/>
+    <!-- persian datetime picker -->
+    <link type="text/css" href="{% static 'assets/Content/persian-datepicker.css' %}" rel="stylesheet"/>
+    <link rel="stylesheet"
+          href="{% static 'assets/vendors/MdBootstrapPersianDateTimePicker/css/jquery.Bootstrap-PersianDateTimePicker.css' %}"/>
+
+    <link href="{% static 'assets/input-tags/css/tagsinput.css' %}" rel="stylesheet" />
+    <style>
+        .bg-secondary {
+            background-color: #6c757d !important;
+        }
+
+        .bg-primary{
+            color: #fff !important;
+            background-color: #337ab7 !important;
+        }
+
+
+        .wizard .nav-tabs {
+            position: relative;
+            margin-bottom: 0;
+            border-bottom-color: #e0e0e0;
+        }
+
+        .wizard > div.wizard-inner {
+            position: relative;
+        }
+
+        .connecting-line {
+            height: 2px;
+            background: #e0e0e0;
+            position: absolute;
+            width: 70%;
+            margin: 0 auto;
+            left: 0;
+            right: 0;
+            top: 50%;
+            z-index: 1;
+        }
+
+        .wizard .nav-tabs > li.active > a,
+        .wizard .nav-tabs > li.active > a:hover,
+        .wizard .nav-tabs > li.active > a:focus {
+            color: #555555;
+            cursor: default;
+            border: 0;
+            border-bottom-color: transparent;
+        }
+
+        span.round-tab {
+            width: 70px;
+            height: 70px;
+            line-height: 70px;
+            display: inline-block;
+            border-radius: 100px;
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            z-index: 2;
+            position: absolute;
+            left: 0;
+            text-align: center;
+            font-size: 25px;
+        }
+
+        span.round-tab i {
+            color: #555555;
+        }
+
+        .wizard li.active span.round-tab {
+            background: #fff;
+            border: 2px solid #5bc0de;
+
+        }
+
+        .wizard li.active span.round-tab i {
+            color: #5bc0de;
+        }
+
+        span.round-tab:hover {
+            color: #333;
+            border: 2px solid #333;
+        }
+
+        .wizard .nav-tabs > li {
+            width: 33%;
+        }
+
+        .wizard li:after {
+            content: " ";
+            position: absolute;
+            left: 46%;
+            opacity: 0;
+            margin: 0 auto;
+            bottom: 0px;
+            border: 5px solid transparent;
+            border-bottom-color: #5bc0de;
+            transition: 0.1s ease-in-out;
+        }
+
+        .wizard li.active:after {
+            content: " ";
+            position: absolute;
+            left: 46%;
+            opacity: 1;
+            margin: 0 auto;
+            bottom: 0px;
+            border: 10px solid transparent;
+            border-bottom-color: #5bc0de;
+        }
+
+        .wizard .nav-tabs > li a {
+            width: 70px;
+            height: 70px;
+            margin: 20px auto;
+            border-radius: 100%;
+            padding: 0;
+        }
+
+        .wizard .nav-tabs > li a:hover {
+            background: transparent;
+        }
+
+        .wizard .tab-pane {
+            position: relative;
+            padding-top: 10px;
+        }
+
+        .wizard h3 {
+            margin-top: 0;
+        }
+
+        @media (max-width: 585px) {
+
+            .wizard {
+                width: 90%;
+                height: auto !important;
+            }
+
+            span.round-tab {
+                font-size: 16px;
+                width: 50px;
+                height: 50px;
+                line-height: 50px;
+            }
+
+            .wizard .nav-tabs > li a {
+                width: 50px;
+                height: 50px;
+                line-height: 50px;
+            }
+
+            .wizard li.active:after {
+                content: " ";
+                position: absolute;
+                left: 35%;
+            }
+        }
+
+        #files-area{
+        width: 30%;
+        margin: 0 auto;
+        }
+        .file-block{
+            border-radius: 10px;
+            background-color: rgba(144, 163, 203, 0.2);
+            margin: 5px;
+            color: initial;
+            display: inline-flex;
+            & > span.name{
+                padding-right: 10px;
+                width: max-content;
+                display: inline-flex;
+            }
+        }
+    .file-delete{
+        display: flex;
+        width: 24px;
+        color: initial;
+        background-color: #6eb4ff00;
+        font-size: large;
+        justify-content: center;
+        margin-right: 3px;
+        cursor: pointer;
+        &:hover{
+            background-color: rgba(144, 163, 203, 0.2);
+            border-radius: 10px;
+        }
+        & > span{
+            transform: rotate(45deg);
+        }
+    }
+    .quality {
+    position: relative;
+    display: inline-block;
+    width: 40%;
+    height: 100%;
+    line-height: 40px;
+  }
+  .quality:first-child label {
+    border-radius: 15px;
+  }
+  .quality:last-child label {
+    border-radius: 15px;
+
+  }
+  .quality label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    font-style: italic;
+    text-align: center;
+    transition: transform 0.4s, color 0.4s, background-color 0.4s;
+  }
+  .quality input[type="radio"] {
+    appearance: none;
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  .quality input[type="radio"]:focus {
+    outline: 0;
+    outline-offset: 0;
+  }
+  .quality input[type="radio"]:checked ~ label {
+    background-color: rgb(5, 5, 2);
+    color: rgb(255, 255, 255);
+  }
+  .quality input[type="radio"]:active ~ label {
+    transform: scale(1.05);
+  }
+  p{
+  font-weight: bold;
+}
+hr{
+            width: 95%;
+            border-top: 1px solid rgb(136, 136, 136);
+        }
+        
+    </style>
+
+</head>
+
+<body class="nav-md">
+<!-- jQuery -->
+
+<script src="{% static 'assets/vendors/jquery/dist/jquery.min.js' %}"></script>
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col menu_fixed hidden-print">
+            <div class="left_col scroll-view ">
+                <div class="clearfix"></div>
+                <div class="profile">
+                    <div class="profile_pic">
+                        
+                        {% if request.user.profile_picture %}
+                        <img src={{request.user.profile_picture.url}} class="img-circular">
+                        {% else %}
+                        <img src="/static/assets/images/user.png" class="img-circle profile_img">
+                        {% endif %}
+                            
+                    </div>
+                    <div class="profile_info">
+                        <span>خوش آمدید،</span>
+                        <h2>                           
+                            {% if request.user.first_name and request.user.last_name %}
+                                {{request.user.first_name}} {{request.user.last_name}}
+                            {% else %}
+                                {{request.user.username}}
+                            {% endif %}                           
+                        </h2>
+                        <br>
+                        
+                        {% if score %}
+                        <h2> <img src="/static/assets/images/star-svgrepo-com.svg" style="width:15px;height:15px;" alt=""> امتیاز شما : {{ score }} </h2>
+                        {% endif %}
+                    </div>
+                </div>
+                <br/>
+                <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                    <div class="menu_section">
+                        <h3>{% block UsersRole %}{% endblock %}</h3>
+                        <ul class="nav side-menu">
+                            <li ><a href="{% url 'home' %}"><i class="fa fa-home"></i> خانه</a></li>
+                            {% if request.user|has_group:'KnowlegeWorker' %}
+                                <li><a><i class="fa fa-save"></i>ثبت دانش <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/RegintserExperience/1">تجربه</a></li>
+                                        <li><a href="/RegintserExperience/3">دانش تطبیقی</a></li>
+                                        <li><a href="/RegintserExperience/4">تجربه مهارت</a></li>
+                                        <li><a href="/RegintserExperience/5">ارتقای شغلی</a></li>
+                                        <li><a href="/send_documentation">ثبت مستندات</a></li>
+                                        <li><a href="/take_exam_list">ازمون</a></li>
+                                        <li><a href="/my_surveys">نظرسنجی</a></li>
+                                        <!-- <li><a href="/pros_and_cons_test">انتقادات و پیشنهادات</a></li> -->
+
+                                        <!-- <li><a href="regUseOfKnowlege.html">استفاده از دانش</a></li> -->
+                                    </ul>
+                                </li>
+                                <li><a><i class="fa fa-book"></i> مدیریت دانش <span
+                                        class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/KnowledgeList/1">لیست تجربیات</a></li>
+                                        <li><a href="/comparativeـknowledge"> لیست دانش تطبیقی </a></li>
+                                        <li><a href="/skillـexperience_list"> لیست  تجربه مهارت </a></li>
+                                        <li><a href="/jobـpromotion"> لیست   ارتقای شغلی </a></li>
+
+                                        <li><a href="/document_list"> لیست مستندات</a></li>
+                                        <li><a href="#"> گزارش کاربران <span class="fa fa-chevron-down"></span></a>
+                                            <ul class="nav child_menu">
+                                                <li><a href="/KnowledgeReport"> گزارش دانش</a></li>
+                                            </ul>
+                                        </li>                          
+                                     
+                                    </ul>
+                                </li>
+                                <li><a><i class="fa fa-users"></i> تالار گفتمان <span
+                                        class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/knowledgeRequest/">درخواست دانش</a></li>
+                                        <li><a href="/knowledgeRecive/">لیست دریافتی دانش </a></li>
+                                        <li><a href="/knowledgeSent/">لیست ارسالی دانش </a></li>
+                                        <li><a href="/question_request">درخواست سوال </a></li>
+                                        <li><a href="/question_recive/">لیست دریافتی سوال </a></li>
+                                        <li><a href="/question_sent/">لیست ارسالی سوال </a></li>
+                                    </ul>
+                                </li>
+
+                            {% endif %}
+                            {% if request.user|has_group:"Expert" %}
+                                <li><a><i class="fa fa-book"></i> خبرگان <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/unconfirmed_knowledge">دانشنامه های تایید نشده</a></li>
+                                    </ul>
+                                </li>
+                                <li><a><i class="fa fa-bar-chart"></i> گزارش <span
+                                        class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/ReportKnowledgeTree">درخت تصمیم گیری دانش</a></li>
+                                        <li><a href="/sorting_knowledge">دسته بندی دانش</a></li>
+                                        <li><a href="/report_knowledge">گزارش  دانش</a></li>
+                                        <li><a href="/KnowledgeReport">بهترین دانش ها</a></li>
+                                        <li><a href="/systemMembers">تعداد اعضای سیستم</a></li>
+                                        <li><a href="/document_list_report">مستندات سیستم</a></li>
+                                        <!-- <li><a href="/indicator_key_report">گزارش شاخص کلید عملکرد</a></li> -->
+                                        <li><a href="/superior_knowledge_workers">دانش کاران نمونه</a></li>
+                                        <li><a href="/special_knowledgeWorkers">دانش کاران ویژه</a></li>
+                                        <li><a href="/score_of_users">پاداش</a></li>
+                                        <li><a href="/systemExperts">خبره های سیستم</a></li>
+                                        <li><a href="/process_experts">خبره های حوزه دانشی</a></li>
+                                        <li><a href="/conversation_hall">فعالیت در تالار گفتمان</a></li>
+                                        <!-- <li><a href="/ideasAndCriticism">انتقادات و پیشنهادات</a></li> -->
+                                        <li><a href="/polled_users">نظرسنجی</a></li>
+                                        <li><a href="/testet_users">آزمون ها</a></li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            {% if request.user|has_group:"IT" %}
+                                <li><a><i class="fa fa-info-circle"></i> دبیر خانه مدیریت دانش<span
+                                        class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/ITworker"> دانش ها</a></li>
+                                        <li><a href="/inform">  اطلاع رسانی</a></li>
+                                        <li><a href="/inform_list">لیست اطلاع رسانی ها</a></li>
+                                        <li><a href="/ChartManagment">مدیریت چارت سازمانی</a></li>
+                                        <!-- <li><a href="/Key_indicators"> شاخص کلیدی عملکرد</a></li> -->
+                                        <li><a href="/score_formula">تعریف فرمول امتیاز دهی</a></li>
+                                        <li><a href="/Key_indicators">تعریف شاخص کلیدی  </a></li>                                      
+                                        <li><a href="/Key_indicators_list">لیست شاخص کلیدی  </a></li>
+                                        <li><a href="#"> ازمون<span class="fa fa-chevron-down"></span></a>
+                                            <ul class="nav child_menu">
+                                                <li><a href="/test_generator"> ازمون ساز</a></li>
+                                                <li><a href="/test_list">لیست آزمون</a></li>
+                                            </ul>
+                                        </li>
+
+                                        <li><a href="#"> خبرگان<span class="fa fa-chevron-down"></span></a>
+                                            <ul class="nav child_menu">
+                                                <li><a href="/describe_experts">تعریف و ویراش خبرگان </a></li>
+                                                <li><a href="/indicator_assessment"> تعریف شاخص های ارزیاب</a></li>
+                                                <li><a href="/indicator_assessment_list"> لیست شاخص های ارزیاب</a></li>
+                                            </ul>
+                                        </li>
+
+                                        <li><a href="#"> نظرسنجی<span class="fa fa-chevron-down"></span></a>
+                                            <ul class="nav child_menu">
+                                                <li><a href="/survey_generator"> تعریف نظر سنجی</a></li>                                  
+                                                <li><a href="/survey_list"> لیست نظر سنجی</a></li>
+                                            </ul>
+                                        </li>
+
+                                        <li><a href="#"> صورت جلسات شورای راهبردی (اتاق فکر) <span class="fa fa-chevron-down"></span></a>
+                                            <ul class="nav child_menu">
+                                                <li><a href="/thinking_room"> ثبت صورت جلسات</a></li>
+                                                <li><a href="/inform_meeting"> اطلاع رسانی جلسات</a></li>
+                                                <li><a href="/thinking_room_list"> لیست جلسات</a></li>
+                                            </ul>
+                                        </li>
+
+                                        <li><a href="/define_3topics">تعریف موضوع های دبیر خانه</a></li>
+                                        <li><a href="/enterAsothers">ورود به عنوان دیگر اعضا</a></li>
+                                    </ul>
+                                </li>
+                                {% endif %}
+                                {% if request.user|has_group:"Security" %}
+                                <li><a><i class="fa fa-check-square-o" aria-hidden="true"></i>ناظر<span
+                                    class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/security"> برسی وضعیت</a></li>                                
+                                    </ul>
+                                </li>
+                                {% endif %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="sidebar-footer hidden-small">
+                    <a data-toggle="tooltip" data-placement="top" href="/" title="صفحه اصلی سایت">
+                        <span class="glyphicon glyphicon-tag" aria-hidden="true"></span>
+                    </a>
+                    <a data-toggle="tooltip" data-placement="top" title="تمام صفحه" onclick="toggleFullScreen();">
+                        <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                    </a>
+                    <a data-toggle="tooltip" data-placement="top" title="قفل" class="lock_btn">
+                        <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                    </a>
+                    <a data-toggle="tooltip" data-placement="top" href="/logout" title="خروج">
+                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- top navigation -->
+        <div class="top_nav hidden-print">
+            <div class="nav_menu">
+                <nav>
+                    <div class="nav toggle">
+                        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                    </div>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li style="text-align:right">
+                            <a href="#" class="user-profile dropdown-toggle" data-toggle="dropdown"
+                               aria-expanded="false">
+                               {% if request.user.profile_picture %}
+                               <img src={{request.user.profile_picture.url}} alt="{{ UserName }}">
+                               {% else %}
+                               <img src="/static/assets/images/user.png" alt="{{ UserName }}">
+                               {% endif %}
+                                {% if request.user.first_name and request.user.last_name %}
+                                    {{request.user.first_name}} {{request.user.last_name}}
+                                {% else %}
+                                    {{request.user.username}}
+                                {% endif %} 
+                                <span class=" fa fa-angle-down"></span>
+                            </a>
+
+                            <ul class="dropdown-menu dropdown-usermenu pull-right">
+                                <li style="text-align:right"><a href="/profile"><i class="fa fa-user-circle pull-left"></i>
+                                    پروفایل</a>
+                                </li>
+                                <li style="text-align:right"><a href="/password"><i class="fa fa-key pull-left"></i> تغییر
+                                    رمز
+                                    عبور</a></li>
+                                <li style="text-align:right"><a href="#"><i class="fa fa-question pull-left"></i>
+                                    راهنما</a>
+                                </li>
+                                <li style="text-align:right"><a href="/logout"><i
+                                        class="fa fa-sign-out pull-left"></i> خروج</a></li>
+                            </ul>
+                        </li>
+                        {% if notif_button == 2 %}
+                        <li role="presentation" class="nav-item dropdown">
+                            <a href="#" class="dropdown-toggle info-number" id="navbarDropdown1" data-toggle="dropdown" aria-expanded="false">
+                              <i class="fa fa-envelope-o" style="font-size: 22px;"></i>
+                              <span class="badge bg-main" style="font-size: 15px;"> {{notif_len}} </span>
+                            </a>
+                            <ul class="dropdown-menu list-unstyled msg_list" role="menu" aria-labelledby="navbarDropdown1" >
+                              <li class="nav-item" style="overflow-y:scroll">
+                                {% if notif_status == 1 %}
+                                {% for item in notifs %}
+                                <br>
+                                <a class="dropdown-item">                               
+                                  <span> تاریخ شروع جلسه :
+                                    <p id="{{ item.meeting_start_date }}{{ forloop.counter }}" style="display: inline;"></p> 
+                                  </span>
+                                  <span style="display: block;"> ساعت شروع جلسه :
+                                    <p style="display: inline;">{{ item.meeting_start_time }}</p> 
+                                  </span>
+                                <br>
+                                  <span class="message" style="white-space: pre-line;">عنوان : {{item.meeting_title}}</span>
+                                <br>
+                                  <span class="message" style="white-space: pre-line;"> مکان : {{item.meeting_location_place}}</span>
+                                </a>
+                                <hr style="color:black;">
+                                {% endfor %}
+                                {% else %}
+                                <br>
+                                <a class="dropdown-item">                               
+
+                                  <span class="message" style="white-space: pre-line;font-size: 13px;">چیزی برای نمایش وجود ندارد</span>
+                                  
+                                </a>
+                                {% endif %}
+                              </li>
+                            </ul>
+                          </li>
+                          {% endif %}
+                          <li>
+                              <a href="/user_list">
+                                <i style="font-size: 25px;" class="fa fa-address-card-o" aria-hidden="true"></i>
+                            </a>
+                          </li>
+                          <li role="presentation" class="nav-item dropdown">
+                            <a href="/notifications_homepage" class="dropdown-toggle info-number" aria-expanded="false" title="اعلانات">
+                                <i class="fa fa-bell" aria-hidden="true" style="font-size: 23px;"></i>
+                              <span id='NotifBellIcon' class="badge bg-main" style="font-size: 15px;"> {{len_of_notifs}} </span>
+                            </a>
+                          </li>
+                          <li role="presentation" class="nav-item dropdown">
+                            <a href="#" style="font-size:30px;cursor:pointer" onclick="openNav()" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling" aria-label="Palette" title="تم ها">
+                                <i class="fa fa-pencil" aria-hidden="true" style="font-size: 23px;"></i>
+
+                            </a>
+                          </li>
+                    </ul>
+                    </li>
+                    </ul>
+                    
+                </nav>
+            </div>
+        </div>
+
+            
+        <!-- /top navigation -->
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>{{ Title }}</h3>
+                    </div>
+                    <div class="title_right">
+                        <form action="Search" method="post" role="form">
+                            {% csrf_token %}
+
+                            <div class="go_left">
+                                
+                                {% if show_button == 1 %}
+                                <button type="button" onclick="AdvanceSearch();"
+                                style="background-color: var(--clr-sidebar); color:#fff;  box-shadow: 0 0 1rem 0 rgba(0,0,0,0.5)" class="btn btn-secondary">
+                            جستجوی فیلتر دار<i class="fa fa-filter"></i></button>
+                                {% endif %}
+                                    
+
+                                <div class="input-group" style="left: -126px;">
+                                    {#                                    <input type="text" name="SearchTitle" id="id_SearchTitle" class="form-control"#}
+                                    {#                                           placeholder="جستجو برای ...">#}
+                                    {#                                    <span class="input-group-btn">#}
+                                    {#                                            <button class="btn btn-default" type="submit"#}
+                                    {#                                                    style="border-radius:0 !important;"><i#}
+                                    {#                                                    class="fa fa-search"></i></button>#}
+                                    {#                                    <label>جستجوی فیلتر دار</label>#}
+                                    {#                                            <button style="width: 60%;border-radius: 10px ; margin-left: 20px" class="btn btn-default" type="button" onclick="AdvanceSearch();"><i#}
+                                    {#                                                    class="fa fa-filter"></i></button>#}
+                                    {#                                        </span>#}
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <style>
+                        .sidenav {
+                          height: 100%;
+                          width: 0;
+                          position: fixed;
+                          z-index: 1;
+                          top: 0;
+                          left: 0;
+                          background: #ffffff;
+                          overflow-x: hidden;
+                          transition: 0.5s;
+                          padding-top: 60px;
+                        }
+                        
+                        .sidenav a {
+                          padding: 8px 8px 8px 32px;
+                          text-decoration: none;
+                          font-size: 25px;
+                          color: #ffffff;
+                          display: block;
+                          transition: 0.3s;
+                        }
+                        
+                        .sidenav a:hover {
+                          color: #646464;
+                        }
+                        
+                        .sidenav .closebtn {
+                            color: #343434;
+                          position: absolute;
+                          top: 0;
+                          left: 25px;
+                          font-size: 36px;
+                          margin-left: 50px;
+                        }
+                        
+                        #main {
+                          transition: margin-left .5s;
+                          padding: 16px;
+                        }
+                        
+                        @media screen and (max-height: 450px) {
+                          .sidenav {padding-top: 15px;}
+                          .sidenav a {font-size: 18px;}
+                        }
+                        </style>
+                        </head>
+                        <body>
+                        
+                        <div id="mySidenav" class="sidenav">
+                            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                            <form class="color-picker" action="">
+                                <fieldset>
+                                  <legend>انتخاب تم سیستم</legend>
+                                  <label for="Tmain" class="visually-hidden">main</label>
+                                  <input type="radio" name="theme" id="Tmain" checked>
+                              
+                                  <label for="Tpurple" class="visually-hidden">purple theme</label>
+                                  <input type="radio" id="Tpurple" name="theme">
+                              
+                                  <label for="blue" class="visually-hidden">Blue theme</label>
+                                  <input type="radio" id="blue" name="theme">
+                              
+                                  <label for="green" class="visually-hidden">Green theme</label>
+                                  <input type="radio" id="green" name="theme">
+                              
+                                  <label for="dark" class="visually-hidden">Dark theme</label>
+                                  <input type="radio" id="dark" name="theme">
+                                </fieldset>
+                                <br>
+                                <fieldset>
+                                    <label for="Torange" class="visually-hidden">orange theme</label>
+                                    <input type="radio" id="Torange" name="theme">
+                                    <label for="Tpink" class="visually-hidden">Tpink theme</label>
+                                    <input type="radio" id="Tpink" name="theme">
+  
+                                  </fieldset>
+                              </form>
+                        </div>
+                        
+                        <!-- <div id="main">
+                          <h2>Sidenav Push Example</h2>
+                          <p>Click on the element below to open the side navigation menu, and push this content to the right.</p>
+                          <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; open</span>
+                        </div> -->
+                        
+                        <script>
+                        function openNav() {
+                          document.getElementById("mySidenav").style.width = "250px";
+                          document.getElementById("main").style.marginLeft = "250px";
+                        }
+                        
+                        function closeNav() {
+                          document.getElementById("mySidenav").style.width = "0";
+                          document.getElementById("main").style.marginLeft= "0";
+                        }
+                        </script>
+                </div>
+                {% block pageContent %}
+
+                {% endblock %}
+            </div>
+        </div>
+        <!-- /page content -->
+        <!-- footer content -->
+        <footer class="hidden-print">
+            <div class="pull-right">
+                <a>تحلیل و پیاده سازی توسط اریکه پیشگامان اروند</a>
+            </div>
+            <div class="clearfix"></div>
+        </footer>
+    </div>
+</div>
+<div id="lock_screen">
+    <table>
+        <tr>
+            <td>
+                <div class="clock"></div>
+                <span class="unlock">
+                        <span class="fa-stack fa-5x">
+                            <i class="fa fa-square-o fa-stack-2x fa-inverse"></i>
+                            <i id="icon_lock" class="fa fa-lock fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </span>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="modal fade" id="AdvanceSearch" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Search modal content-->
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">جستجوی پیشرفته</h4>
+            </div>
+            <div class="row" style="padding: 20px;">
+                <form action="{% url 'KnowledgeReport' %}" method="post" role="form">
+                    {% csrf_token %}
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <p class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">عنوان تجربه </p>
+                        <input type="text" name="SearchTitle" id="SearchTitle" class="form-control"/>
+                    </div>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <p class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">شخص ثبت کننده </p>
+                        <select class="form-control" name="user_name_registered" id="SearchMember">
+
+                        </select>
+                    </div>
+                                                
+                        <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                            <p class="control-label col-md-4 col-sm-12 col-xs-12 pull-right">موضوع 1  :</p>
+                            <select class="form-control" id="topic1-subject" name="topic1-subject">
+                                <option value="-1" >انتخاب کنید</option>
+                                {% for item in get_topic1 %}
+                                <option value="{{item.id}}"> {{item.mozo1}}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                            <p class="control-label col-md-4 col-sm-12 col-xs-12 pull-right">موضوع 2  :</p>
+                            <select class="form-control" id="topic2-subject" name="topic2-subject">
+                            </select>
+                        </div>
+
+                        <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                            <p class="control-label col-md-4 col-sm-12 col-xs-12 pull-right">موضوع 3  :</p>
+                            <select class="form-control" id="topic3-subject" name="mozo3">
+
+                            </select>
+                        </div>
+
+
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <p class="control-label col-md-4 col-sm-12 col-xs-12 pull-right">کلید واژه</p>
+                            <select class="hidden" id="keywords" name="knowledge_keywords" multiple="true"  data-role="tagsinput">
+                            </select>
+
+                            <input type="text" class="hidden" id="SearchKeyword" name="SearchKeyword" >
+                    </div>
+
+
+
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <p class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">از تاریخ </p>
+                        <input type="text" class="form-control" name="from_date3" id="SearchFromDate"
+                               data-mddatetimepicker="true" data-trigger="click" data-targetselector="#SearchFromDate"
+                               data-groupid="group1" data-fromdate="true" data-enabletimepicker="false"
+                               data-englishnumber="true"
+                               data-placement="right"
+                               pattern='([1][234]\d{2}/(0[1-9]|1[0-2])/(0[1-9]|[12]\d|3[01]))'
+                               oninvalid="this.setCustomValidity('تاریخ معتبر وارد کنید')"
+                               onchange="this.setCustomValidity('')"
+                        />
+                    </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <p class="control-label col-md-12 col-sm-12 col-xs-12 pull-right">تا تاریخ </p>
+                        <input type="text" class="form-control" name="to_date3" id="SearchToDate"
+                               data-mddatetimepicker="true" data-trigger="click" data-targetselector="#SearchToDate"
+                               data-groupid="group1" data-fromdate="true" data-enabletimepicker="false"
+                               data-englishnumber="true"
+                               data-placement="right"
+                               pattern='([1][234]\d{2}/(0[1-9]|1[0-2])/(0[1-9]|[12]\d|3[01]))'
+                               oninvalid="this.setCustomValidity('تاریخ معتبر وارد کنید')"
+                               onchange="this.setCustomValidity('')"
+                        />
+                    </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <input type="submit" id="buttonShow" value="جستجو" class="btn btn-primary btn-lg"/>
+                        <button type="button" class="btn btn-danger btn-lg" data-dismiss="modal">خروج</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Bootstrap -->
+<script src="{% static 'assets/Scripts/bootstrap-rtl.min.js' %}"></script>
+<!-- FastClick -->
+<script src="{% static 'assets/vendors/fastclick/lib/fastclick.js' %}"></script>
+<!-- NProgress -->
+<script src="{% static 'assets/vendors/nprogress/nprogress.js' %}"></script>
+<script>
+    persianNumbers = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g],
+        arabicNumbers = [/٠/g, /١/g, /٢/g, /٣/g, /٤/g, /٥/g, /٦/g, /٧/g, /٨/g, /٩/g]
+
+    function fixNumbers(str) {
+        if (typeof str === 'string') {
+            for (let i = 0; i < 10; i++) {
+                str = str.replace(persianNumbers[i], i).replace(arabicNumbers[i], i);
+            }
+        }
+        return str;
+    };
+
+    function normalizeDate(dateInt) {
+        return dateInt.substring(0, 4) + '/' + dateInt.substring(4, 6) + '/' + dateInt.substring(6, 8);
+        ;
+    }
+</script>
+{% for item in notifs %}
+        <script>
+            document.getElementById("{{ item.meeting_start_date }}{{ forloop.counter }}").innerHTML = normalizeDate("{{ item.meeting_start_date }}");
+        </script>
+{% endfor %}
+{% block jsBlock %}{% endblock %}
+
+
+<!-- jQuery custom content scroller -->
+<script
+        src="{% static 'assets/vendors/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js' %}"></script>
+<!-- persian datetime picker -->
+<script src="{% static 'assets/vendors/MdBootstrapPersianDateTimePicker/js/calendar.js' %}"
+        type="text/javascript"></script>
+<script
+        src="{% static 'assets/vendors/MdBootstrapPersianDateTimePicker/js/jquery.Bootstrap-PersianDateTimePicker.js' %}"
+        type="text/javascript"></script>
+<script src="{% static 'assets/Scripts/persian-datepicker.js' %}"></script>
+<script src="{% static 'assets/input-tags/js/tagsinput.js' %}"></script>
+
+<!-- Custom Theme Scripts -->
+<script src="{% static 'assets/Scripts/custom.min.js' %}"></script>
+<script>
+    function AdvanceSearch() {
+        $.ajax({
+            data: {
+                text: null,
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                dataType: "json",
+            },
+            type: 'post',
+            url: '/RegisterUsers',
+            success: function (response) {
+                document.getElementById('SearchUsedDomain').innerHTML = '<option value="-1">---------------</option>';
+                var arr_from_json = JSON.parse(response);
+                for (var i = 0; i < arr_from_json.length; i++) {
+                    $('#SearchUsedDomain').append('<option value="' + arr_from_json[i].id + '">' + arr_from_json[i].text + '</option>');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(textStatus + ": " + errorThrown);
+            },
+        });
+
+        // $.ajax({
+        //     data: {
+        //         csrfmiddlewaretoken: '{{ csrf_token }}',
+        //         dataType: "json",
+        //     },
+        //     type: 'get',
+        //     url: '/get_title',
+        //     success: function (response) {
+        //         document.getElementById('SearchTitle').innerHTML = '<option value="-1">---------------</option>';
+        //         var arr_from_json = JSON.parse(response);
+        //         for (var i = 0; i < arr_from_json.length; i++) {
+        //             $('#SearchTitle').append('<option value="' + arr_from_json[i].id + '">' + arr_from_json[i].text + '</option>');
+        //         }
+        //     },
+        //     error: function (jqXHR, textStatus, errorThrown) {
+        //         console.log(textStatus + ": " + errorThrown);
+        //     },
+        // });
+
+        $.ajax({
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                dataType: "json",
+            },
+            type: 'get',
+            url: '/get_knowledge_category',
+            success: function (response) {
+                document.getElementById('SearchKnowledgeCategory').innerHTML = '<option value="-1">---------------</option>';
+                var arr_from_json = JSON.parse(response);
+                for (var i = 0; i < arr_from_json.length; i++) {
+                    $('#SearchKnowledgeCategory').append('<option value="' + arr_from_json[i].id + '">' + arr_from_json[i].text + '</option>');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(textStatus + ": " + errorThrown);
+            },
+        });
+        $.ajax({
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                dataType: "json",
+            },
+            type: 'get',
+            url: '/get_members',
+            success: function (response) {
+                document.getElementById('SearchMember').innerHTML = '<option value="-1">---------------</option>';
+                var arr_from_json = JSON.parse(response);
+                for (var i = 0; i < arr_from_json.length; i++) {
+                    $('#SearchMember').append('<option value="' + arr_from_json[i].id + '">' + arr_from_json[i].text + '</option>');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(textStatus + ": " + errorThrown);
+            },
+        });
+
+
+        $('#AdvanceSearch').modal('toggle');
+        document.getElementById("text").value = "";
+    }
+
+
+</script>
+
+<script>
+    $( document ).ready(function() {
+        $('#firstLi').removeClass('current-page');
+});
+   
+</script>
+
+<script>
+    $("#topic1-subject").change(function () {
+        const subjectId = $(this).val();  // get the selected subject ID from the HTML dropdown list 
+        $.ajax({                       // initialize an AJAX request
+            type: "POST",
+            url: '{% url "topic2_view" %}',
+            data: {
+                'subject_id': subjectId,       // add the country id to the POST parameters
+                'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function (data) {   // `data` is from `topic1_view` view 
+                var topic2 = document.getElementById('topic2-subject').innerHTML = "";
+                var topic3 = document.getElementById('topic3-subject').innerHTML = "";
+                console.log('data',data)
+                let arr_from_json = JSON.parse(data);
+                for (let i = 0; i < arr_from_json.length; i++) {
+                $('#topic2-subject').append("<option value=" + arr_from_json[i].id + ">" + arr_from_json[i].text + "</option>");
+            }
+
+                //// this cause mozo 3 npt to be null
+                const subjectId = arr_from_json[0].id // get the selected subject ID from the HTML dropdown list 
+                $.ajax({                       // initialize an AJAX request
+                    type: "POST",
+                    url: '{% url "topic3_view" %}',
+                    data: {
+                        'subject_id': subjectId,       // add the country id to the POST parameters
+                        'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+                    },
+                    success: function (data) {   // `data` is from `topic1_view` view 
+                        document.getElementById('topic3-subject').innerHTML = "";
+                        console.log('data',data)
+                        let arr_from_json = JSON.parse(data);
+                        for (let i = 0; i < arr_from_json.length; i++) {
+                        $('#topic3-subject').append("<option value=" + arr_from_json[i].id + ">" + arr_from_json[i].text + "</option>");
+                    }
+
+                    }
+                });
+                /////
+        
+            }
+        });
+    });
+        
+               
+$("#topic2-subject").change(function () {
+    const subjectId = $(this).val();  // get the selected subject ID from the HTML dropdown list 
+    $.ajax({                       // initialize an AJAX request
+        type: "POST",
+        url: '{% url "topic3_view" %}',
+        data: {
+            'subject_id': subjectId,       // add the country id to the POST parameters
+            'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+        },
+        success: function (data) {   // `data` is from `topic1_view` view 
+            document.getElementById('topic3-subject').innerHTML = "";
+            console.log('data',data)
+            let arr_from_json = JSON.parse(data);
+            for (let i = 0; i < arr_from_json.length; i++) {
+            $('#topic3-subject').append("<option value=" + arr_from_json[i].id + ">" + arr_from_json[i].text + "</option>");
+        }
+
+        }
+    });
+});
+
+
+    $.ajax({
+        data: {
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            dataType: "json",
+        },
+        type: 'get',
+        url: '/get_notif_count_km',
+        success: function (data) {
+            console.log(data.response)
+            // puts the number of notifications in bell icon
+            document.getElementById('NotifBellIcon').innerHTML = data.response
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log(textStatus + ": " + errorThrown);
+        },
+    });
+
+
+        var SelectOptions = ''
+        $("#buttonShow").click(function(){
+            $("#keywords option").each(function(){
+                SelectOptions  = SelectOptions + $(this).val().trim() + ' '
+            });
+
+            $("#SearchKeyword").val(SelectOptions)
+
+    }); 
+
+
+               
+    
+</script>
+
+
+{% block tinymceBlock %}
+<script src="{% static 'assets/vendors/tinymce/tinymce.min.js' %}"></script>
+
+<script>
+        
+var useDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+
+
+tinymce.init({
+  selector: 'textarea',
+  language: "fa_IR",
+
+  plugins: 'print preview paste importcss searchreplace autolink   directionality code visualblocks visualchars fullscreen  link  template codesample  charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount  textpattern noneditable  charmap quickbars emoticons',
+  menubar: 'file edit view insert format tools ',
+  toolbar: ' bold italic underline strikethrough |  fontsizeselect  | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile  media template link anchor codesample | ltr rtl',
+  importcss_append: true,
+  height: 300,
+  quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote  ',
+  noneditable_noneditable_class: 'mceNonEditable',
+  toolbar_mode: 'sliding',
+  skin: useDarkMode ? 'oxide-dark' : 'oxide',
+  content_css: useDarkMode ? 'light' : 'default',
+  content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+  branding: false,
+ });
+</script>
+{% endblock %}
+
+
+<script src="{% static 'assets/vendors/MdBootstrapPersianDateTimePicker/js/calendar.js' %}"
+    type="text/javascript"></script>
+<script
+    src="{% static 'assets/vendors/MdBootstrapPersianDateTimePicker/js/jquery.Bootstrap-PersianDateTimePicker.js' %}"
+    type="text/javascript"></script>
+<script src="{% static 'assets/Scripts/persian-datepicker.js' %}"></script>
+<script>
+const colorThemes = document.querySelectorAll('[name="theme"]');
+
+// store theme
+const storeTheme = function (theme) {
+  localStorage.setItem("theme", theme);
+};
+
+// set theme when visitor returns
+const setTheme = function () {
+  const activeTheme = localStorage.getItem("theme");
+  colorThemes.forEach((themeOption) => {
+    if (themeOption.id === activeTheme) {
+      themeOption.checked = true;
+    }
+  });
+  // fallback for no :has() support
+  document.documentElement.className = activeTheme;
+};
+
+colorThemes.forEach((themeOption) => {
+  themeOption.addEventListener("click", () => {
+    storeTheme(themeOption.id);
+    // fallback for no :has() support
+    document.documentElement.className = themeOption.id;
+  });
+});
+
+document.onload = setTheme();
+
+
+
+
+
+
+</script>
+
+
+</body>
+
+</html>

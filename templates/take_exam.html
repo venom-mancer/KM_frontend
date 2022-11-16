@@ -1,0 +1,289 @@
+{% extends '_layout.html' %}
+{% load static %}
+{% load comon_tags %}
+
+{% block jsBlock %}
+    <!-- Datatables -->
+    <script src="{% static 'assets/vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+    <script src="{% static 'assets/vendors/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/jszip/dist/jszip.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/pdfmake.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/pdfmake/build/vfs_fonts.js' %}"></script>
+    {% for Knowledge in Knowledges %}
+        <script>
+            document.getElementById("{{ Knowledge.CreateDate }}{{ forloop.counter }}").innerHTML = normalizeDate("{{ Knowledge.CreateDate }}{{ forloop.counter }}");
+        </script>
+    {% endfor %}
+{% endblock %}
+
+{% block cssBlock %}
+    <!-- Datatables -->
+
+    <link href="{% static 'assets/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'assets/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}"
+          rel="stylesheet">
+          <style>
+              .form-group{
+                bottom: -8px;
+              }
+              hr{
+            width: 95%;
+            border-top: 1px solid rgb(184, 184, 184);
+        }
+        .answer{
+            color : black;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .question{
+            color : black;
+            font-size: 14px;
+        }
+        .timer{
+            color : black;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .red_timer{
+            color : red;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        
+        img.custom:hover,
+        img.custom:focus {
+        width: 800px;
+        height: 550px;
+        }
+          </style>
+{% endblock %}
+
+
+{% block pageContent %}
+
+<div class="">
+    <div class="x_panel">
+        <div class="x_title bg-primary">
+            <h2 class="pull-right">فرم ثبت</h2>
+            <ul class="nav navbar-left panel_toolbox">
+                <li>
+                    <a class="close-link"><i class="fa fa-close"></i></a>
+                </li>
+                <li>
+                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        
+        {% if pdf_file %}
+        <div>
+            <embed src="/media/{{pdf_file}}" width="50%" height="500px">
+        </div>
+        {% elif image %}
+        <div>
+            <img class="custom" src="/media/{{image}}" alt="Trulli" width="500" height="333">
+        </div>
+        {% endif %}
+            
+        
+            <div class="x_content">
+                <ul class="nav nav-tabs">                  
+                    {% for question in questions %}                      
+                        {% if forloop.counter == 1 %}
+                            <li class="active" ><a id="question{{ question.id }}Tab" data-toggle="tab" href="#question{{ question.id }}">سوال {{ forloop.counter }} </a></li>
+                        {% else %}
+                            <li><a id="question{{ question.id }}Tab" data-toggle="tab" href="#question{{ question.id }}">سوال {{ forloop.counter }} </a></li>
+                        {% endif %}                  
+                    {% endfor %}
+                </ul>
+                  <form action="" id="examForm" method="post" enctype="multipart/form-data" style="background-color: white">
+                    {% csrf_token %}
+
+                <div class="tab-content" >
+                    
+                    <div class="clearfix" style="padding: 15px;"></div>
+                    {% for question in questions  %}
+                    {% if forloop.counter == 1 %}
+                    <div id="question{{ question.id }}" class="tab-pane fade in active">
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">                                
+                        <span  class="col-md-12 col-sm-12 col-xs-12 form-group pull-right question">
+                            {{ question.question|safe }} 
+                        </span>
+                        
+                        {% if question.quesion_file %}
+                            <img class="custom" src="/media/{{question.quesion_file}}" alt="Trulli" width="500" height="333">
+                            
+                        {% endif %}
+                        
+
+                    </div>
+                    {% for option in options|in_question_options:question %}
+                                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">                                
+                                        <span  class="col-md-12 col-sm-12 col-xs-12 form-group pull-right answer">
+                                            <input type="checkbox" value="{{ option.id }}" name="question{{ question.id }}" >
+                                            {{forloop.counter}}-
+                                            {{ option.option_text }} 
+                                            
+                                        </span>
+                                        
+                                    </div>                                                                       
+                    {% endfor %}
+                    <div class="clearfix"></div>
+                    {% if questionsـlen == 1 %}
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                            اتمام
+                        </button>
+                    {% endif %}
+                  </div>
+                    {% else %}
+                    <div id="question{{ question.id }}" class="tab-pane fade">
+                        <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">                                
+                            <span  class="col-md-12 col-sm-12 col-xs-12 form-group pull-right question">
+                                {{ question.question|safe }} 
+                            </span>
+                            {% if question.quesion_file %}
+                            <img class="custom" src="/media/{{question.quesion_file}}" alt="Trulli" width="500" height="333">
+                        {% endif %}
+                        </div>
+
+                        {% for option in options|in_question_options:question %}
+                        <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">                                
+                            <span  class="col-md-12 col-sm-12 col-xs-12 form-group pull-right answer">
+                                <input type="checkbox" value="{{ option.id }}" name="question{{ question.id }}" >
+                                {{forloop.counter}}-
+                                {{ option.option_text }}
+                                
+                            </span>
+                            
+                        </div>
+                                                           
+                        {% endfor %}
+
+                        {% if forloop.last %}
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                            اتمام
+                        </button>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right">
+                        <span>زمان باقی مانده</span><p id="demo" class="timer"></p>
+                    </div>
+            </div>
+            
+              <!-- Modal -->
+              <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLongTitle">اتمام ازمون</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div id="modalBodyId" class="modal-body">
+                     ایا از اتمام ازمون مطمئن هستید ؟
+            
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-danger" data-dismiss="modal">خیر</button>
+                      <button type="submit" class="btn btn-success">بله</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+    <script>
+        setTimeout(function(){
+            $('form#examForm').submit();
+         }, {{ exam_time }});
+    </script>
+
+<script>
+    var countDownDate = new Date("Sep 25, 2025 {{ to_hour_string }} ").getTime();
+    console.log(countDownDate)
+    
+    // Update the count down every 1 second
+    var x = setInterval(function() {
+    
+        // Get todays date and time
+        var now = new Date().getTime();
+        
+        // Find the distance between now an the count down date
+        var distance = countDownDate - now;
+        
+        // Time calculations for days, hours, minutes and seconds
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        hours = hours - 1
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        
+        // Output the result in an element with id="demo"
+        if ( hours == 0)
+        {
+            document.getElementById("demo").innerHTML = minutes + "m " + seconds + "s ";
+        }
+        else{
+            document.getElementById("demo").innerHTML = hours + "h "
+            + minutes + "m " + seconds + "s ";
+        }
+        if( hours == 0 & minutes == 0 ){
+            document.getElementById("demo").classList.remove('timer');
+            document.getElementById("demo").classList.add('red_timer');
+        }
+        
+        // If the count down is over, write some text 
+        if (distance < 0) {
+            clearInterval(x);
+            document.getElementById("demo").innerHTML = "EXPIRED";
+        }
+    }, 1000);
+    
+    </script>
+<script>
+$('input:checkbox').click(function() { 
+  console.log($(this).attr('name')+'Tab'); 
+  $('#'+$(this).attr('name')+'Tab').css({"background-color":"#c2c2c2"});
+
+  all_names=document.getElementsByName($(this).attr('name'))
+  len_all_names=all_names.length
+  console.log('all_names',all_names)
+  element_counter=0;
+  for(var i=0; i <len_all_names ; i++){
+    x=all_names[i]
+    console.log(x)
+    if(x.checked){
+        console.log(x)
+    }
+    else{
+        element_counter++;
+    }
+  }
+  if(element_counter == len_all_names){
+    $('#'+$(this).attr('name')+'Tab').css({"background-color":"#ffffff"});
+  }
+}); 
+</script>
+
+{% endblock %}
