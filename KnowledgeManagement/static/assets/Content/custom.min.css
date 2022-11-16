@@ -391,7 +391,11 @@
   color: var(--clr-second);
 }
 
-
+.btn-primary{
+  background: var(--clr-body-bg) !important;
+  border: 1px solid var(--clr-body-bg) !important;
+  color: var(--clr-second);
+}
 
 .bg-white {
   background: #fff !important;
