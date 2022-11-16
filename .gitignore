@@ -142,8 +142,6 @@ src/user/migrations
 src/report/migrations
 */media/*
 media
-static/
-.static/
 __pycache__/
 *.pyc
 db.sqlite3
