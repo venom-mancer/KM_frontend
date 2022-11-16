@@ -1,0 +1,381 @@
+input[type=range] {
+    -webkit-appearance: none;
+    margin: 15px 0;
+    width: 100%;
+}
+
+input[type=range]:focus {
+    outline: none;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 8.4px;
+    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+    background: #3071a9;
+    border-radius: 1.3px;
+
+}
+
+input[type=range]::-webkit-slider-thumb {
+    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+    border: 0.5px solid #000000;
+    height: 30px;
+    width: 16px;
+    border-radius: 5px;
+    background: #ffffff;
+    -webkit-appearance: none;
+    margin-top: -14px;
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #367ebd;
+}
+
+input[type=range]::-moz-range-track {
+    width: 100%;
+    height: 8.4px;
+    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+    background: #3071a9;
+    border-radius: 1.3px;
+    border: 0.2px solid #010101;
+}
+
+input[type=range]::-moz-range-thumb {
+    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+    border: 1px solid #000000;
+    height: 36px;
+    width: 16px;
+    border-radius: 3px;
+    background: #e03e2d;
+}
+
+input[type=range]::-ms-track {
+    width: 100%;
+    height: 8.4px;
+    background: transparent;
+    border-color: transparent;
+    border-width: 16px 0;
+    color: transparent;
+}
+
+input[type=range]::-ms-fill-lower {
+    background: #2a6495;
+    border: 0.2px solid #010101;
+    border-radius: 2.6px;
+    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+}
+
+input[type=range]::-ms-fill-upper {
+    background: #3071a9;
+    border: 0.2px solid #010101;
+    border-radius: 2.6px;
+    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+}
+
+input[type=range]::-ms-thumb {
+    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+    border: 1px solid #000000;
+    height: 30px;
+    width: 13px;
+    border-radius: 3px;
+    background: #ffffff;
+}
+
+input[type=range]:focus::-ms-fill-lower {
+    background: #3071a9;
+}
+
+input[type=range]:focus::-ms-fill-upper {
+    background: #367ebd;
+}
+
+[data-title]:hover:after {
+    opacity: 1;
+    transition: all 0.1s ease 0.5s;
+    visibility: visible;
+}
+
+[data-title]:after {
+    content: attr(data-title);
+    background-color: #222222;
+    color: white;
+    font-size: 18px;
+    left: 100%;
+    visibility: hidden;
+    border-radius: 3px;
+}
+
+[data-title] {
+    position: relative;
+}
+
+
+.custom-file-input::-webkit-file-upload-button {
+    visibility: hidden;
+  }
+  .custom-file-input::before {
+    content: 'انتخاب فایل';
+    display: inline-block;
+    background: linear-gradient(top, #f9f9f9, #e3e3e3);
+    border: 1px solid #999;
+    border-radius: 3px;
+    padding: 5px 8px;
+    outline: none;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    cursor: pointer;
+    text-shadow: 1px 1px #fff;
+    font-weight: 700;
+    font-size: 10pt;
+  }
+  .custom-file-input:hover::before {
+    border-color: black;
+  }
+  .custom-file-input:active::before {
+    background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+  }
+  input[type=file]::-ms-browse {
+    border: 2px solid #2e6da4;
+    padding: .2em .4em;
+    border-radius: .2em;
+    background-color: #2e6da4;
+  }
+  
+  input[type=file]::-webkit-file-upload-button {
+    border: 2px solid #2e6da4;
+    padding: .2em .4em;
+    border-radius: .2em;
+    background-color: #2e6da4;
+    transition: 1s;
+  }
+  
+  input[type=file]::file-selector-button {
+    border: 2px solid #2e6da4;
+    padding: .2em .4em;
+    border-radius: .2em;
+    background-color: #2e6da4;
+    transition: 1s;
+  }
+  
+  input[type=file]::-ms-browse:hover {
+    background-color: #81ecec;
+    border: 2px solid #00cec9;
+  }
+  
+  input[type=file]::-webkit-file-upload-button:hover {
+    background-color: #81ecec;
+    border: 2px solid #00cec9;
+  }
+  
+  input[type=file]::file-selector-button:hover {
+    background-color: #81ecec;
+    border: 2px solid #00cec9;
+  }
+  .switch {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 110px;
+    height: 30px;
+    text-align: center;
+    margin: -30px 0 0 -75px;
+    background: #00bc9c;
+    transition: all 0.2s ease;
+    border-radius: 7px;
+  }
+  .switch span {
+    position: absolute;
+    width: 20px;
+    height: 4px;
+    top: 50%;
+    left: 50%;
+    margin: -2px 0px 0px -4px;
+    background: #fff;
+    display: block;
+    transform: rotate(-45deg);
+    transition: all 0.2s ease;
+  }
+  .switch span:after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 4px;
+    height: 12px;
+    margin-top: -8px;
+    background: #fff;
+    transition: all 0.2s ease;
+  }
+  input[type=radio] {
+    display: none;
+  }
+  .switch label {
+    cursor: pointer;
+    color: rgba(0,0,0,0.2);
+    width: 33px;
+    line-height: 30px;
+    transition: all 0.2s ease;
+  }
+  label[for=yes] {
+    position: absolute;
+    left: 0px;
+    height: 20px;
+  }
+  label[for=no] {
+    position: absolute;
+    right: 0px;
+  }
+  #no:checked ~ .switch {
+    background: #df513b;
+  }
+  #no:checked ~ .switch span {
+    background: #fff;
+    margin-left: -8px;
+  }
+  #no:checked ~ .switch span:after {
+    background: #fff;
+    height: 20px;
+    margin-top: -8px;
+    margin-left: 8px;
+  }
+  #yes:checked ~ .switch label[for=yes] {
+    color: #fff;
+  }
+  #no:checked ~ .switch label[for=no] {
+    color: #fff;
+  }
+  /* 1 */
+  label[for=yes1] {
+    position: absolute;
+    left: 0px;
+    height: 20px;
+  }
+  label[for=no1] {
+    position: absolute;
+    right: 0px;
+  }
+  #no1:checked ~ .switch {
+    background: #df513b;
+  }
+  #no1:checked ~ .switch span {
+    background: #fff;
+    margin-left: -8px;
+  }
+  #no1:checked ~ .switch span:after {
+    background: #fff;
+    height: 20px;
+    margin-top: -8px;
+    margin-left: 8px;
+  }
+  #yes1:checked ~ .switch label[for=yes1] {
+    color: #fff;
+  }
+  #no1:checked ~ .switch label[for=no1] {
+    color: #fff;
+  }
+  /* 2 */
+  #yes2:checked ~ .switch label[for=yes2] {
+    color: #fff;
+  }
+  #no2:checked ~ .switch label[for=no2] {
+    color: #fff;
+  }
+  label[for=yes2] {
+    position: absolute;
+    left: 0px;
+    height: 20px;
+  }
+  label[for=no2] {
+    position: absolute;
+    right: 0px;
+  }
+  #no2:checked ~ .switch {
+    background: #df513b;
+  }
+  #no2:checked ~ .switch span {
+    background: #fff;
+    margin-left: -8px;
+  }
+  #no2:checked ~ .switch span:after {
+    background: #fff;
+    height: 20px;
+    margin-top: -8px;
+    margin-left: 8px;
+  }
+  #yes2:checked ~ .switch label[for=yes2] {
+    color: #fff;
+  }
+  #no2:checked ~ .switch label[for=no2] {
+    color: #fff;
+  }
+  /* 3 */
+  #yes3:checked ~ .switch label[for=yes3] {
+    color: #fff;
+  }
+  #no3:checked ~ .switch label[for=no3] {
+    color: #fff;
+  }
+  label[for=yes3] {
+    position: absolute;
+    left: 0px;
+    height: 20px;
+  }
+  label[for=no3] {
+    position: absolute;
+    right: 0px;
+  }
+  #no3:checked ~ .switch {
+    background: #df513b;
+  }
+  #no3:checked ~ .switch span {
+    background: #fff;
+    margin-left: -8px;
+  }
+  #no3:checked ~ .switch span:after {
+    background: #fff;
+    height: 20px;
+    margin-top: -8px;
+    margin-left: 8px;
+  }
+  #yes3:checked ~ .switch label[for=yes3] {
+    color: #fff;
+  }
+  #no3:checked ~ .switch label[for=no3] {
+    color: #fff;
+  }
+  /* 4 */
+  #yes4:checked ~ .switch label[for=yes4] {
+    color: #fff;
+  }
+  #no4:checked ~ .switch label[for=no4] {
+    color: #fff;
+  }
+  label[for=yes4] {
+    position: absolute;
+    left: 0px;
+    height: 20px;
+  }
+  label[for=no4] {
+    position: absolute;
+    right: 0px;
+  }
+  #no4:checked ~ .switch {
+    background: #df513b;
+  }
+  #no4:checked ~ .switch span {
+    background: #fff;
+    margin-left: -8px;
+  }
+  #no4:checked ~ .switch span:after {
+    background: #fff;
+    height: 20px;
+    margin-top: -8px;
+    margin-left: 8px;
+  }
+  #yes4:checked ~ .switch label[for=yes4] {
+    color: #fff;
+  }
+  #no4:checked ~ .switch label[for=no4] {
+    color: #fff;
+  }
+  /* 5 */

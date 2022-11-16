@@ -1,0 +1,39 @@
+﻿<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fa">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>تست پلاگین انتخاب تاریخ</title>
+
+	<link type="text/css" href="styles/jquery-ui-1.8.14.css" rel="stylesheet" />
+
+    <script type="text/javascript" src="scripts/jquery-1.6.2.min.js"></script>
+	<script type="text/javascript" src="scripts/jquery.ui.core.js"></script>
+    <script type="text/javascript" src="scripts/jquery.ui.datepicker-cc.js"></script>
+    <script type="text/javascript" src="scripts/calendar.js"></script>
+    <script type="text/javascript" src="scripts/jquery.ui.datepicker-cc-ar.js"></script>
+    <script type="text/javascript" src="scripts/jquery.ui.datepicker-cc-fa.js"></script>
+
+    <script type="text/javascript">
+	    $(function() {
+	        // حالت پیشفرض
+	        $('#datepicker0').datepicker();
+	       
+	        // نمایش دکمه ها
+	        $('#datepicker3').datepicker({
+	            showButtonPanel: true
+	        });
+	       
+	    });
+    </script>
+
+    
+</head>
+<body>
+    <div>
+       
+       
+            <input type="text" id="datepicker3" />
+       
+    </div>
+</body>
+</html>
