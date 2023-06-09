@@ -18,6 +18,7 @@ from django.urls import include, path
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf import settings
 
+#URLS :
 urlpatterns = [
     path("", include("KnowledgeManagement.urls")),
     path('admin/', admin.site.urls),
